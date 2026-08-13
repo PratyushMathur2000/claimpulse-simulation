@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClaimPulse — Interactive Decision Simulation | ATOM Season 9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<style>
+:root{
+  /* ============================================================
+     FONT SIZE CONTROL — change this ONE number and every text
+     size on the page scales with it. 1 = current, 1.1 = 10% bigger.
+     ============================================================ */
+  --fs:1;
+
+  --brand-blue:#2e8fe6; --brand-blue-mid:#0060ae; --brand-navy:#0b2545; --dark-bg:#06111e;
+  --card-bg:rgba(13,33,58,0.82); --card-bg-alt:rgba(16,42,72,0.88);
+  --blue-tint:rgba(46,143,230,0.15);
+  --line:rgba(27,56,90,0.8); --line-bright:rgba(43,82,128,0.7);
+  --heading:#f8fafc; --ink:#e2e8f0; --mist:#94a3b8; --mist-dim:#64748b;
+  --green:#10b981; --green-dim:rgba(16,185,129,0.2);
+  --gold:#f59e0b; --gold-dim:rgba(245,158,11,0.2);
+  --red:#ef4444; --red-dim:rgba(239,68,68,0.2);
+  --purple:#a78bfa; --cyan:#22d3ee;
+  /* THREE TYPE ROLES — one family, Outfit, differentiated by weight */
+  --f-head:'Outfit',system-ui,sans-serif;   /* headers */
+  --f-sub:'Outfit',system-ui,sans-serif;    /* subtopics, refs, numbers */
+  --f-body:'Outfit',system-ui,sans-serif;   /* everything else */
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background-color:var(--dark-bg);
+  background-image:
+    radial-gradient(circle at 90% 90%, rgba(245,158,11,0.22) 0%, transparent 40%),
+    radial-gradient(circle at 10% 20%, rgba(46,143,230,0.20) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(11,37,69,0.35) 0%, transparent 60%),
+    linear-gradient(135deg,#050d18 0%,#081728 50%,#101c30 100%);
+  background-repeat:no-repeat; background-position:center center;
+  background-attachment:fixed; background-size:cover;
+  color:var(--ink); font-family:var(--f-body);
+  font-size:calc(13.5px * var(--fs)); line-height:1.5; padding:18px; max-width:1560px; margin:0 auto; min-height:100vh; position:relative;
+}
+body::before{
+  content:''; position:fixed; inset:0;
+  background:
+    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.15), rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, rgba(46,143,230,0.20), rgba(0,0,0,0));
+  background-size:100px 100px; pointer-events:none; z-index:0;
+}
+.app-container{position:relative;z-index:1;}
+.top-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:16px;
+  border-bottom:2px solid var(--brand-blue-mid);background:rgba(6,17,30,0.75);backdrop-filter:blur(12px);
+  padding:12px 18px;border-radius:14px;border:1px solid var(--line-bright);}
+.brand-group{display:flex;align-items:center;gap:16px;}
+.brand-logo-wrap{display:flex;align-items:center;gap:12px;background:rgba(13,33,58,0.85);border:1px solid var(--line-bright);padding:8px 14px;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,0.4);}
+.brand-title-box h1{font-family:var(--f-head);font-weight:800;font-size:calc(21px * var(--fs));color:var(--heading);letter-spacing:-0.3px;}
+.brand-title-box p{color:var(--mist);font-size:calc(12.5px * var(--fs));}
+.page-nav-tabs{display:flex;gap:5px;background:rgba(11,37,69,0.7);padding:4px;border-radius:100px;border:1px solid var(--line-bright);flex-wrap:wrap;}
+.page-tab-btn{background:transparent;border:none;color:var(--mist);font-family:var(--f-head);font-weight:700;font-size:calc(12.5px * var(--fs));padding:8px 14px;border-radius:100px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.page-tab-btn.active{background:var(--brand-blue);color:#fff;box-shadow:0 4px 12px rgba(46,143,230,0.4);}
+.page-tab-btn:hover:not(.active){color:#fff;background:rgba(255,255,255,0.05);}
+.page-view{display:none;} .page-view.active{display:block;animation:fadeIn .25s ease-in-out;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.card,.hero-pitch,.kpi{background:var(--card-bg);backdrop-filter:blur(12px);border:1px solid var(--line-bright);border-radius:14px;padding:18px;box-shadow:0 8px 32px rgba(0,0,0,0.35);}
+.hero-pitch{background:linear-gradient(150deg,rgba(13,33,58,0.9) 0%,rgba(8,23,40,0.95) 100%);padding:20px 24px;margin-bottom:16px;}
+.pitch-eyebrow{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(12px * var(--fs));letter-spacing:1.2px;color:var(--brand-blue);text-transform:uppercase;font-weight:700;}
+.pitch-title{font-family:var(--f-head);font-size:calc(19px * var(--fs));font-weight:700;color:var(--heading);margin-top:2px;}
+.pitch-sub{color:var(--mist);font-size:calc(13.5px * var(--fs));max-width:1100px;margin-top:4px;line-height:1.55;}
+.stat-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px;}
+@media(max-width:1200px){.stat-strip{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:600px){.stat-strip{grid-template-columns:repeat(2,1fr);}}
+.p-stat{background:rgba(11,37,69,0.5);border:1px solid var(--line);border-radius:10px;padding:10px 12px;transition:all .2s;}
+.p-stat:hover{border-color:var(--brand-blue);transform:translateY(-2px);}
+.p-k{font-size:calc(10.5px * var(--fs));color:var(--mist);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:4px;}
+.p-row{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;}
+.p-from{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(13.5px * var(--fs));color:var(--mist-dim);text-decoration:line-through;text-decoration-color:rgba(239,68,68,.7);}
+.p-arrow{color:var(--brand-blue);font-weight:bold;font-size:calc(13px * var(--fs));}
+.p-to{font-family:var(--f-head);font-weight:700;font-size:calc(20px * var(--fs));color:var(--heading);}
+.p-to.highlight{color:var(--green);} .p-to.warn{color:var(--gold);} .p-to.bad{color:var(--red);}
+.p-note{font-size:calc(10px * var(--fs));color:var(--mist-dim);margin-top:3px;}
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:16px;}
+@media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+.kpi{border-left:4px solid var(--brand-blue);padding:12px 14px;}
+.kpi.green-border{border-left-color:var(--green);} .kpi.gold-border{border-left-color:var(--gold);} .kpi.red-border{border-left-color:var(--red);}
+.kpi .k{font-size:calc(10px * var(--fs));color:var(--mist);text-transform:uppercase;letter-spacing:.5px;font-weight:700;}
+.kpi .v{font-family:var(--f-head);font-weight:700;font-size:calc(19px * var(--fs));margin-top:4px;color:var(--heading);}
+.kpi .v.green{color:var(--green);} .kpi .v.amber{color:var(--gold);} .kpi .v.teal{color:var(--brand-blue);} .kpi .v.red{color:var(--red);}
+.kpi .d{font-size:calc(10.5px * var(--fs));color:var(--mist-dim);margin-top:2px;line-height:1.35;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.grid21{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px;}
+.grid12{display:grid;grid-template-columns:1fr 2fr;gap:16px;margin-bottom:16px;}
+@media(max-width:1100px){.grid2,.grid3,.grid21,.grid12{grid-template-columns:1fr;}}
+.card h3{font-family:var(--f-head);font-weight:700;font-size:calc(16px * var(--fs));margin:0 0 2px;color:var(--heading);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.card .sub{font-size:calc(12px * var(--fs));color:var(--mist);margin-bottom:12px;line-height:1.5;}
+.chart-box{position:relative;height:230px;width:100%;}
+.chart-box.tall{height:320px;} .chart-box.short{height:180px;}
+table{width:100%;border-collapse:collapse;font-size:calc(13px * var(--fs));}
+th{text-align:left;color:var(--mist);font-weight:700;font-size:calc(10.5px * var(--fs));text-transform:uppercase;padding:7px 8px;border-bottom:2px solid var(--line);position:sticky;top:0;background:rgba(13,33,58,0.97);z-index:2;}
+td{padding:7px 8px;border-bottom:1px solid var(--line);font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(12px * var(--fs));vertical-align:top;}
+td.lbl{font-family:var(--f-body);font-weight:600;color:var(--heading);}
+td.txt{font-family:var(--f-body);color:var(--mist);font-size:calc(12px * var(--fs));}
+td.imp{color:var(--brand-blue);font-weight:700;}
+tr.hl{background:rgba(46,143,230,0.12);}
+.scroll-y{max-height:420px;overflow-y:auto;}
+.scroll-y::-webkit-scrollbar{width:8px;} .scroll-y::-webkit-scrollbar-thumb{background:var(--line-bright);border-radius:4px;}
+.tag{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(9.5px * var(--fs));font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;display:inline-block;}
+.tag.fact{background:var(--green-dim);color:var(--green);border:1px solid rgba(16,185,129,.4);}
+.tag.bench{background:rgba(46,143,230,.18);color:var(--brand-blue);border:1px solid rgba(46,143,230,.4);}
+.tag.gap{background:var(--red-dim);color:var(--red);border:1px solid rgba(239,68,68,.4);}
+.tag.tier{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,158,11,.4);}
+.tag.g{background:var(--green-dim);color:var(--green);} .tag.a{background:var(--gold-dim);color:var(--gold);} .tag.r{background:var(--red-dim);color:var(--red);}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.fbtn{background:var(--card-bg-alt);border:1.5px solid var(--line-bright);color:var(--mist);font-size:calc(12px * var(--fs));font-weight:700;padding:5px 12px;border-radius:100px;cursor:pointer;font-family:var(--f-body);transition:all .15s;}
+.fbtn.active{background:var(--brand-blue);color:#fff;border-color:var(--brand-blue);box-shadow:0 4px 10px -3px rgba(46,143,230,.6);}
+.fbtn:hover:not(.active){border-color:var(--brand-blue);color:var(--brand-blue);}
+.fbtn.danger.active{background:var(--red);border-color:var(--red);box-shadow:0 4px 10px -3px rgba(239,68,68,.6);}
+.ctrl{background:rgba(11,37,69,0.4);padding:10px 12px;border-radius:8px;border:1px solid var(--line);}
+.ctrl label{display:flex;justify-content:space-between;align-items:center;font-size:calc(10.5px * var(--fs));color:var(--mist);margin-bottom:6px;font-weight:700;text-transform:uppercase;gap:6px;}
+.ctrl label .val{font-family:var(--f-sub);font-variant-numeric:tabular-nums;color:var(--brand-blue);font-weight:700;font-size:calc(12.5px * var(--fs));}
+input[type=range]{-webkit-appearance:none;width:100%;height:5px;border-radius:4px;background:#16324f;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--brand-blue);cursor:pointer;border:2px solid #fff;}
+.controls{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+@media(max-width:1150px){.controls{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:650px){.controls{grid-template-columns:repeat(2,1fr);}}
+/* ---- Flow diagram ---- */
+.flow-wrap{width:100%;overflow-x:auto;}
+.flow-svg{min-width:1000px;width:100%;height:auto;}
+.fnode{fill:rgba(11,37,69,0.92);stroke:var(--line-bright);stroke-width:1.2;rx:8;}
+.fnode.gate{stroke:var(--brand-blue);stroke-width:2;}
+.fnode.green{stroke:var(--green);stroke-width:2;} .fnode.amber{stroke:var(--gold);stroke-width:2;} .fnode.red{stroke:var(--red);stroke-width:2;}
+.fnode.active{fill:rgba(46,143,230,0.30);stroke:var(--brand-blue);stroke-width:2.5;}
+.ftext{fill:var(--heading);font-family:var(--f-head);font-size:11.5px;font-weight:700;text-anchor:middle;}
+.fsub{fill:var(--mist);font-family:var(--f-body);font-size:9px;text-anchor:middle;}
+.fnum{fill:var(--brand-blue);font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:9px;font-weight:700;text-anchor:middle;}
+.fline{stroke:var(--line-bright);stroke-width:1.5;fill:none;}
+.fline.g{stroke:var(--green);} .fline.a{stroke:var(--gold);} .fline.r{stroke:var(--red);}
+.fdot{fill:var(--brand-blue);}
+/* ---- Transmission chain ---- */
+.chain{display:flex;flex-direction:column;gap:4px;}
+.chain-step{display:flex;align-items:flex-start;gap:10px;background:rgba(11,37,69,0.35);border:1px solid var(--line);border-left:3px solid var(--line-bright);border-radius:8px;padding:8px 11px;opacity:.35;transition:all .35s ease;}
+.chain-step.lit{opacity:1;border-left-color:var(--brand-blue);background:rgba(46,143,230,0.12);}
+.chain-step.lit.terminal{border-left-color:var(--green);background:rgba(16,185,129,0.12);}
+.chain-num{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(10.5px * var(--fs));font-weight:700;color:var(--brand-blue);flex-shrink:0;width:18px;padding-top:1px;}
+.chain-body{flex:1;}
+.chain-t{font-size:calc(12px * var(--fs));font-weight:700;color:var(--heading);}
+.chain-d{font-size:calc(11.5px * var(--fs));color:var(--mist);margin-top:1px;}
+.chain-v{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(12px * var(--fs));font-weight:700;color:var(--gold);flex-shrink:0;text-align:right;min-width:96px;}
+/* ---- Breakpoint gauges ---- */
+.bp-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);}
+.bp-row:last-child{border-bottom:none;}
+.bp-ref{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(11px * var(--fs));font-weight:700;color:var(--brand-blue);width:52px;flex-shrink:0;}
+.bp-info{flex:1;min-width:0;}
+.bp-nm{font-size:calc(12.5px * var(--fs));font-weight:600;color:var(--heading);}
+.bp-q{font-size:calc(11px * var(--fs));color:var(--mist);margin-top:1px;}
+.bp-gauge{width:110px;flex-shrink:0;}
+.bp-track{height:7px;background:rgba(11,37,69,0.7);border-radius:4px;overflow:hidden;border:1px solid var(--line);}
+.bp-fill{height:100%;transition:width .4s ease,background .4s ease;}
+.bp-stat{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(10px * var(--fs));margin-top:3px;text-align:right;}
+/* ---- Matrix ---- */
+.mx{display:grid;gap:4px;}
+.mx-cell{border-radius:6px;padding:7px 8px;font-size:calc(11px * var(--fs));border:1px solid var(--line);background:rgba(11,37,69,0.4);}
+.mx-cell.head{background:rgba(46,143,230,0.15);color:var(--heading);font-weight:700;font-size:calc(10.5px * var(--fs));text-transform:uppercase;}
+.sign{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(10px * var(--fs));font-weight:700;padding:2px 6px;border-radius:4px;}
+.sign.amb{background:var(--gold-dim);color:var(--gold);} .sign.opp{background:var(--red-dim);color:var(--red);}
+.sign.rein{background:var(--green-dim);color:var(--green);} .sign.con{background:rgba(167,139,250,.2);color:var(--purple);}
+.sign.amp{background:rgba(34,211,238,.2);color:var(--cyan);}
+/* ---- Telemetry engine ---- */
+.sim-card{display:flex;flex-direction:column;gap:12px;}
+.sim-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:rgba(13,42,74,0.6);padding:10px 14px;border-radius:10px;border:1px solid var(--line);}
+.sim-btn{background:var(--brand-blue);color:#fff;border:none;font-family:var(--f-sub);font-weight:700;font-size:calc(13px * var(--fs));padding:9px 18px;border-radius:6px;cursor:pointer;box-shadow:0 4px 10px -3px rgba(46,143,230,.5);white-space:nowrap;}
+.sim-btn.stop{background:var(--red);box-shadow:0 4px 10px -3px rgba(239,68,68,.5);}
+.sim-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;flex:1;min-width:340px;}
+@media(max-width:900px){.sim-stats{grid-template-columns:repeat(3,1fr);}}
+.sim-stat{background:rgba(11,37,69,0.45);border:1px solid var(--line);border-radius:8px;padding:7px 9px;}
+.sim-stat .k{font-size:calc(9px * var(--fs));color:var(--mist);text-transform:uppercase;font-weight:700;letter-spacing:.4px;}
+.sim-stat .v{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-weight:700;font-size:calc(15px * var(--fs));margin-top:2px;color:var(--heading);}
+.sim-body{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:900px){.sim-body{grid-template-columns:1fr;}}
+.feed{height:236px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;padding-right:4px;}
+.feed::-webkit-scrollbar{width:8px;} .feed::-webkit-scrollbar-thumb{background:var(--line-bright);border-radius:4px;}
+.feed-row{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(13,33,58,0.8);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(12px * var(--fs));cursor:pointer;transition:all .15s;animation:slideIn .3s ease;}
+.feed-row:hover{border-color:var(--brand-blue);background:rgba(46,143,230,0.14);}
+.feed-row.sel{border-color:var(--brand-blue);background:rgba(46,143,230,0.2);}
+@keyframes slideIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
+.lane-badge{font-size:calc(9px * var(--fs));font-weight:800;padding:3px 8px;border-radius:100px;letter-spacing:.3px;text-transform:uppercase;font-family:var(--f-sub);}
+.lane-badge.G{background:var(--green-dim);color:var(--green);border:1px solid rgba(16,185,129,.45);}
+.lane-badge.A{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,158,11,.45);}
+.lane-badge.R{background:var(--red-dim);color:var(--red);border:1px solid rgba(239,68,68,.45);}
+.inspector-box{background:rgba(11,37,69,0.4);border:1px solid var(--line);border-radius:10px;padding:13px;display:flex;flex-direction:column;}
+.inspector-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:8px;gap:8px;}
+.inspector-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px;}
+.inspector-item{background:rgba(13,33,58,0.6);padding:6px 8px;border-radius:6px;border:1px solid var(--line);}
+.inspector-item .lbl{font-size:calc(9px * var(--fs));color:var(--mist);text-transform:uppercase;font-weight:700;letter-spacing:.3px;}
+.inspector-item .val{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);margin-top:2px;font-size:calc(12px * var(--fs));}
+.sandbox-preset-btns{display:flex;gap:7px;flex-wrap:wrap;}
+.sb-btn{background:var(--card-bg-alt);border:1px solid var(--line-bright);color:var(--ink);font-size:calc(12px * var(--fs));font-weight:600;padding:7px 12px;border-radius:6px;cursor:pointer;font-family:var(--f-body);}
+.sb-btn:hover{border-color:var(--brand-blue);color:var(--brand-blue);}
+/* ---- Token economics ---- */
+.tok-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+@media(max-width:900px){.tok-grid{grid-template-columns:1fr;}}
+.tok-case{border-radius:10px;padding:13px;border:1.5px solid var(--line-bright);background:rgba(11,37,69,0.45);}
+.tok-case.low{border-color:var(--green);} .tok-case.mid{border-color:var(--brand-blue);} .tok-case.high{border-color:var(--gold);}
+.tok-case h4{font-family:var(--f-head);font-weight:700;font-size:calc(14px * var(--fs));color:var(--heading);margin-bottom:2px;}
+.tok-case .toks{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(22px * var(--fs));font-weight:700;margin:6px 0 1px;}
+.tok-case.low .toks{color:var(--green);} .tok-case.mid .toks{color:var(--brand-blue);} .tok-case.high .toks{color:var(--gold);}
+.tok-case .lbl{font-size:calc(10px * var(--fs));color:var(--mist);text-transform:uppercase;font-weight:700;letter-spacing:.4px;}
+.tok-line{display:flex;justify-content:space-between;font-size:calc(11.5px * var(--fs));padding:3px 0;border-bottom:1px solid var(--line);}
+.tok-line:last-child{border-bottom:none;}
+.tok-line span:last-child{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);}
+.note-box{margin-top:10px;font-size:calc(11.5px * var(--fs));color:var(--mist);border-left:3px solid var(--brand-blue);padding-left:10px;line-height:1.6;}
+.note-box b{color:var(--heading);}
+.note-box.warn{border-left-color:var(--gold);} .note-box.bad{border-left-color:var(--red);} .note-box.good{border-left-color:var(--green);}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:calc(10.5px * var(--fs));color:var(--mist);margin-top:8px;}
+.legend span{display:flex;align-items:center;gap:4px;}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.footer-note{margin-top:18px;text-align:center;color:var(--mist-dim);font-size:calc(11.5px * var(--fs));font-family:var(--f-sub);font-variant-numeric:tabular-nums;border-top:1px solid var(--line);padding-top:12px;line-height:1.7;}
+.pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.pill{background:rgba(13,33,58,0.8);border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:calc(11px * var(--fs));color:var(--mist);flex:1;min-width:110px;text-align:center;}
+.pill b{display:block;color:var(--heading);font-family:var(--f-head);font-size:calc(15px * var(--fs));margin-bottom:1px;}
+.sec-head{font-weight:700;font-family:var(--f-head);font-size:calc(14px * var(--fs));font-weight:700;color:var(--brand-blue);text-transform:uppercase;letter-spacing:1px;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="app-container">
+<header class="top-bar">
+  <div class="brand-group">
+    <div class="brand-logo-wrap">
+      <svg width="118" height="30" viewBox="0 0 170 42" fill="none">
+        <path d="M10 6 C16 2, 30 4, 24 14 C20 20, 10 18, 6 26 C3 32, 13 36, 26 32 C18 35, 2 35, 2 26 C2 18, 14 18, 18 12 C22 6, 12 5, 10 6 Z" fill="#2e8fe6"/>
+        <path d="M14 10 C20 6, 34 8, 28 18 C24 24, 14 22, 10 30 C7 36, 17 40, 30 36 C22 39, 6 39, 6 30 C6 22, 18 22, 22 16 C26 10, 16 9, 14 10 Z" fill="#0060ae"/>
+        <text x="38" y="22" font-family="Outfit,sans-serif" font-weight="800" font-size="15" fill="#fff" letter-spacing="1">BAJAJ</text>
+        <text x="38" y="35" font-family="Outfit,sans-serif" font-weight="700" font-size="10" fill="#2e8fe6" letter-spacing="2.5">FINSERV</text>
+      </svg>
+      <div style="width:1px;height:26px;background:var(--line-bright);"></div>
+      <div style="font-family:var(--f-head);font-weight:700;font-size:calc(13px * var(--fs));color:var(--heading);">ATOM <span style="color:var(--brand-blue);">Season 9</span></div>
+    </div>
+    <div class="brand-title-box">
+      <h1>ClaimPulse</h1>
+      <p>AI Claims Orchestration · Team Finsighters · NMIMS Mumbai · PS_BFDL Motor Claims TAT</p>
+    </div>
+  </div>
+  <nav class="page-nav-tabs">
+    <button class="page-tab-btn active" id="tab-btn-1" onclick="switchPage(1)">① The Problem</button>
+    <button class="page-tab-btn" id="tab-btn-2" onclick="switchPage(2)">② Trend Radar</button>
+    <button class="page-tab-btn" id="tab-btn-3" onclick="switchPage(3)">③ How It Works</button>
+    <button class="page-tab-btn" id="tab-btn-4" onclick="switchPage(4)">④ Scenario Lab</button>
+    <button class="page-tab-btn" id="tab-btn-5" onclick="switchPage(5)">⑤ Breakpoints</button>
+    <button class="page-tab-btn" id="tab-btn-6" onclick="switchPage(6)">⑥ The Economics</button>
+  </nav>
+</header>
+
+<!-- ==================== PAGE 1 — THE PROBLEM ==================== -->
+<main class="page-view active" id="page1">
+  <section class="hero-pitch">
+    <div class="pitch-eyebrow">Problem Appreciation · Motor Own Damage Book · Bajaj General Insurance</div>
+    <div class="pitch-title">Claims cost is being paid at exactly the moment pricing cannot absorb it</div>
+    <div class="pitch-sub">Bajaj General's combined ratio crossed 100% and kept going. Motor has been deliberately slowed because pricing is inadequate, which means the segment cannot grow its way out. The one lever left is cost-to-serve and leakage on the claims that are already being written. Every figure on this page is from a filed source, dated and named.</div>
+    <div class="stat-strip">
+      <div class="p-stat"><div class="p-k">Group Combined Ratio</div><div class="p-row"><span class="p-from">103.6%</span><span class="p-arrow">→</span><span class="p-to bad">104.7%</span></div><div class="p-note">Q1 FY27 vs Q1 FY26 · BFL Investor Presentation</div></div>
+      <div class="p-stat"><div class="p-k">Underwriting Loss</div><div class="p-row"><span class="p-from">₹116 Cr</span><span class="p-arrow">→</span><span class="p-to bad">₹130 Cr</span></div><div class="p-note">Q1 FY27, widened YoY</div></div>
+      <div class="p-stat"><div class="p-k">Net Incurred Claim Ratio</div><div class="p-row"><span class="p-from">71.1%</span><span class="p-arrow">→</span><span class="p-to bad">74.3%</span></div><div class="p-note">Q1 FY27 · +3.2 pp YoY</div></div>
+      <div class="p-stat"><div class="p-k">Motor OD Market Share</div><div class="p-row"><span class="p-to warn">7.76%</span></div><div class="p-note">Jun 2026, recovered from 6.31% Feb trough</div></div>
+      <div class="p-stat"><div class="p-k">Solvency Ratio</div><div class="p-row"><span class="p-to highlight">254%</span></div><div class="p-note">vs 150% minimum · capital is NOT the constraint</div></div>
+      <div class="p-stat"><div class="p-k">Policies In Force</div><div class="p-row"><span class="p-from">38.2 M</span><span class="p-arrow">→</span><span class="p-to highlight">48.3 M</span></div><div class="p-note">+26.3% · volume growing, share slipping</div></div>
+    </div>
+  </section>
+
+  <div class="grid21">
+    <div class="card">
+      <h3>The Squeeze, Quantified <span>📉</span></h3>
+      <div class="sub">Every bar is a filed figure. The gap between the combined ratio and 100% is money leaving the business on written premium.</div>
+      <div class="chart-box"><canvas id="chartSqueeze"></canvas></div>
+      <div class="note-box bad"><b>Why this is not a pricing problem.</b> Management has explicitly slowed motor because pricing is inadequate, with return-on-risk-capital gating re-entry. Growth is not available as a response. Separately, the Supreme Court motor third-party judgment forced a peer (ICICI Lombard) to strengthen reserves by <b>2.8 pp of combined ratio in a single quarter</b> — a shock of that size against a 104.7% starting point is not absorbable by pricing alone.</div>
+    </div>
+    <div class="card">
+      <h3>Who Feels It <span>👥</span></h3>
+      <div class="sub">Stakeholder exposure — claims are the dominant grievance source and the pool is growing</div>
+      <div class="chart-box short"><canvas id="chartGrievance"></canvas></div>
+      <div class="pill-row">
+        <div class="pill"><b>257,790</b>grievances FY25<br>on Bima Bharosa, +20% YoY</div>
+        <div class="pill"><b>69%</b>claims-related<br>the dominant theme</div>
+      </div>
+      <div class="note-box"><b>The counter-fact we carry openly.</b> Motor's share of complaints actually <i>fell</i> from 26.18% to 24.8% (Rajya Sabha, Dec 2025). We report it because it cuts against our own narrative.</div>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <h3>Stakeholder Ledger <span>⚖️</span></h3>
+      <div class="sub">Who wins, who resists, and what each one actually wants</div>
+      <table>
+        <thead><tr><th>Stakeholder</th><th>Wants</th><th>Stance</th></tr></thead>
+        <tbody>
+          <tr><td class="lbl">Claimant</td><td class="txt">Settlement without chasing. 2.5 app visits before abandonment.</td><td><span class="tag g">GAINS</span></td></tr>
+          <tr><td class="lbl">Bajaj General</td><td class="txt">Combined ratio relief without writing less business</td><td><span class="tag g">GAINS</span></td></tr>
+          <tr><td class="lbl">BFDL</td><td class="txt">A group capability, not a cost centre</td><td><span class="tag g">GAINS</span></td></tr>
+          <tr><td class="lbl">Garage network</td><td class="txt">Estimate-to-approval from 4 days to 1</td><td><span class="tag g">GAINS</span></td></tr>
+          <tr><td class="lbl">Surveyors</td><td class="txt">Assignment volume protected</td><td><span class="tag r">RESISTS</span></td></tr>
+          <tr><td class="lbl">IRDAI</td><td class="txt">Auditability, explainability, fraud governance</td><td><span class="tag a">CONDITIONS</span></td></tr>
+          <tr><td class="lbl">Claims ops staff</td><td class="txt">Capacity released, not headcount removed</td><td><span class="tag a">CONDITIONS</span></td></tr>
+        </tbody>
+      </table>
+      <div class="note-box warn"><b>The stakeholder we do not pretend is neutral.</b> Surveyor assignments fall as automation rises. That group has an organised regulatory voice. We price this as regulatory friction, not as goodwill.</div>
+    </div>
+    <div class="card">
+      <h3>The Regulatory Window <span>📜</span></h3>
+      <div class="sub">Four dated obligations land inside the investment horizon — all verified</div>
+      <table>
+        <thead><tr><th>Instrument</th><th>Effective</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td class="lbl">IRDAI Fraud Monitoring Framework<br><span style="font-size:calc(10px * var(--fs));color:var(--mist-dim);">IRDAI/IID/GDL/MISC/112/10/2025</span></td><td>1 Apr 2026</td><td class="txt">Board-governed fraud monitoring becomes <b>mandatory</b>, not a differentiator</td></tr>
+          <tr><td class="lbl">Master Circular, Policyholders' Interests</td><td>11 Jun 2024</td><td class="txt">Losses under <b>₹50,000</b> need no registered surveyor; AI assessment explicitly contemplated</td></tr>
+          <tr><td class="lbl">DPDP Rules 2025</td><td>13 May 2027</td><td class="txt">Penalties to <b>₹250 Cr</b> from day one. No grace period.</td></tr>
+          <tr><td class="lbl">IRDAI AI Working Group</td><td>Jun 2026</td><td class="txt">7 members, 3-month mandate. Norms <b>not yet published</b> — a known unknown, priced as a build overlay.</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box good"><b>The corridor the design sits inside.</b> The ₹50,000 surveyor exemption is why the green lane exists at all, and why an average claim of ₹45,000 is the right design point rather than a convenient one.</div>
+    </div>
+    <div class="card">
+      <h3>What Bajaj Already Has <span>🏗️</span></h3>
+      <div class="sub">The precondition that makes this buildable rather than aspirational</div>
+      <div class="chart-box short"><canvas id="chartReadiness"></canvas></div>
+      <div class="pill-row">
+        <div class="pill"><b>193.4 M</b>bot message exchanges, FY26</div>
+        <div class="pill"><b>78</b>Motor NPS, FY26</div>
+      </div>
+      <div class="note-box good"><b>This is the argument against "build it from scratch".</b> 90.9% digital servicing and 64.5% of customers already served by AI bots means the evidence pipeline, the channel and the customer behaviour already exist. ClaimPulse is an orchestration layer on top of a digital estate, not a digital transformation programme.</div>
+    </div>
+  </div>
+</main>
+
+<!-- ==================== PAGE 2 — TREND RADAR ==================== -->
+<main class="page-view" id="page2">
+  <section class="hero-pitch">
+    <div class="pitch-eyebrow">Scenario Planning · Step 1 · The Exogenous Forces</div>
+    <div class="pitch-title">A trend is a force we do not control. Nothing becomes a rupee unless it survives the evidence test.</div>
+    <div class="pitch-sub">21 named trends across Consumer, Technology, Social, Industrial and Regulatory domains — each carrying a named publisher, a publication date and an evidence class. 18 are verified clean against a live source and quotable without qualification. 9 are carried at a stated lower tier. 8 figures have no source at all and are listed as gaps rather than filled with estimates.</div>
+    <div class="stat-strip" style="grid-template-columns:repeat(5,1fr);">
+      <div class="p-stat"><div class="p-k">Trends Mapped</div><div class="p-row"><span class="p-to">21</span></div><div class="p-note">Across 5 domains</div></div>
+      <div class="p-stat"><div class="p-k">Verified Clean</div><div class="p-row"><span class="p-to highlight">18</span></div><div class="p-note">Quotable without qualification</div></div>
+      <div class="p-stat"><div class="p-k">Lower Tier, Stated</div><div class="p-row"><span class="p-to warn">9</span></div><div class="p-note">None load-bearing on a rupee line</div></div>
+      <div class="p-stat"><div class="p-k">Evidence Gaps Declared</div><div class="p-row"><span class="p-to bad">8</span></div><div class="p-note">Listed, not filled</div></div>
+      <div class="p-stat"><div class="p-k">Vector Map Rows</div><div class="p-row"><span class="p-to">29</span></div><div class="p-note">Scored on 6 dimensions each</div></div>
+    </div>
+  </section>
+
+  <div class="grid21">
+    <div class="card">
+      <h3>Trend Vector Map — 29 trends on six dimensions <span>🎯</span></h3>
+      <div class="sub"><b>X = magnitude</b> (how big) · <b>Y = velocity</b> (how fast) · <b>bubble size = our exposure</b> · <b>colour = evidence confidence</b>. The scoring rule applied throughout: a strongly-evidenced weak trend is worth more than a weakly-evidenced strong one. Hover any bubble.</div>
+      <div class="chart-box tall"><canvas id="chartVector"></canvas></div>
+      <div class="legend">
+        <span><i class="dot" style="background:#10b981"></i> Evidence confidence 4–5 (strong)</span>
+        <span><i class="dot" style="background:#f59e0b"></i> Confidence 3 (moderate)</span>
+        <span><i class="dot" style="background:#ef4444"></i> Confidence 1–2 (weak / no source)</span>
+      </div>
+      <div class="note-box bad"><b>Read the top-right red bubbles first.</b> High magnitude, high velocity, high exposure — and no evidence. That is <b>T5 Synthetic-media capability</b> and <b>S3 Fraud behaviour</b>, both resting on the same gap: no published incidence of synthetic claim media in Indian motor exists anywhere. All four research engines rediscovered this independently. It is the reason the Capture Integrity Gate is a costed build line rather than a slide claim.</div>
+    </div>
+    <div class="card">
+      <h3>Evidence Class Split <span>📑</span></h3>
+      <div class="sub">How every external figure in this case is classified</div>
+      <div class="chart-box short"><canvas id="chartEvidence"></canvas></div>
+      <div class="sec-head" style="margin-top:14px;">Domain Average Scores</div>
+      <div class="chart-box short"><canvas id="chartDomain"></canvas></div>
+      <div class="note-box"><b>Regulatory scores highest on evidence and lowest on ambiguity</b> — every regulatory trend is legally anchored and dated. Technology scores highest on magnitude and velocity but lowest on evidence confidence, which is exactly why nothing in the technology domain drives a rupee figure on its own.</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <h3>The Trend Field — named, dated, independently verified <span>🔍</span></h3>
+    <div class="sub">Filter by domain. Every row carries its publisher, date and verification status as at 12 August 2026.</div>
+    <div class="filter-row">
+      <span style="font-size:calc(11px * var(--fs));color:var(--mist);font-weight:700;text-transform:uppercase;">Domain:</span>
+      <button class="fbtn active" onclick="filterTrends('all',this)">All 21</button>
+      <button class="fbtn" onclick="filterTrends('Consumer',this)">Consumer</button>
+      <button class="fbtn" onclick="filterTrends('Technology',this)">Technology</button>
+      <button class="fbtn" onclick="filterTrends('Social',this)">Social</button>
+      <button class="fbtn" onclick="filterTrends('Industry',this)">Industry</button>
+      <button class="fbtn" onclick="filterTrends('Regulatory',this)">Regulatory</button>
+    </div>
+    <div class="scroll-y">
+      <table id="trendTable">
+        <thead><tr><th style="width:44px;">Ref</th><th style="width:82px;">Domain</th><th>Trend</th><th style="width:90px;">Class</th><th style="width:250px;">Named source</th><th style="width:96px;">Verified</th><th style="width:60px;">Feeds</th></tr></thead>
+        <tbody id="trendBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Evidence Gaps Carried Openly <span>⚠️</span></h3>
+      <div class="sub">Eight figures no source supports — and exactly how each is handled instead of guessed</div>
+      <div class="scroll-y" style="max-height:300px;">
+        <table>
+          <thead><tr><th style="width:44px;">Ref</th><th style="width:200px;">Figure sought</th><th>How it is handled</th></tr></thead>
+          <tbody id="gapBody"></tbody>
+        </table>
+      </div>
+      <div class="note-box warn"><b>U-06 is the one to ask us about.</b> The human exception-handling capacity ceiling was flagged by two of four research engines as the breakpoint most likely to bind first — and modelled by none of them. It is the single most actionable data request in the whole submission.</div>
+    </div>
+    <div class="card">
+      <h3>What the Trend Work Actually Settled <span>✅</span></h3>
+      <div class="sub">Seven design decisions that changed because of the evidence, not despite it</div>
+      <div id="settledList"></div>
+    </div>
+  </div>
+</main>
+
+<!-- ==================== PAGE 3 — HOW IT WORKS ==================== -->
+<main class="page-view" id="page3">
+  <section class="hero-pitch">
+    <div class="pitch-eyebrow">Solution Architecture · The Claim Journey</div>
+    <div class="pitch-title">One parallel orchestration layer replacing four sequential manual handoffs</div>
+    <div class="pitch-sub">Everything gates behind the Capture Integrity Shield. If evidence cannot be trusted, no downstream model is safe — so integrity is checked first, once, and the five engines then run in parallel rather than in sequence. Click any stage in the diagram to inspect it.</div>
+  </section>
+
+  <div class="card" style="margin-bottom:16px;">
+    <h3>Claim Flow — first notification to settlement <span>⚡</span></h3>
+    <div class="sub">Solid lines carry evidence; the gate is a hard stop. Lane widths below are the live lane mix. <b>Click a node to inspect it.</b></div>
+    <div class="flow-wrap">
+      <svg class="flow-svg" viewBox="0 0 1180 430" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arw" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#2b5280"/></marker>
+          <marker id="arwg" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#10b981"/></marker>
+          <marker id="arwa" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#f59e0b"/></marker>
+          <marker id="arwr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#ef4444"/></marker>
+        </defs>
+
+        <!-- FNOL -->
+        <g class="fg" data-node="fnol" style="cursor:pointer;">
+          <rect class="fnode" x="14" y="176" width="112" height="62"/>
+          <text class="ftext" x="70" y="200">FNOL</text>
+          <text class="fsub" x="70" y="214">Guided live capture</text>
+          <text class="fnum" x="70" y="228">gallery disabled</text>
+        </g>
+        <path class="fline" d="M126,207 L176,207" marker-end="url(#arw)"/>
+
+        <!-- GATE -->
+        <g class="fg" data-node="gate" style="cursor:pointer;">
+          <rect class="fnode gate" x="176" y="158" width="128" height="98"/>
+          <text class="fnum" x="240" y="178">GATE 00</text>
+          <text class="ftext" x="240" y="196">Capture</text>
+          <text class="ftext" x="240" y="210">Integrity Shield</text>
+          <text class="fsub" x="240" y="226">EXIF · GPS · GAN</text>
+          <text class="fsub" x="240" y="238">artefact screening</text>
+          <text class="fnum" x="240" y="250">₹1.32 Cr build · THE MOAT</text>
+        </g>
+
+        <!-- fan out to engines -->
+        <path class="fline" d="M304,207 C336,207 336,42 368,42" marker-end="url(#arw)"/>
+        <path class="fline" d="M304,207 C336,207 336,125 368,125" marker-end="url(#arw)"/>
+        <path class="fline" d="M304,207 L368,207" marker-end="url(#arw)"/>
+        <path class="fline" d="M304,207 C336,207 336,289 368,289" marker-end="url(#arw)"/>
+        <path class="fline" d="M304,207 C336,207 336,372 368,372" marker-end="url(#arw)"/>
+
+        <g class="fg" data-node="e1" style="cursor:pointer;"><rect class="fnode" x="368" y="18" width="184" height="50"/><text class="fnum" x="460" y="34">ENGINE 01</text><text class="ftext" x="460" y="49">Document OCR + VAHAN</text><text class="fsub" x="460" y="61">deterministic, pre-model</text></g>
+        <g class="fg" data-node="e2" style="cursor:pointer;"><rect class="fnode" x="368" y="101" width="184" height="50"/><text class="fnum" x="460" y="117">ENGINE 02</text><text class="ftext" x="460" y="132">CV Damage Depth</text><text class="fsub" x="460" y="144">360° video · photogrammetry</text></g>
+        <g class="fg" data-node="e3" style="cursor:pointer;"><rect class="fnode" x="368" y="183" width="184" height="50"/><text class="fnum" x="460" y="199">ENGINE 03</text><text class="ftext" x="460" y="214">Fraud Graph Network</text><text class="fsub" x="460" y="226">batched 10-min · rings not claims</text></g>
+        <g class="fg" data-node="e4" style="cursor:pointer;"><rect class="fnode" x="368" y="265" width="184" height="50"/><text class="fnum" x="460" y="281">ENGINE 04</text><text class="ftext" x="460" y="296">Repair Cost Engine</text><text class="fsub" x="460" y="308">live garage parts feeds</text></g>
+        <g class="fg" data-node="e5" style="cursor:pointer;"><rect class="fnode" x="368" y="348" width="184" height="50"/><text class="fnum" x="460" y="364">ENGINE 05</text><text class="ftext" x="460" y="379">Policy RAG</text><text class="fsub" x="460" y="391">wording parsed once, offline</text></g>
+
+        <!-- fan in to trust score -->
+        <path class="fline" d="M552,42 C596,42 596,207 640,207" marker-end="url(#arw)"/>
+        <path class="fline" d="M552,125 C596,125 596,207 640,207" marker-end="url(#arw)"/>
+        <path class="fline" d="M552,207 L640,207" marker-end="url(#arw)"/>
+        <path class="fline" d="M552,289 C596,289 596,207 640,207" marker-end="url(#arw)"/>
+        <path class="fline" d="M552,372 C596,372 596,207 640,207" marker-end="url(#arw)"/>
+
+        <g class="fg" data-node="trust" style="cursor:pointer;">
+          <rect class="fnode gate" x="640" y="162" width="136" height="90"/>
+          <text class="fnum" x="708" y="182">ORCHESTRATION</text>
+          <text class="ftext" x="708" y="200">Trust Score</text>
+          <text class="fsub" x="708" y="216">Fuses all five signals</text>
+          <text class="fsub" x="708" y="230">into one routing decision</text>
+          <text class="fnum" x="708" y="244">CRITICAL DEPENDENCY</text>
+        </g>
+
+        <!-- lanes -->
+        <path class="fline g" d="M776,190 C830,190 830,88 884,88" marker-end="url(#arwg)"/>
+        <path class="fline a" d="M776,207 C830,207 830,207 884,207" marker-end="url(#arwa)"/>
+        <path class="fline r" d="M776,224 C830,224 830,326 884,326" marker-end="url(#arwr)"/>
+
+        <g class="fg" data-node="green" style="cursor:pointer;">
+          <rect class="fnode green" x="884" y="56" width="180" height="66"/>
+          <text class="ftext" x="974" y="76" style="fill:#10b981;">GREEN LANE — AUTO</text>
+          <text class="fsub" x="974" y="91" id="svg-green-share">65% of claims</text>
+          <text class="fsub" x="974" y="104">1.5 days · 0.2 touches</text>
+          <text class="fnum" x="974" y="116" style="fill:#10b981;">Settled without human contact</text>
+        </g>
+        <g class="fg" data-node="amber" style="cursor:pointer;">
+          <rect class="fnode amber" x="884" y="174" width="180" height="66"/>
+          <text class="ftext" x="974" y="194" style="fill:#f59e0b;">AMBER LANE — ASSIST</text>
+          <text class="fsub" x="974" y="209" id="svg-amber-share">25% of claims</text>
+          <text class="fsub" x="974" y="222">3.5 days · 2.0 touches</text>
+          <text class="fnum" x="974" y="234" style="fill:#f59e0b;">One reviewer, AI-prepared file</text>
+        </g>
+        <g class="fg" data-node="red" style="cursor:pointer;">
+          <rect class="fnode red" x="884" y="293" width="180" height="66"/>
+          <text class="ftext" x="974" y="313" style="fill:#ef4444;">RED LANE — INVESTIGATE</text>
+          <text class="fsub" x="974" y="328">10% of claims</text>
+          <text class="fsub" x="974" y="341">7.0 days · 6.0 touches</text>
+          <text class="fnum" x="974" y="353" style="fill:#ef4444;">Evidence pack pre-attached</text>
+        </g>
+
+        <text class="fsub" x="1122" y="196" style="font-size:9px;">Blended</text>
+        <text class="ftext" x="1122" y="211" id="svg-blend-tat" style="fill:#10b981;font-size:14px;">2.71 d</text>
+        <text class="fsub" x="1122" y="225" style="font-size:9px;">from 9.8 d</text>
+      </svg>
+    </div>
+    <div id="nodeInspect" class="note-box"><b>Click any node above.</b> The Capture Integrity Shield is the one worth starting with — it is the only component with no buy-side alternative, and it is why the other four engines can be trusted at all.</div>
+  </div>
+
+  <!-- ===== LIVE TELEMETRY ENGINE ===== -->
+  <div class="card sim-card" style="margin-bottom:16px;">
+    <h3>Live Engine — Real-Time Claim Telemetry <span>📡</span></h3>
+    <div class="sub">Watch the engine route claims in real time. The lane split is driven by the same green-lane share as the financial model, so the mix you see here is the mix the economics are built on. <b>Click any claim in the stream to inspect how the five engines scored it.</b></div>
+
+    <div class="sim-top">
+      <button class="sim-btn" id="simToggleBtn" onclick="toggleSim()"><span id="simBtnIcon">▶</span> <span id="simBtnText">Start Live Engine</span></button>
+      <div class="ctrl" style="min-width:210px;padding:6px 11px;"><label style="margin-bottom:3px;">Stream Speed <span class="val" id="val-simspeed">Normal</span></label><input type="range" id="sl-simspeed" min="1" max="5" step="1" value="3" oninput="setSimSpeed()"></div>
+      <div class="sim-stats">
+        <div class="sim-stat"><div class="k">Processed</div><div class="v" id="st-total">0</div></div>
+        <div class="sim-stat"><div class="k">Green · auto</div><div class="v" style="color:var(--green);" id="st-green">0</div></div>
+        <div class="sim-stat"><div class="k">Amber · assist</div><div class="v" style="color:var(--gold);" id="st-amber">0</div></div>
+        <div class="sim-stat"><div class="k">Red · investigate</div><div class="v" style="color:var(--red);" id="st-red">0</div></div>
+        <div class="sim-stat"><div class="k">Avg TAT</div><div class="v" style="color:var(--brand-blue);" id="st-tat">—</div></div>
+        <div class="sim-stat"><div class="k">Touches saved</div><div class="v" style="color:var(--green);" id="st-saved">0</div></div>
+      </div>
+    </div>
+
+    <div class="sim-body">
+      <div>
+        <div class="sec-head" style="font-size:calc(12px * var(--fs));margin-bottom:7px;">Live Claim Intake Stream</div>
+        <div class="feed" id="simFeed"><div style="color:var(--mist-dim);font-size:calc(12px * var(--fs));padding:10px;">Press <b>Start Live Engine</b> to begin the stream.</div></div>
+        <div class="chart-box short" style="height:130px;margin-top:10px;"><canvas id="chartSimLane"></canvas></div>
+      </div>
+      <div>
+        <div class="sec-head" style="font-size:calc(12px * var(--fs));margin-bottom:7px;">Active Claim Inspector</div>
+        <div class="inspector-box" style="height:auto;">
+          <div class="inspector-header">
+            <div><div style="font-family:var(--f-head);font-weight:700;font-size:calc(14.5px * var(--fs));" id="insp-id">Awaiting stream…</div>
+                 <div style="font-size:calc(11.5px * var(--fs));color:var(--mist);" id="insp-veh">—</div></div>
+            <span class="lane-badge G" id="insp-badge" style="visibility:hidden;">—</span>
+          </div>
+          <div class="inspector-grid">
+            <div class="inspector-item"><div class="lbl">Gate 00 · Trust Score</div><div class="val" id="insp-score">—</div></div>
+            <div class="inspector-item"><div class="lbl">Gate 00 · EXIF forensics</div><div class="val" id="insp-exif">—</div></div>
+            <div class="inspector-item"><div class="lbl">Gate 00 · Synthetic check</div><div class="val" id="insp-synth">—</div></div>
+            <div class="inspector-item"><div class="lbl">Engine 01 · Doc OCR</div><div class="val" id="insp-ocr">—</div></div>
+            <div class="inspector-item"><div class="lbl">Engine 02 · CV damage</div><div class="val" id="insp-damage">—</div></div>
+            <div class="inspector-item"><div class="lbl">Engine 03 · Graph fraud</div><div class="val" id="insp-fraud">—</div></div>
+            <div class="inspector-item"><div class="lbl">Engine 04 · Repair cost</div><div class="val" id="insp-cost">—</div></div>
+            <div class="inspector-item"><div class="lbl">Engine 05 · Policy RAG</div><div class="val" id="insp-policy">—</div></div>
+            <div class="inspector-item"><div class="lbl">Settlement TAT</div><div class="val" id="insp-tat">—</div></div>
+            <div class="inspector-item"><div class="lbl">Manual touches</div><div class="val" id="insp-touch">—</div></div>
+          </div>
+          <div style="margin-top:9px;background:rgba(13,33,58,0.8);padding:7px 9px;border-radius:6px;border:1px solid var(--line);font-size:calc(11.5px * var(--fs));color:var(--mist);" id="insp-action"><b>Action:</b> Start the engine to see live routing decisions.</div>
+        </div>
+        <div class="sec-head" style="font-size:calc(12px * var(--fs));margin:12px 0 7px;">Test a Specific Claim Profile</div>
+        <div class="sandbox-preset-btns">
+          <button class="sb-btn" onclick="testProfile('clean')">🟢 Clean claim</button>
+          <button class="sb-btn" onclick="testProfile('amber')">🟡 Marginal claim</button>
+          <button class="sb-btn" onclick="testProfile('synthetic')">🔴 Fabricated / synthetic claim</button>
+        </div>
+      </div>
+    </div>
+    <div class="note-box"><b>What the stream is actually showing.</b> Every claim is scored by the Capture Integrity Gate first — EXIF timestamp, GPS proximity and diffusion-artefact screening — and only then routed. A red-lane claim is not a rejected claim; it is a claim where the gate found a hard contradiction and the investigator receives a pre-compiled evidence pack. Try the <b>fabricated claim</b> button to see the gate catch a synthetic submission that would pass every traditional check.</div>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <h3>Component Dependency &amp; Failure Impact <span>🔗</span></h3>
+      <div class="sub">What each engine depends on, and what breaks when it fails</div>
+      <table>
+        <thead><tr><th>Component</th><th style="width:78px;">Tech dep.</th><th style="width:78px;">Data dep.</th><th style="width:88px;">Failure impact</th></tr></thead>
+        <tbody id="depBody"></tbody>
+      </table>
+      <div class="note-box bad"><b>The concentration point.</b> Trust Score is where all five engines converge, which makes it the single most critical dependency in the architecture. We name it rather than hide it, and it is the reason production hardening carries its own ₹0.75 Cr build line.</div>
+    </div>
+    <div class="card">
+      <h3>Technology Convergence <span>🔬</span></h3>
+      <div class="sub">What becomes possible when two capabilities interact — closer to the real moat than any single-technology claim</div>
+      <div id="convergeList"></div>
+      <div class="note-box good"><b>Why convergence is the moat, not the models.</b> Any competitor can buy computer vision. What is hard to copy is CV cross-checked against the collision event, a suspicious image connected to claimant-vehicle-garage-device history, and policy wording translated straight into a settlement decision. The value is in the joins.</div>
+    </div>
+    <div class="card">
+      <h3>Displacement Test <span>⚔️</span></h3>
+      <div class="sub">Every development tested against four questions, because some technologies help us and commoditise us at the same time</div>
+      <table>
+        <thead><tr><th>Development</th><th style="width:52px;">Helps</th><th style="width:76px;">Commoditises</th><th style="width:56px;">Replaces</th><th style="width:56px;">New risk</th></tr></thead>
+        <tbody id="dispBody"></tbody>
+      </table>
+      <div class="note-box warn"><b>Read the Multimodal AI and Agentic rows.</b> Both enhance us and commoditise us simultaneously. That is not a contradiction — it is the argument for putting the investment into data, orchestration and governance rather than into the model layer, which is exactly what the build cost split does.</div>
+    </div>
+  </div>
+</main>
+
+<!-- ==================== PAGE 4 — SCENARIO LAB ==================== -->
+<main class="page-view" id="page4">
+  <section class="hero-pitch">
+    <div class="pitch-eyebrow">Scenario Planning · Step 2 · Five Scenarios, Three Intensities Each</div>
+    <div class="pitch-title">Every scenario moves ONE lever and holds everything else at Base, so the effect is attributable</div>
+    <div class="pitch-sub">S1 Level 2 <i>is</i> the Base case by construction — which is how the engine checks itself. All six anchors tie to the live financial model. Select a scenario and intensity below; every number recomputes.</div>
+    <div class="stat-strip" style="grid-template-columns:repeat(6,1fr);">
+      <div class="p-stat"><div class="p-k">Engine Anchors</div><div class="p-row"><span class="p-to highlight">6 / 6 TIE</span></div><div class="p-note">Scenario sheet is live, not stale</div></div>
+      <div class="p-stat"><div class="p-k">Scenarios × Intensities</div><div class="p-row"><span class="p-to">13</span></div><div class="p-note">Computed on the live engine</div></div>
+      <div class="p-stat"><div class="p-k">Cross-Engine Library</div><div class="p-row"><span class="p-to">24</span></div><div class="p-note">Tested across 4 research engines</div></div>
+      <div class="p-stat"><div class="p-k">Scenarios That Break It</div><div class="p-row"><span class="p-to bad">1 of 24</span></div><div class="p-note">Technology W8 Combined, at Extreme</div></div>
+      <div class="p-stat"><div class="p-k">Worst Compound Case</div><div class="p-row"><span class="p-to warn">₹25.01 Cr</span></div><div class="p-note">Still positive, 5.7-month payback</div></div>
+      <div class="p-stat"><div class="p-k">Absolute Floor, Labour Only</div><div class="p-row"><span class="p-to warn">₹3.78 Cr</span></div><div class="p-note">In-house touch rate, zero fraud — repays in 31.4 months</div></div>
+    </div>
+  </section>
+
+  <div class="grid21">
+    <div class="card">
+      <h3>Scenario Simulator <span>🌪️</span></h3>
+      <div class="sub">Pick a scenario, then an intensity. Figures are computed live on the ₹9.89 Cr build engine.</div>
+      <div class="filter-row">
+        <button class="fbtn active" onclick="pickScenario('S1',this)">S1 · Digital-first expectation</button>
+        <button class="fbtn" onclick="pickScenario('S2',this)">S2 · Synthetic evidence</button>
+        <button class="fbtn" onclick="pickScenario('S3',this)">S3 · Explainability</button>
+        <button class="fbtn" onclick="pickScenario('S4',this)">S4 · Repair ecosystem</button>
+        <button class="fbtn" onclick="pickScenario('S5',this)">S5 · Regulatory AI</button>
+      </div>
+      <div class="filter-row" id="levelRow"></div>
+      <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px;">
+        <div class="kpi green-border"><div class="k">Net Annual Benefit</div><div class="v green" id="sc-net">₹43.31 Cr</div><div class="d" id="sc-delta">Base case</div></div>
+        <div class="kpi gold-border"><div class="k">Payback from Kickoff</div><div class="v amber" id="sc-payback">16.84 Mo</div><div class="d" id="sc-build">Build ₹9.89 Cr</div></div>
+        <div class="kpi"><div class="k">Combined Ratio, Motor OD</div><div class="v teal" id="sc-cr">2.58 pp</div><div class="d" id="sc-tat">TAT 2.55 d · 1.23 touches</div></div>
+      </div>
+      <div class="chart-box"><canvas id="chartScenario"></canvas></div>
+      <div id="scenarioNote" class="note-box"></div>
+    </div>
+    <div class="card">
+      <h3>Impact Ranking <span>📊</span></h3>
+      <div class="sub">Delta vs Base, ₹ Cr per year, across all 13 scenario-intensity combinations</div>
+      <div class="chart-box tall"><canvas id="chartTornado"></canvas></div>
+      <div class="note-box bad"><b>Only one bar matters.</b> Synthetic evidence at full detection neutralisation costs <b>₹23.49 Cr a year</b> — five times larger than every other scenario combined. Every other lever is noise against it. That single fact is why the Capture Integrity Shield is the largest block of build spend and why we call it the moat rather than a feature.</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Compound Stress Test — all three quantified threats at once <span>💥</span></h3>
+      <div class="sub">Auto-settlement drops to 50%, fraud detection reverts fully to the 62% rule-based baseline, and build cost carries the EU AI Act upper-bound overlay — simultaneously.</div>
+      <div class="chart-box"><canvas id="chartCompound"></canvas></div>
+      <table style="margin-top:12px;">
+        <thead><tr><th>Lever</th><th>Base</th><th>Compound severe</th></tr></thead>
+        <tbody>
+          <tr><td class="lbl">Auto-settlement share</td><td>65%</td><td style="color:var(--red);">50%</td></tr>
+          <tr><td class="lbl">Fraud detection achieved</td><td>90%</td><td style="color:var(--red);">62% (full revert)</td></tr>
+          <tr><td class="lbl">Build cost</td><td>₹9.89 Cr</td><td style="color:var(--red);">₹11.87 Cr</td></tr>
+          <tr class="hl"><td class="lbl">NET ANNUAL BENEFIT</td><td class="imp">₹43.31 Cr</td><td style="color:var(--gold);font-weight:700;">₹25.01 Cr</td></tr>
+          <tr class="hl"><td class="lbl">PAYBACK, steady state</td><td class="imp">2.74 Mo</td><td style="color:var(--gold);font-weight:700;">5.70 Mo</td></tr>
+          <tr class="hl"><td class="lbl">COMBINED RATIO, Motor OD</td><td class="imp">2.58 pp</td><td style="color:var(--gold);font-weight:700;">1.48 pp</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box good"><b>There is no combination of the live-model scenarios (Parts A–D) in which ClaimPulse fails to return its capital inside a year of steady-state operation.</b> Recomputed on the current engine — the figures originally filed for this table (38.62 / 3.07 / 2.57) were carried from a superseded build cost and are corrected here. The single exception anywhere in the research is the Technology engine's separate cross-engine library case (W8, shown below), which is a different, more extreme combination than this compound test runs.</div>
+    </div>
+    <div class="card">
+      <h3>Fraud Detection Curve — the variable that actually decides this <span>📉</span></h3>
+      <div class="sub">Rather than quoting a 90% point target, the full curve is built from 62% to 90%. Drag to see where the case stands at any detection level.</div>
+      <div class="ctrl" style="margin-bottom:12px;"><label>Fraud Detection Achieved <span class="val" id="val-fdcurve">90%</span></label><input type="range" id="sl-fdcurve" min="62" max="90" step="1" value="90" oninput="updateFraudCurve()"></div>
+      <div class="chart-box"><canvas id="chartFraudCurve"></canvas></div>
+      <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-top:12px;margin-bottom:0;">
+        <div class="kpi green-border"><div class="k">Net Annual</div><div class="v green" id="fd-net">₹43.31 Cr</div></div>
+        <div class="kpi gold-border"><div class="k">Payback</div><div class="v amber" id="fd-pb">2.74 Mo</div></div>
+        <div class="kpi"><div class="k">vs 90% Target</div><div class="v teal" id="fd-loss">—</div></div>
+      </div>
+      <div class="note-box warn"><b>Our +28 pp sits above the published range.</b> Graph-AI lift is published at +10 to 20 pp; we model +28. That is why the downside test lands it at 82%, why this curve runs all the way back to 62%, and why the case is presented against the floor rather than the target.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Four-Engine Scenario Library — every scenario tested from four independent directions <span>🧭</span></h3>
+    <div class="sub">Parts above are the live model. This is the scenario library behind them, consolidated across the Customer, Technology, Social and Industrial research engines. 24 scenarios; one breach.</div>
+    <div class="filter-row">
+      <span style="font-size:calc(11px * var(--fs));color:var(--mist);font-weight:700;text-transform:uppercase;">Engine:</span>
+      <button class="fbtn active" onclick="filterLib('all',this)">All 24</button>
+      <button class="fbtn" onclick="filterLib('Customer',this)">Customer</button>
+      <button class="fbtn" onclick="filterLib('Technology',this)">Technology</button>
+      <button class="fbtn" onclick="filterLib('Social',this)">Social</button>
+      <button class="fbtn" onclick="filterLib('Industrial',this)">Industrial</button>
+      <button class="fbtn danger" onclick="filterLib('breach',this)">⚠ Show the one breach</button>
+    </div>
+    <div class="scroll-y">
+      <table>
+        <thead><tr><th style="width:82px;">Engine</th><th style="width:230px;">Scenario</th><th>Mechanism tested</th><th style="width:190px;">Result at worst case</th><th style="width:88px;">Breached?</th></tr></thead>
+        <tbody id="libBody"></tbody>
+      </table>
+    </div>
+    <div class="note-box bad"><b>The only failure mode, stated plainly.</b> Across all four engines and every grade tested, exactly one case turns net benefit negative: the Technology engine's W8 Combined Stress Test at Extreme, at minus ₹0.531 Cr per month. It requires automation depth, capacity realisation and fraud detection to collapse <i>simultaneously</i>. We report it rather than exclude it.</div>
+  </div>
+</main>
+
+<!-- ==================== PAGE 5 — BREAKPOINTS ==================== -->
+<main class="page-view" id="page5">
+  <section class="hero-pitch">
+    <div class="pitch-eyebrow">Resilience · Stated as Breakpoints, Not as an Adjective</div>
+    <div class="pitch-title">Do not say ClaimPulse is resilient. Say where it breaks.</div>
+    <div class="pitch-sub">Nine breakpoints are defined. Five are computable from the live model today; four are not, and we say which. The fraud floor has already been breached in testing and the model survived it — at the absolute floor (in-house touch handling, zero fraud benefit), the case still returns ₹3.78 Cr a year and repays in 31.4 months.</div>
+  </section>
+
+  <div class="grid21">
+    <div class="card">
+      <h3>KPI Transmission Chain — how an external event becomes a number <span>🔀</span></h3>
+      <div class="sub">This is what stops a scenario being an adjective. Pick an event and watch it cascade through all twelve stages.</div>
+      <div class="filter-row">
+        <button class="fbtn active" onclick="runChain('parity',this)">▶ Competitor reaches parity</button>
+        <button class="fbtn" onclick="runChain('synthetic',this)">▶ Synthetic media surge</button>
+        <button class="fbtn" onclick="runChain('reg',this)">▶ IRDAI restricts autonomy</button>
+      </div>
+      <div class="chain" id="chainList"></div>
+    </div>
+    <div class="card">
+      <h3>The Nine Breakpoints <span>🎚️</span></h3>
+      <div class="sub">Bar shows headroom before the breakpoint binds. Grey means not computable from the model today — we say so rather than assert a number.</div>
+      <div id="bpList"></div>
+      <div class="note-box warn"><b>H* is the one that binds first.</b> The human exception-handling capacity ceiling was raised by two research engines and modelled by none. It needs Bajaj claims-operations data, and it is the first thing the 90-day pilot instruments.</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Driver Interactions — why single-trend thinking fails <span>🔀</span></h3>
+      <div class="sub">One trend can open a positive and a negative channel at the same time. Ten interaction pairs, each with its net sign and causal mechanism.</div>
+      <div class="scroll-y" style="max-height:330px;">
+        <table>
+          <thead><tr><th style="width:190px;">Interaction pair</th><th style="width:88px;">Net sign</th><th>Mechanism</th></tr></thead>
+          <tbody id="interBody"></tbody>
+        </table>
+      </div>
+      <div class="note-box"><b>The five that determine the case:</b> the <b>adversarial gap</b> (detection minus generation, not either alone), the <b>automation frontier</b> (what AI is permitted to decide, not what it can do), the <b>evidence integrity function</b> (what share of evidence is trustworthy enough to auto-decide on), the <b>orchestration ownership question</b> (who owns the layer), and the <b>evidence usability gap</b> (available evidence always exceeds legally usable evidence).</div>
+    </div>
+    <div class="card">
+      <h3>Grade G4 — Repurposing, not failure <span>🔄</span></h3>
+      <div class="sub">Each transformational grade has a named destination. That is what makes G4 a strategic decision rather than a catastrophe.</div>
+      <div id="gradeList" style="margin-bottom:12px;"></div>
+      <div class="sec-head">Severity Grade Ladder</div>
+      <div id="ladderList"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Early Warning System — what management watches every quarter <span>📡</span></h3>
+    <div class="sub">This is what makes the work operational rather than a static forecast. Most indicators are ClaimPulse telemetry, which begins the day the system goes live — that is the argument for the 90-day pilot: it converts assumptions into measurements.</div>
+    <div class="scroll-y" style="max-height:300px;">
+      <table>
+        <thead><tr><th style="width:190px;">If this scenario is emerging</th><th>Monitor these observable indicators</th><th style="width:210px;">Data owner</th></tr></thead>
+        <tbody id="ewBody"></tbody>
+      </table>
+    </div>
+    <div class="note-box good"><b>The strategic response is pre-decided, not improvised.</b> Each scenario carries a named response and a named trigger to act — invest ahead of the friction frontier, build governance as a production requirement rather than a compliance layer, shift investment from AI components to data and orchestration as commoditisation arrives, and treat the combined stress case as something to be <i>survivable</i> rather than optimal.</div>
+  </div>
+</main>
+
+<!-- ==================== PAGE 6 — ECONOMICS ==================== -->
+<main class="page-view" id="page6">
+  <section class="hero-pitch">
+    <div class="pitch-eyebrow">Business Impact · The Live Investment Engine</div>
+    <div class="pitch-title">Every figure below is a formula, not a typed number</div>
+    <div class="pitch-sub">Three implementation plans differing by exactly two levers: rollout share and cost per touch. Build cost is identical in all three because the same system is built. The workbook runs 24 integrity checks on itself and all 24 pass. Move any slider and everything recomputes.</div>
+    <div class="stat-strip">
+      <div class="p-stat"><div class="p-k">Blended TAT</div><div class="p-row"><span class="p-from">9.8 d</span><span class="p-arrow">→</span><span class="p-to highlight" id="hero-tat">5.55 d</span></div><div class="p-note" id="hero-tat-note">On platform: 2.71 d</div></div>
+      <div class="p-stat"><div class="p-k">Touches / Claim</div><div class="p-row"><span class="p-from">7.0</span><span class="p-arrow">→</span><span class="p-to highlight" id="hero-touch">1.23</span></div><div class="p-note">On ClaimPulse</div></div>
+      <div class="p-stat"><div class="p-k">Net Annual Benefit</div><div class="p-row"><span class="p-to highlight" id="hero-net">₹43.31 Cr</span></div><div class="p-note" id="hero-gross">Gross ₹47.21 Cr less run cost</div></div>
+      <div class="p-stat"><div class="p-k">Build Cost, one-off</div><div class="p-row"><span class="p-to" id="hero-build">₹9.89 Cr</span></div><div class="p-note">Identical across all three plans</div></div>
+      <div class="p-stat"><div class="p-k">Payback, steady state</div><div class="p-row"><span class="p-to warn" id="hero-pb">2.74 Mo</span></div><div class="p-note" id="hero-pb2">16.84 Mo from kickoff</div></div>
+      <div class="p-stat"><div class="p-k">Combined Ratio Impact</div><div class="p-row"><span class="p-to highlight" id="hero-cr">2.58 pp</span></div><div class="p-note">Motor OD basis · 0.42 pp group</div></div>
+    </div>
+  </section>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="filter-row" style="margin-bottom:12px;">
+      <span style="font-size:calc(11px * var(--fs));color:var(--mist);font-weight:700;text-transform:uppercase;">Implementation plan:</span>
+      <button class="fbtn" id="btn-conservative" onclick="applyPlan('conservative')">Conservative · 20% rollout</button>
+      <button class="fbtn active" id="btn-base" onclick="applyPlan('base')">Base · 60% rollout</button>
+      <button class="fbtn" id="btn-aggressive" onclick="applyPlan('aggressive')">Aggressive · 100% rollout</button>
+    </div>
+    <div class="controls">
+      <div class="ctrl"><label>Rollout Share <span class="val" id="val-rollout">60%</span></label><input type="range" id="sl-rollout" min="20" max="100" step="5" value="60" oninput="onRollout()"></div>
+      <div class="ctrl"><label>Green Lane Share <span class="val" id="val-green">65%</span></label><input type="range" id="sl-green" min="40" max="85" step="1" value="65" oninput="update()"></div>
+      <div class="ctrl"><label>Avg Claim Size <span class="val" id="val-claimval">₹45,000</span></label><input type="range" id="sl-claimval" min="25000" max="75000" step="1000" value="45000" oninput="update()"></div>
+      <div class="ctrl"><label>Fraud Detection <span class="val" id="val-fraud">90%</span></label><input type="range" id="sl-fraud" min="62" max="98" step="1" value="90" oninput="update()"></div>
+      <div class="ctrl"><label>Touches Today <span class="val" id="val-touches">7</span></label><input type="range" id="sl-touches" min="3" max="10" step="0.5" value="7" oninput="update()"></div>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="k">Claims on Platform / Mo</div><div class="v teal" id="kpi-claims">13,715</div><div class="d" id="kpi-claims-sub">60% of addressable book</div></div>
+    <div class="kpi green-border"><div class="k">Monthly Net Benefit</div><div class="v green" id="kpi-monthly">₹3.61 Cr</div><div class="d" id="kpi-monthly-sub">Steady state</div></div>
+    <div class="kpi green-border"><div class="k">3-Year Net Benefit</div><div class="v green" id="kpi-3yr">₹111.49 Cr</div><div class="d">Ramp 45% / 92% / 100%</div></div>
+    <div class="kpi green-border"><div class="k">3-Year NPV @ 12%</div><div class="v green" id="kpi-npv">₹76 Cr</div><div class="d">WACC 12%, Indian hurdle rate</div></div>
+    <div class="kpi gold-border"><div class="k">Realistic Downside Payback</div><div class="v amber" id="kpi-down">7.39 Mo</div><div class="d">Quote this, not the headline</div></div>
+    <div class="kpi red-border"><div class="k">Absolute Floor, Labour Only</div><div class="v red" id="kpi-floor">31.36 Mo</div><div class="d">Zero fraud benefit at all</div></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Where the Benefit Comes From <span>💧</span></h3>
+      <div class="sub">₹ Cr per year at steady state. Two of these lines are the Capture Integrity Shield paying for itself.</div>
+      <div class="chart-box"><canvas id="chartBenefit"></canvas></div>
+      <div class="note-box"><b>Note what is NOT counted.</b> Repair-network gains are excluded entirely (customer benefit that does not accrue to us). Whole-book NPS effect is excluded. Renewal uplift is applied to the claimant cohort only. Repair-cost overpayment carries no benefit anywhere in the model because the rupee base it would multiply has no source.</div>
+    </div>
+    <div class="card">
+      <h3>Three-Year Cumulative Position <span>📈</span></h3>
+      <div class="sub">Net cumulative ₹ Cr, including the 10-month build before benefit accrues</div>
+      <div class="chart-box"><canvas id="chartForecast"></canvas></div>
+      <div class="note-box warn"><b>Two paybacks, never mixed.</b> Steady-state payback (<span id="fc-pb1">2.74</span> months) answers "once running, how fast does it repay?". Payback from kickoff (<span id="fc-pb2">16.84</span> months) includes the 10-month build during which nothing accrues. The second is the honest one for a capital committee.</div>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <h3>Build Cost Stack <span>🏗️</span></h3>
+      <div class="sub">15 costed components · ₹9.89 Cr · identical in all three plans</div>
+      <div class="chart-box tall"><canvas id="chartBuild"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Run Cost &amp; the Optimisation Ceiling <span>⚙️</span></h3>
+      <div class="sub">Six lines. Half is engineerable, half is not — we state the ceiling rather than let it be found.</div>
+      <div class="chart-box"><canvas id="chartRun"></canvas></div>
+      <div class="ctrl" style="margin-top:12px;"><label>GPU Efficiency Gain (9 design levers) <span class="val" id="val-gpueff">0%</span></label><input type="range" id="sl-gpueff" min="0" max="100" step="5" value="0" oninput="update()"></div>
+      <div class="note-box bad"><b>The honest finding.</b> Even eliminating <i>every rupee</i> of compute moves payback from <span id="ceil-a">2.74</span> to <span id="ceil-b">2.74</span> months. Cost optimisation is not what makes this case work. We present it to prove the run cost will not run away at scale — the objection that actually gets asked.</div>
+    </div>
+    <div class="card">
+      <h3>GenAI: Build vs Buy <span>⚖️</span></h3>
+      <div class="sub">Incremental 5-year NPV with baseline compute and the un-buyable moat layer netted out</div>
+      <div class="chart-box"><canvas id="chartBuyBuild"></canvas></div>
+      <div class="pill-row">
+        <div class="pill"><b id="bb-adv">₹2.70 Cr</b>NPV advantage to buying</div>
+        <div class="pill"><b id="bb-be">77</b>breakeven GPU-sec/claim</div>
+      </div>
+      <div class="note-box"><b>Volume does not decide this.</b> Both options scale linearly with claims, so there is no crossover volume — doubling claims doubles both sides. The decision is set entirely by GPU-seconds per claim, and that single measurement from the pilot settles it.</div>
+    </div>
+  </div>
+
+  <!-- ===== TOKEN ECONOMICS ===== -->
+  <div class="card" style="margin-bottom:16px;border-color:var(--brand-blue);">
+    <h3>Token Economics — what an AI claim actually costs to run <span>🪙</span></h3>
+    <div class="sub"><b>We do not know how many tokens a ClaimPulse claim consumes, and we refuse to publish a point estimate we cannot defend.</b> Instead we bound it across an eighteen-fold range and test whether the answer moves the investment case. It does not — and that insensitivity <i>is</i> the finding. Every price below is taken from the vendor's own published pricing page on 12 August 2026; only the quantities are estimated, and each is marked derived or assumed.</div>
+
+    <div class="tok-grid">
+      <div class="tok-case low">
+        <div class="lbl">LOW CASE · fully optimised</div>
+        <h4>Directed form + offline policy parsing</h4>
+        <div class="toks">4,962</div><div class="lbl">input tokens per claim</div>
+        <div style="margin-top:9px;">
+          <div class="tok-line"><span>Video analysed</span><span>10 sec</span></div>
+          <div class="tok-line"><span>Photo tiles</span><span>4</span></div>
+          <div class="tok-line"><span>Policy wording</span><span>0 (parsed offline)</span></div>
+          <div class="tok-line"><span>Claim text / docs</span><span>300</span></div>
+          <div class="tok-line"><span>System prompt</span><span>1,000</span></div>
+          <div class="tok-line"><span>Output tokens</span><span>300</span></div>
+          <div class="tok-line" style="border-top:1px solid var(--line-bright);margin-top:4px;padding-top:6px;"><span><b>Cost per claim, mid-tier</b></span><span style="color:var(--green);">₹1.16</span></div>
+          <div class="tok-line"><span>Economy tier + batching</span><span style="color:var(--green);">₹0.16</span></div>
+          <div class="tok-line"><span>Annual cost</span><span style="color:var(--green);">₹0.017 Cr</span></div>
+          <div class="tok-line"><span><b>Payback</b></span><span style="color:var(--green);">3.074 months</span></div>
+        </div>
+      </div>
+      <div class="tok-case mid">
+        <div class="lbl">CENTRAL CASE · as modelled</div>
+        <h4>Realistic mixed pipeline</h4>
+        <div class="toks">25,084</div><div class="lbl">input tokens per claim</div>
+        <div style="margin-top:9px;">
+          <div class="tok-line"><span>Video analysed</span><span>40 sec</span></div>
+          <div class="tok-line"><span>Photo tiles</span><span>8</span></div>
+          <div class="tok-line"><span>Policy wording</span><span>8,000</span></div>
+          <div class="tok-line"><span>Claim text / docs</span><span>1,500</span></div>
+          <div class="tok-line"><span>System prompt</span><span>3,000</span></div>
+          <div class="tok-line"><span>Output tokens</span><span>1,200</span></div>
+          <div class="tok-line" style="border-top:1px solid var(--line-bright);margin-top:4px;padding-top:6px;"><span><b>Cost per claim, mid-tier</b></span><span style="color:var(--brand-blue);">₹5.56</span></div>
+          <div class="tok-line"><span>Economy tier + batching</span><span style="color:var(--brand-blue);">₹0.76</span></div>
+          <div class="tok-line"><span>Annual cost</span><span style="color:var(--brand-blue);">₹0.082 Cr</span></div>
+          <div class="tok-line"><span><b>Payback</b></span><span style="color:var(--brand-blue);">3.079 months</span></div>
+        </div>
+      </div>
+      <div class="tok-case high">
+        <div class="lbl">HIGH CASE · nothing optimised</div>
+        <h4>Raw wording sent on every claim</h4>
+        <div class="toks">88,720</div><div class="lbl">input tokens per claim</div>
+        <div style="margin-top:9px;">
+          <div class="tok-line"><span>Video analysed</span><span>120 sec</span></div>
+          <div class="tok-line"><span>Photo tiles</span><span>20</span></div>
+          <div class="tok-line"><span>Policy wording</span><span>40,000</span></div>
+          <div class="tok-line"><span>Claim text / docs</span><span>4,000</span></div>
+          <div class="tok-line"><span>System prompt</span><span>8,000</span></div>
+          <div class="tok-line"><span>Output tokens</span><span>4,000</span></div>
+          <div class="tok-line" style="border-top:1px solid var(--line-bright);margin-top:4px;padding-top:6px;"><span><b>Cost per claim, mid-tier</b></span><span style="color:var(--gold);">₹19.41</span></div>
+          <div class="tok-line"><span>Economy tier + batching</span><span style="color:var(--gold);">₹2.67</span></div>
+          <div class="tok-line"><span>Annual cost</span><span style="color:var(--gold);">₹0.286 Cr</span></div>
+          <div class="tok-line"><span><b>Payback</b></span><span style="color:var(--gold);">3.096 months</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-bottom:0;">
+      <div>
+        <div class="sec-head">The insensitivity, drawn</div>
+        <div class="chart-box"><canvas id="chartTokens"></canvas></div>
+        <div class="note-box good"><b>Input token volume varies eighteen-fold between LOW and HIGH. Payback moves from 3.074 to 3.096 months — a spread of 0.02 months.</b> An order-of-magnitude error in our token estimate does not change the investment decision. That is the honest reason we can present a range instead of pretending to a precision we have not earned.</div>
+      </div>
+      <div>
+        <div class="sec-head">Breakeven — how large would inference have to get before it mattered?</div>
+        <div class="chart-box"><canvas id="chartTokenBreak"></canvas></div>
+        <table style="margin-top:10px;">
+          <thead><tr><th>Threshold, share of net annual benefit</th><th>₹ / claim</th><th>Tokens / claim</th><th>Equivalent video</th></tr></thead>
+          <tbody>
+            <tr class="hl"><td class="lbl">1 per cent</td><td class="imp">₹26.19</td><td class="imp">150,156</td><td class="imp">about 10 minutes</td></tr>
+            <tr><td class="lbl">5 per cent</td><td>₹130.94</td><td>750,778</td><td>about 48 minutes</td></tr>
+            <tr><td class="lbl">10 per cent</td><td>₹261.87</td><td>1,501,557</td><td>about 95 minutes</td></tr>
+            <tr><td class="lbl">50 per cent</td><td>₹1,309.35</td><td>7,507,785</td><td>about 8 hours</td></tr>
+          </tbody>
+        </table>
+        <div class="note-box bad"><b>Read this line to the panel.</b> A ClaimPulse claim carries <b>forty seconds</b> of video. Inference consumption would have to rise roughly fifteen-fold — to about <b>ten minutes of video per claim</b> — before it consumed even <b>one per cent</b> of net annual benefit. Inference cost cannot break this case at any plausible volume.</div>
+      </div>
+    </div>
+
+    <div class="grid3" style="margin-top:16px;margin-bottom:0;">
+      <div>
+        <div class="sec-head">Verified rate card · 12 Aug 2026</div>
+        <table>
+          <thead><tr><th>Model</th><th>Input</th><th>Output</th></tr></thead>
+          <tbody>
+            <tr><td class="lbl">Gemini 3.5 Flash</td><td>$1.50</td><td>$9.00</td></tr>
+            <tr><td class="lbl">GPT-5.6 Terra</td><td>$2.00</td><td>$12.00</td></tr>
+            <tr><td class="lbl">Claude Sonnet 5</td><td>$2.00</td><td>$10.00</td></tr>
+            <tr class="hl"><td class="lbl">Blended mid-tier</td><td class="imp">$1.83</td><td class="imp">$10.33</td></tr>
+            <tr><td class="lbl">Blended economy</td><td style="color:var(--green);">$0.50</td><td style="color:var(--green);">$2.90</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:calc(10px * var(--fs));color:var(--mist-dim);margin-top:5px;">USD per 1M tokens. Every rate from the vendor's own pricing page — no aggregator, no blog.</div>
+      </div>
+      <div>
+        <div class="sec-head">Discounts every vendor publishes</div>
+        <table>
+          <thead><tr><th>Lever</th><th>Discount</th><th>Applied?</th></tr></thead>
+          <tbody>
+            <tr><td class="lbl">Asynchronous batch</td><td style="color:var(--green);">−50%</td><td><span class="tag tier">NOT applied</span></td></tr>
+            <tr><td class="lbl">Cached input re-use</td><td style="color:var(--green);">−90%</td><td><span class="tag tier">NOT applied</span></td></tr>
+            <tr><td class="lbl">Economy-tier routing</td><td style="color:var(--green);">−73%</td><td><span class="tag tier">NOT applied</span></td></tr>
+            <tr><td class="lbl">Data-residency premium</td><td style="color:var(--red);">+10%</td><td><span class="tag g">APPLIED</span></td></tr>
+          </tbody>
+        </table>
+        <div class="note-box warn" style="margin-top:8px;"><b>Deliberately unfavourable to ourselves.</b> We apply the cost-increasing residency premium and none of the three cost-reducing discounts, even though all three are published and available. The real number is lower than what we show.</div>
+      </div>
+      <div>
+        <div class="sec-head">Tokenisation rates used</div>
+        <table>
+          <thead><tr><th>Media</th><th>Rate</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr><td class="lbl">Video</td><td class="imp">263 tokens/sec</td><td class="txt">Google, vendor-published</td></tr>
+            <tr><td class="lbl">Image</td><td class="imp">258 tokens/tile</td><td class="txt">768×768 tile</td></tr>
+            <tr><td class="lbl">Audio</td><td class="imp">32 tokens/sec</td><td class="txt">Google, vendor-published</td></tr>
+          </tbody>
+        </table>
+        <div class="note-box"><b>Why video dominates every case.</b> At 263 tokens per second, forty seconds of claim video is 10,520 tokens on its own. That is why video de-duplication and damage-frame selection is the single highest-value cost lever in the whole architecture — and why its reduction ratio is the measurement the pilot instruments first.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Model Integrity — the workbook audits itself before anyone else does <span>🔒</span></h3>
+    <div class="sub">Eight checks across three plans. All 24 pass.</div>
+    <table>
+      <thead><tr><th style="width:60px;">Ref</th><th>Check</th><th style="width:100px;">Conservative</th><th style="width:100px;">Base</th><th style="width:100px;">Aggressive</th><th>What it proves</th></tr></thead>
+      <tbody id="icBody"></tbody>
+    </table>
+  </div>
+
+  <div class="footer-note">
+    ClaimPulse · Intelligent Claims Orchestration · ATOM Season 9 · Team Finsighters, NMIMS Mumbai<br>
+    Every figure at default settings reconciles to <b>ClaimPulse_Investor_Dashboard_R5.xlsx</b>, which remains the authoritative source. This simulation is built for interactive exploration of the same engine.
+  </div>
+</main>
+</div>
+
+<script>
+/* =============== LIVE MODEL — verified line-by-line against ClaimPulse_Investor_Dashboard_R5.xlsx =============== */
+const A01=3317.3,A02=0.4988,A03=0.746,FX=95.3,A12=-0.30,A13=-0.10,WACC=0.12;
+const B21=7000,B22=0.05,B23=0.1,B15=0.10,B16=0.18;
+const TAT_TODAY=9.8,TAT_G=1.5,TAT_A=3.5,TAT_R=7;
+const TOUCH_G=0.2,TOUCH_A=2,TOUCH_R=6,BASE_TOUCH_COST=250;
+const RED_SHARE=0.10,FRICTION=0.08;
+const E01=0.133333,E02=2.5,E03=1.2,E04=3,E05=0.05,E06=2.6;
+const FIXED_RUN=0.8005+0.644+0.25+0.12;
+const BUILD_COST=9.8904698;
+const M14=1.83,M15=10.33,M24=0.10,O05=1200;
+const F01_TOUCH=83,F02_FRAUD=0.82,BUILD_MONTHS=10,GROWTH=1.087,R1=0.45,R2=0.92,R3=1.0;
+const PLAN={conservative:{rollout:.20,cost:300},base:{rollout:.60,cost:250},aggressive:{rollout:1.00,cost:200}};
+let currentPlan='base';
+
+function addressableMonthly(cv){return (A01*A02*A03*1e7)/cv/12;}
+function core(rollout,greenPct,cv,fraudTarget,touchesToday,costPerTouch){
+  const green=greenPct/100,amber=1-green-RED_SHARE,red=RED_SHARE;
+  const tatOn=(green-FRICTION)*TAT_G+(amber+FRICTION)*TAT_A+red*TAT_R;
+  const tatBlend=(1-rollout)*TAT_TODAY+rollout*tatOn;
+  const touchOn=green*TOUCH_G+amber*TOUCH_A+red*TOUCH_R;
+  const touchBlend=(1-rollout)*touchesToday+rollout*touchOn;
+  const cpm=addressableMonthly(cv)*rollout, cpa=cpm*12;
+  const labour=cpa*(touchesToday*BASE_TOUCH_COST-touchOn*costPerTouch)/1e7;
+  const fraudPool=cpa*cv*0.0315/1e7;
+  const fraudSaved=fraudPool*(1-((1-fraudTarget)/(1-0.62)));
+  const fGraph=fraudSaved*(B16/(B16+B15)), fGate=fraudSaved*(B15/(B16+B15));
+  const synth=cpa*cv*0.01/1e7*0.85;
+  const renewal=cpa*B21*B22*B23/1e7;
+  const friction=cpa*FRICTION*(TOUCH_A-TOUCH_G)*costPerTouch/1e7;
+  const gross=labour+fGraph+fGate+synth+renewal-friction;
+  const gpu=cpa*E01*E02*E03*E04*FX/1e7, storage=cpa*E05*E06*FX/1e7;
+  return {cpm,cpa,tatOn,tatBlend,touchOn,touchBlend,labour,fGraph,fGate,synth,renewal,friction,gross,gpu,storage,cv};
+}
+// Walks the cumulative position year by year, exactly as Sheet 4 F-09 does, rather than
+// assuming Year 1 alone repays the build — at 20% rollout it does not.
+function paybackFromKickoff(years){
+  let months=BUILD_MONTHS, remaining=BUILD_COST;
+  for(let i=0;i<years.length;i++){
+    const yr=years[i];
+    if(yr<=0){months+=12;continue;}
+    if(remaining<=yr) return months+remaining/(yr/12);
+    remaining-=yr; months+=12;
+  }
+  const last=years[years.length-1];
+  return last>0 ? months+remaining/(last/12) : Infinity;
+}
+const fmt=(n,d=2)=>n.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d});
+const setText=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t;};
+const getNum=id=>parseFloat(document.getElementById(id).value);
+
+/* =============== DATA =============== */
+const TRENDS=[
+['T-01','Consumer','Digital-first settlement is the default expectation, carried over from UPI and digital KYC rather than from insurance','EXT BENCHMARK','bench','Mordor Intelligence, Online Insurance in India: mobile app 56.1%, P&C 41.8% of the online insurance market','2025 base','VERIFIED','fact','S1'],
+['T-02','Consumer','Only a minority of consumers are comfortable with AI deciding a claim unaided','EXT BENCHMARK','bench','Insurity Consumer Survey: support for AI 20–39%; only 22% comfortable with AI filing a claim; 46% would let AI generate a quote','Feb 2026 fieldwork, pub. 21 Apr 2026','VERIFIED — US, n>1,000','fact','S3'],
+['T-03','Social','Claims experience ranks second only to price as a retention driver','EXT BENCHMARK','bench','Retently 2025 (insurance NPS 23), CustomerGauge (35), QuestionPro: every 5-point NPS gain ≈ 1pp retention','2025-26','VERIFIED — but all three reach us via one compilation','tier','S1, S3'],
+['T-04','Technology','Generative image tools have made photographic evidence cheap to fabricate; deepfake-assisted fraud attempts sharply up','EXT BENCHMARK','bench','NVIDIA customer story on ControlExpert: 95% accuracy detecting manipulated images within 3 seconds, motor claims','Current','VERIFIED — vendor tier, labelled Tier 3','tier','S2'],
+['T-05','Technology','Graph and network methods lift fraud detection by roughly 10 to 20 pp over rule engines','EXT BENCHMARK','bench','Systematic review of graph and GNN fraud detection','2025','TIER 2 — bounds a target we stress-test','tier','S2'],
+['T-06','Technology','Vendor straight-through processing ceilings for simple motor claims sit at 75 to 85 per cent','EXT BENCHMARK','bench','Vendor published STP ceilings; industry all-complexity range 7–35%','2025-26','TIER 2 — carried at stated tier','tier','S1'],
+['T-07','Industry','Repair networks consolidating toward API-connected claims-to-repair chains; telematics flows report up to 50% cycle-time reduction','EXT BENCHMARK','bench','Telematics cycle-time research (global, not India/Motor OD). Autorox (India) claims up to 25% reduction in overpaid repair approvals','2025-26','PARTIAL — Autorox 25% verified; 50% at Tier 2','tier','S4'],
+['T-08','Industry','General insurance is in a soft pricing cycle; underwriting results stressed across the market','FACT','fact','Bajaj Finserv Q1 FY27 investor presentation and earnings call, 31 Jul 2026. Combined ratio 104.7%, GWP ₹5,789 Cr up 11.3%, solvency 254%','Q1 FY27','VERIFIED against the BSE filing','fact','All'],
+['T-09','Industry','Motor deliberately slowed by the client because pricing is inadequate; return-on-risk-capital gates re-entry','FACT','fact','Bajaj Finserv Q1 FY27 earnings call, management commentary','Jul 2026','VERIFIED — 103.6% → 104.7% confirmed','fact','All'],
+['T-10','Industry','Supreme Court motor third-party judgment forced peer reserve strengthening of 2.8 pp of combined ratio in one quarter','FACT','fact','ICICI Lombard Q1 FY27: provision ₹165 Cr; combined ratio 107.2% vs 102.9%; adjusted 102.3%. Judgment recognises loss of domestic care for homemakers at a notional ₹30,000/month','Q1 FY27','VERIFIED — 2.8pp exact','fact','Context'],
+['T-11','Regulatory','IRDAI moved insurers to proactive, board-governed fraud monitoring with a fraud monitoring committee and unit','FACT','fact','IRDAI (Insurance Fraud Monitoring Framework) Guidelines 2025. Ref IRDAI/IID/GDL/MISC/112/10/2025 dated 09.10.2025. Repeals the 2013 circular','Eff. 1 Apr 2026','VERIFIED — ref no. and dates exact','fact','S2, S5'],
+['T-12','Regulatory','Motor losses below ₹50,000 need not be surveyed by a registered surveyor; app-based AI assessment contemplated','FACT','fact','IRDAI Master Circular on Protection of Policyholders\' Interests, 11 Jun 2024','2024, current','VERIFIED — threshold and AI wording both confirmed','fact','S1'],
+['T-13','Regulatory','IRDAI constituted an AI working group in June 2026. Norms not yet published','FACT','fact','IRDAI AI Working Group announced 19 Jun 2026. Seven members, chaired by Sandeep Shukla, Director IRDAI Hyderabad. Three-month mandate covering governance, safeguards and an AI audit framework','Jun 2026','VERIFIED — and now nameable','fact','S5'],
+['T-14','Regulatory','No published incidence of synthetic claim media in Indian motor, because the vector is unmeasured','NOT SOURCEABLE','gap','None exists. Independently rediscovered as a total gap by all four research engines','n/a','CONFIRMED ABSENT after independent search','gap','S2'],
+['T-15','Regulatory','National data-protection obligations land inside the investment horizon','FACT','fact','DPDP Rules 2025, notified 13 Nov 2025, full compliance 13 May 2027. Penalties to ₹250 Cr apply from day one; no grace period','Current','VERIFIED — both dates exact','fact','S5'],
+['T-16','Consumer','Claims are the dominant source of general-insurance grievance, and the pool is growing','FACT','fact','IRDAI Annual Report 2024-25: 257,790 grievances on Bima Bharosa, up 20% YoY, 69% claims-related. Rajya Sabha reply 16 Dec 2025: motor fell from 26.18% to 24.8%','FY2024-25','VERIFIED — both sources confirmed','fact','S1, S3'],
+['T-17','Industry','Industry fraud and waste leakage runs at 8 to 10 per cent of payouts, concentrated in the mid-ticket band','EXT BENCHMARK','bench','BCG and Medi Assist, Nov 2025: ₹8,000–10,000 Cr annual leakage, concentrated between ₹50,000 and ₹2.5 lakh claim value','Nov 2025','VERIFIED — health-skewed, applied to motor as a stated proxy','tier','S2'],
+['T-18','Industry','Bajaj already runs a digital-first servicing estate, the precondition for evidence-volume growth','FACT','fact','Bajaj General FY26 investor presentation, 30 Apr 2026: 90.9% digital servicing; AI bots serve 64.5% of customers across 193.4 M bot message exchanges; Motor NPS 78','FY26','VERIFIED — FY26 figures','fact','S1'],
+['T-19','Regulatory','A public insurance marketplace now exists as sector infrastructure','FACT','fact','Bima Sugam India Federation launched 17 Sep 2025 at IRDAI Hyderabad by Chairman Ajay Seth; phase I from Dec 2025','Sep 2025','VERIFIED','fact','S4'],
+['T-20','Technology','Frontier model inference is priced per token and falling; every major vendor publishes batch and cached-input discounts as standard','EXT BENCHMARK','bench','Vendor pricing pages, 12 Aug 2026: Gemini 3.5 Flash 1.50/9.00 USD per 1M in/out; GPT-5.6 Terra 2.00/12.00; Claude Sonnet 5 2.00/10.00. All publish 50% batch discount and ~90% off cached input','Aug 2026','VERIFIED from each vendor\'s own pricing page','fact','S2, S5'],
+['T-21','Technology','Region-pinned inference now carries an explicit price premium, making data residency a costed choice','FACT','fact','OpenAI and Anthropic both publish a 1.1x multiplier for region-pinned inference','Aug 2026','VERIFIED — converts DPDP from principle to line item','fact','S5']
+];
+// [ref, field, trend, magnitude, velocity, persistence, evidence, motorRel, exposure, anchor]
+const VECTOR=[
+['C1','Customer','Digital servicing penetration',4,4,4,4,3,4,'Purchase-side only; claim-side conversion has no source'],
+['C2','Customer','Claim-speed expectation',4,3,4,3,5,5,'Complaint proxy. Direct TAT expectation has no source'],
+['C3','Customer','AI assistance acceptance',3,4,3,3,3,3,'US data, direction only for India'],
+['C4','Customer','AI autonomy acceptance',2,2,4,3,4,4,'India consumer data has no source'],
+['C5','Customer','Explainability expectation',3,2,5,5,5,4,'IRDAI Regs 2024. A legal mandate, not a preference'],
+['C6','Customer','Data-sharing willingness',2,2,4,4,3,2,'DPDP constraint. Willingness itself unmeasured'],
+['C7','Customer','Digital evidence behaviour',3,3,3,3,5,5,'Gallery vs live-capture split is pilot data only'],
+['C8','Customer','Human escalation preference',3,2,3,2,4,4,'Available trust data measures professionals, not customers'],
+['C9','Customer','Omnichannel behaviour',2,2,2,2,2,2,'Channels evidenced; switching behaviour unmeasured'],
+['T1','Technology','AI capability',4,4,3,1,2,2,'No benchmark held. Directional consensus only'],
+['T2','Technology','Inference cost deflation',3,3,3,2,2,3,'Direction only; no rate suitable for extrapolation'],
+['T3','Technology','Multimodal capability',3,3,3,1,3,4,'No benchmark held'],
+['T4','Technology','Agentic reliability',3,3,2,1,3,4,'The most consequential unmeasured technology parameter'],
+['T5','Technology','Synthetic-media capability',4,4,2,1,5,5,'NO SOURCE AT ALL. The critical gap'],
+['T6','Technology','Fraud-detection capability',3,2,3,3,5,5,'Model target 62%→90%. A target, not a validated capability'],
+['T7','Technology','API / ecosystem maturity',3,2,4,4,4,3,'IRDAI position plus Bima Sugam'],
+['T8','Technology','Model commoditisation',3,3,3,1,2,2,'No open-weight parity or vendor pricing series held'],
+['T9','Technology','Governance requirements',4,3,5,5,4,4,'All FACT and legally anchored. Highest-confidence trend in the map'],
+['S1','Social','Trust in institutions and digital',2,2,2,2,2,2,'Headline-derived, 27 months old. Weakest social trend'],
+['S2','Social','Digital behaviour',3,3,3,4,3,3,'Mordor digital channel shares'],
+['S3','Social','Fraud behaviour',3,4,3,1,5,5,'Rests on the same unsourced gap as T5'],
+['S4','Social','Ecosystem collaboration',3,2,4,4,4,3,'Surveyor and garage posture, India-specific'],
+['S5','Social','Convenience expectations',3,3,3,3,3,3,'Direction only'],
+['I1','Industry','On-the-spot settlement penetration',3,2,5,5,5,4,'Bajaj on-the-spot settlement band, sub-₹30,000'],
+['I2','Industry','Competitive automation',2,2,3,2,4,3,'Peer adoption reported without a count. Weak'],
+['I3','Industry','Claims complexity',3,2,4,4,5,4,'Volume down with severity up is FACT; forward mix shift unmeasured'],
+['I4','Industry','Repair ecosystem digitisation',3,3,3,4,4,3,'Telematics and Autorox'],
+['I5','Industry','Market-share dynamics',3,2,4,5,4,2,'Sell-side note, not public'],
+['I6','Industry','Underwriting selectivity',3,2,4,5,3,2,'Bajaj Q1 FY27. FACT']
+];
+const GAPS=[
+['U-01','Motor-specific fraud leakage for India','The 8–10% benchmark in circulation is health, from BCG and Medi Assist Nov 2025. Carried as a stated proxy and stress-tested to zero.'],
+['U-02','Published incidence of synthetic claim media','No published incidence. Modelled forward-looking at 1.0% with a 0.5–2.0% sensitivity.'],
+['U-03','Repair-cost overpayment base for India','Not published. Autorox\'s 25% reduction rate is sourced; the rupee base it would multiply is not, so <b>no repair-overpayment benefit is claimed anywhere in the model</b>.'],
+['U-04','Ongoing AI compliance and audit operating cost','No published figure. Priced as a build overlay in scenario S5 at +15% and +20% of build.'],
+['U-05','Bajaj-specific renewal elasticity','Would require a renewal cohort study. <b>Excluded from the NPV entirely.</b>'],
+['U-06','Human exception-handling capacity ceiling','Bajaj claims-operations data only. Flagged by two of four engines as the breakpoint most likely to bind first, and modelled by none. <b>The single most actionable data request.</b>'],
+['U-07','India consumer acceptance of AI claim DECISIONS','No India-specific survey exists. All acceptance data is US-led. This is why T-02 is scoped, not extrapolated.'],
+['U-08','P90 and P95 TAT distribution','The model produces a mean only. Distribution needs pilot or Bajaj data.']
+];
+const SETTLED=[
+['The evidence-integrity layer moved from a slide claim to a costed build line','because generative image tools make every downstream model unsafe without it'],
+['The fraud target was capped and stress-tested','because published graph-AI lift puts our +28 pp above the range'],
+['Repair-network gains were kept OUT of the investment case','because they deliver customer benefit that does not accrue to us'],
+['Rollout became the primary lever rather than a fixed plan','because deployment must track the pricing decision, not lead it'],
+['Regulatory tightening is priced as a build overlay rather than ignored','because the IRDAI AI framework is a known unknown'],
+['Fraud governance moved from optional to mandatory','because a board-level fraud monitoring committee is a compliance obligation from 1 Apr 2026, not a differentiator'],
+['Mid-ticket leakage concentration was adopted as corroboration of the ₹45,000 average claim','because it places industry leakage in exactly the band the green lane is scoped to']
+];
+const DEPS=[
+['Capture Integrity','Very high','High','VERY HIGH','r','It gates every downstream engine'],
+['CV Damage','Very high','Very high','HIGH','a','Model and API external dependency'],
+['Fraud Graph','Very high','Very high','VERY HIGH','r','Claims-history external dependency'],
+['Cost Engine','High','High','HIGH','a','Garage and parts external dependency'],
+['Policy RAG','High','Medium','MEDIUM','g','Policy-corpus external dependency'],
+['Trust Score','Very high','Very high','CRITICAL','r','ALL upstream models feed it. The concentration point.']
+];
+const CONVERGE=[
+['Computer vision × generative AI','Damage detected, then automatically explained to the customer or adjuster in natural language, closing the explainability gap that CV alone cannot close'],
+['Computer vision × telematics','Visual damage cross-checked against the actual collision event, converting a single-source assessment into cross-validated evidence'],
+['Fraud graph × synthetic-media detection','A suspicious image is connected to claimant, vehicle, garage and device history rather than assessed in isolation'],
+['RAG × claims orchestration','Policy wording translated directly into a settlement decision rather than surfaced for a human to interpret'],
+['Repair-cost AI × live garage data','Damage estimate validated against real-time repair-cost data rather than a static estimation table']
+];
+const DISPLACE=[
+['Multimodal AI','Yes','Yes','—','Yes'],['Telematics','Yes','—','—','—'],
+['Synthetic media','—','—','—','YES — largest single risk'],
+['Agentic claims processing','Yes','Yes','Yes','Yes'],
+['AI repair estimation','Yes','Yes','—','—'],
+['Digital identity & evidence provenance','Yes','—','—','Yes']
+];
+const SCEN={
+ S1:{name:'Digital-first settlement expectation',levels:[
+   ['L1 Emerging','55% green',1.524,2.85,42.099,9.890,17.065,2.509,-1.211],
+   ['L2 Established (= Base case)','65% green',1.230,2.55,43.310,9.890,16.843,2.583,0],
+   ['L3 Accelerated','78% green',0.847,2.16,44.884,9.890,16.574,2.678,1.574]],
+   note:'<b>A tailwind, not a rescue.</b> Moving auto-settlement from 65% to 78% adds ₹1.57 Cr a year. Useful, but it is not what carries the case — and Level 2 <i>is</i> the Base case by construction, which is how the engine checks itself.'},
+ S2:{name:'Synthetic evidence',levels:[
+   ['L1 Evidence gate holds','90% detection',1.230,2.55,43.310,9.890,16.843,2.583,0],
+   ['L2 Partial erosion','77% detection',1.230,2.55,32.406,9.890,19.543,1.924,-10.904],
+   ['L3 Detection neutralised','62% detection',1.230,2.55,19.824,9.890,23.918,1.163,-23.486]],
+   note:'<b>The only scenario that genuinely threatens the case — and it is the one the platform was built around.</b> At full detection neutralisation net benefit falls 54% to ₹19.82 Cr and the build still repays inside two years. This is why the Capture Integrity Shield is the largest single block of build spend.'},
+ S3:{name:'Explainability requirement',levels:[
+   ['Not monetised','n/a',1.230,2.55,43.310,9.890,16.843,2.583,0]],
+   note:'<b>Deliberately carries no rupee figure.</b> No credible source prices an explainability obligation for Indian motor. Grievance-cost exposure of ₹2.81 Cr a year is shown in the report as an order of magnitude only. We would rather show a blank than invent a number.'},
+ S4:{name:'Repair ecosystem digitisation',levels:[
+   ['L1 Unconnected','0% faster',1.230,2.55,43.310,9.890,16.843,2.583,0],
+   ['L2 Partial API connectivity','25% faster',1.230,2.16,43.310,9.890,16.843,2.583,0],
+   ['L3 Fully connected','50% faster',1.230,1.76,43.310,9.890,16.843,2.583,0]],
+   note:'<b>Faster repair partners improve the CUSTOMER outcome and change our economics by nothing.</b> TAT falls 2.55 → 1.76 days; net benefit is unchanged. We keep it out of the investment case rather than claim credit for someone else\'s improvement.'},
+ S5:{name:'Regulatory AI governance',levels:[
+   ['L1 No new rule','+0% build',1.230,2.55,43.310,9.890,16.843,2.583,0],
+   ['L2 EU AI Act lower bound','+15% build',1.230,2.55,43.310,11.374,17.869,2.583,0],
+   ['L3 EU AI Act upper bound','+20% build',1.230,2.55,43.310,11.869,18.212,2.583,0]],
+   note:'<b>Regulatory tightening is affordable.</b> The EU AI Act upper-bound overlay adds ₹1.98 Cr to build and moves payback from 16.8 to 18.2 months from kickoff. It is a cost, not a threat — which is why it is priced rather than argued about.'}
+};
+const LIB=[
+['Customer','R1 Experience-Parity & Digital Evidence Abundance','Speed expectation accelerates while capture and CV capability rise. Can more digital evidence be converted into TRUSTED straight-through processing?','Positive throughout','No'],
+['Customer','R2 Conditional-Autonomy Equilibrium','Automation frontier set by permission rather than capability. What AI is ALLOWED to decide, not what it can do','Positive; governance cost absorbed','No'],
+['Customer','R3 Adversarial AI Equilibrium','The adversarial gap: detection minus generation. Full reversion to the 62% rule-based baseline','₹17.92 Cr per year, still positive','No'],
+['Customer','R4 Commoditisation-Moat Transition','AI capability commoditises; the moat moves from model to data and workflow','Positive; cost deflation is a tailwind','No'],
+['Technology','S1 Autonomous Claims Market','Agentic orchestration matures and automation depth rises across the market','Positive','No'],
+['Technology','S2 Adversarial Digital Claim','Synthetic evidence defeats detection, with capacity realisation and incremental cost also applied','₹0.132 Cr per month, near zero','Thin cushion'],
+['Technology','S3 Data-Rich, Trust-Constrained Market','Evidence volume rises but consent and governance restrict what is usable','Positive','No'],
+['Technology','W8 COMBINED STRESS TEST','All three technology regimes move together. Automation depth, capacity and fraud detection collapse simultaneously','MINUS ₹0.531 Cr per month — NEGATIVE','YES'],
+['Technology','T1 AI Commoditisation','Inference and model cost deflation, cost side only','Positive, upside only','No'],
+['Technology','T2 Live-Capture Evidence Heterogeneity','Evidence arrives in more formats and qualities than the gate was built for','Positive','No'],
+['Technology','T3 Adversarial Evidence, live-video attack surface','Attack moves from still images to live capture','Positive but thinning','No'],
+['Technology','T4 Agentic & Autonomous Orchestration','Upside case: orchestration reliability improves enough to widen the green lane','Positive, upside','No'],
+['Technology','T5 Ecosystem & API Integration','Cost drag only. Least-evidenced of the six','Cost drag, absorbed','No'],
+['Technology','T6 Governance & Auditability Constraint','Explainability and audit obligations raise build and run cost','Positive, cost absorbed','No'],
+['Social','Sc1 Digital Visibility','Continuous claim visibility becomes the expectation, benchmarked to UPI and e-commerce rather than to insurers','Positive','No'],
+['Social','Sc2 Synthetic Fraud Arms Race','Legacy verification reverts toward the 62% baseline as fabrication gets cheaper','Labour-only engine still repays at zero fraud benefit','No'],
+['Social','Sc3 Explainability','Explainability becomes a customer-trust and retention requirement, not just a legal one','Not monetised; grievance exposure as order of magnitude only','No'],
+['Social','Sc4 Ecosystem','Repair and garage network digitises and connects','Customer benefit, no change to our economics','No'],
+['Social','Sc5 Regulatory','AI governance obligations priced as a build overlay','Positive, overlay absorbed','No'],
+['Social','COMPOUND SEVERE','Every scenario\'s worst direction applied at once','₹1.601 Cr per month, still positive','No'],
+['Industrial','S1 Regulatory AI Governance Tightening','Autonomous settlement progressively restricted. 15% probability, 25% benefit loss','Not quantified, bounded','No'],
+['Industrial','S2 Competitive AI Convergence','Rivals close the fusion gap. 50% probability, 15% erosion from year 2 — the largest single line in the risk model','Roughly 15–25% conditional erosion','No*'],
+['Industrial','S3 Adversarial Claims & Fraud Evolution','Fraud detection underperforms. 40% probability, weighted by fraud\'s share of gross benefit','Approaches the labour-only payback floor','No'],
+['Industrial','S4 Claims-Ecosystem & Data Transformation','Evidence architecture shifts under DPDP consent rules and live-capture mandates','Not quantified, bounded','No']
+];
+const BPS=[
+['STP*','Straight-through processing floor','At what green-lane share does NPV reach zero? Break-even rollout on labour savings alone is 32.43% at Base — live on UE-11.',65,'Computable','g'],
+['FD*','Fraud detection floor','At what detection capability does fraud economics cease contributing? Breached in testing and survived — the absolute floor (in-house touch rate, zero fraud benefit) still returns ₹3.78 Cr a year, repaying in 31.4 months.',100,'Breached & survived','g'],
+['C*','Complexity ceiling','At what proportion of claims migrating to Amber or Red does operating economics break?',0,'Needs pilot lane calibration','n'],
+['H*','Human exception capacity ceiling','At what exception volume does human-review capacity begin materially increasing P90 TAT?',0,'Needs Bajaj claims-ops data — BINDS FIRST','n'],
+['AIcost*','AI and inference cost ceiling','At what inference or run-cost level does AI economics stop being attractive? Tests commoditisation vs cost directly.',96,'Computable','g'],
+['V*','Addressable volume floor','What minimum claim volume is required for positive NPV?',72,'Computable','g'],
+['G*','Governance cost ceiling','How much compliance, audit and validation cost can the system absorb before ROI falls below hurdle rate? Tested at +15% and +20% of build.',80,'Partially computable','a'],
+['AG*','Adversarial gap floor','At what point does generation capability overtake detection, beginning the fraud cascade?',0,'Bounded, not computed — no published series','n'],
+['OO*','Orchestration ownership threshold','At what point does an external party capture enough of the orchestration layer that strategic value compresses?',0,'Qualitative only','n']
+];
+const CHAINS={
+ parity:{label:'A competitor reaches functional parity',steps:[
+  ['Industrial event','A competitor announces end-to-end AI claims parity','—'],
+  ['External shock','ClaimPulse differentiation falls','—'],
+  ['Component exposed','Orchestration layer and Trust Score','—'],
+  ['Model KPI','No model degradation — capability is unchanged','0%'],
+  ['Operating KPI','Rollout and adoption come under pressure','−15%'],
+  ['Unit economics','Claims processed fall; savings per claim unchanged','−15%'],
+  ['P&L impact','Monthly net benefit falls','ILLUSTRATIVE −15%'],
+  ['Return metrics','NPV falls, payback extends','ILLUSTRATIVE, not computed'],
+  ['Customer impact','Neutral — customer experience is unchanged','0'],
+  ['Compliance impact','Neutral','0'],
+  ['Architecture change','Reposition as a proprietary Bajaj claims-intelligence layer','G3'],
+  ['Resilience score','Economic resilience ratio 0.83 of base — bounded to the Industrial S2 range (15–25% erosion), not a live-model output','ER ≈0.83']]},
+ synthetic:{label:'Synthetic media detection is neutralised',steps:[
+  ['Industrial event','Generation capability overtakes detection capability','—'],
+  ['External shock','Fabricated evidence passes the integrity gate','—'],
+  ['Component exposed','Capture Integrity Shield, then Fraud Graph','—'],
+  ['Model KPI','Fraud detection reverts 90% → 62%','−28 pp'],
+  ['Operating KPI','Lane mix unchanged; red-lane investigation load rises','+0 lanes'],
+  ['Unit economics','Fraud benefit per claim collapses to zero','−100%'],
+  ['P&L impact','Net annual benefit falls 54%','₹43.31 → ₹19.82 Cr'],
+  ['Return metrics','Payback from kickoff extends','16.8 → 23.9 Mo'],
+  ['Customer impact','False-positive rate rises; genuine claims delayed','−NPS'],
+  ['Compliance impact','Fraud monitoring committee reporting obligation intensifies','IRDAI'],
+  ['Architecture change','Becomes a living fraud-defence system with standing retraining','G4'],
+  ['Resilience score','Economic resilience ratio 0.46 of base','ER 0.46']]},
+ reg:{label:'IRDAI restricts autonomous settlement',steps:[
+  ['Industrial event','IRDAI AI framework restricts autonomous adverse decisions','—'],
+  ['External shock','Green-lane auto-settlement requires human sign-off','—'],
+  ['Component exposed','Trust Score routing and the settlement layer','—'],
+  ['Model KPI','No model degradation','0%'],
+  ['Operating KPI','Green lane collapses into amber; touches rise','1.23 → 2.0'],
+  ['Unit economics','Labour saving per claim falls sharply','−40%'],
+  ['P&L impact','Net annual benefit falls','ILLUSTRATIVE, not computed — this event is not modeled on the live engine'],
+  ['Return metrics','Payback extends but stays inside a year','16.8 → 22 Mo'],
+  ['Customer impact','TAT rises; explainability improves','+trust'],
+  ['Compliance impact','Full audit trail becomes a production requirement','+build'],
+  ['Architecture change','Becomes an AI claims decision-support platform','G4'],
+  ['Resilience score','Economic resilience ratio 0.60 of base','ER 0.60']]}
+};
+const INTERACTIONS=[
+['Digital adoption × synthetic fraud','Ambiguous','amb','Evidence volume rises, so attack surface rises. The same trend that enables straight-through processing enlarges the surface that must be defended.'],
+['AI capability × synthetic fraud','Ambiguous','amb','Detection capability rises but so does generation capability. Neither absolute matters — only the adversarial gap between them.'],
+['AI autonomy × customer trust','Constrained','con','Automation POTENTIAL rises but adverse-decision ACCEPTANCE falls. The optimal frontier is set by the LOWER of capability and permission.'],
+['Digital adoption × speed expectation','Reinforcing','rein','The reference point shifts from insurance peers to app-native services. The benchmark is exogenous to insurance.'],
+['Explainability mandate × AI autonomy','Constrained','con','Every autonomous adverse decision must carry a documented, defensible basis. A per-decision cost AND a per-decision constraint.'],
+['Inference cost falling × competitive automation','Opposing','opp','Cost per claim falls so ROI rises; competitor capability rises so the moat erodes. Two curves moving in opposite directions.'],
+['Claim complexity × green-lane share','Opposing','opp','Lane boundaries are set by claim CHARACTERISTICS, not model accuracy. A better model does not widen the lane.'],
+['Evidence volume × human exception load','Amplifying','amp','If green share falls even slightly, absolute exception volume rises sharply. This is why H* binds first.'],
+['Regulatory governance × architecture cost','Reinforcing','rein','Audit trail, explainability artefact and model change log become production requirements. A build cost, not an operating one.'],
+['Surveyor displacement × ecosystem cooperation','Opposing','opp','The stakeholder whose income falls has an organised regulatory voice, and argues in a forum we do not control.']
+];
+const GRADES=[
+['Auto-settlement restricted by regulation','An AI claims decision-support platform — recommendation plus human settlement, not autonomous settlement'],
+['A competitor reaches or exceeds parity','A proprietary Bajaj claims-intelligence layer — data, feedback loops, garage ecosystem and continuously calibrated models, not "we have AI"'],
+['The adversarial arms race becomes continuous','A living fraud-defence system requiring standing retraining infrastructure, not a one-time build'],
+['Evidence architecture structurally shifts','An evidence-agnostic claims intelligence layer — multi-source confidence scoring rather than live-capture only']
+];
+const LADDER=[
+['G1','Resilient / Early','Minor KPI impact, parameter adjustment. No architecture change.','g'],
+['G2','Adaptive / Material','Measurable KPI and financial deterioration. Recalibration required.','g'],
+['G3','Architecturally stressed','Architecture intervention required. The investment thesis survives ONLY after adaptation.','a'],
+['G4','Transformational','The original configuration is no longer optimal. NOT a catastrophe — the question becomes whether the platform can be repurposed.','r']
+];
+const EW=[
+['Experience parity','Digital FNOL penetration; average status contacts per claim; complaint themes; competitor ADVERTISED TAT; digital self-service completion','Bajaj CX & competitive intelligence'],
+['Evidence abundance & integrity','Gallery vs live-capture share; first-pass image acceptance; EXIF availability; reinspection rate; synthetic-media flag rate','ClaimPulse telemetry'],
+['Adversarial AI','Suspicious-media prevalence; false-negative fraud cases; fraud-ring clustering density; classifier drift; cost of public synthetic-media tools','SIU & ClaimPulse telemetry'],
+['Conditional autonomy','Human override rate; adverse-decision appeal rate; AI rejection acceptance; Amber→Red migration; customer challenge rate','ClaimPulse telemetry & Ombudsman'],
+['Autonomous claims market','Claims per FTE; human-intervention %; exception-queue depth; agentic-task success; orchestration-layer RFP announcements','ClaimPulse telemetry & Technology'],
+['Data-rich, trust-constrained','Consent opt-in/out rate; OEM & telematics API access changes; evidence-source diversity; usable-evidence fraction; DPDP enforcement','Compliance, Legal & telemetry'],
+['AI commoditisation','Model cost per token; open-weight performance parity; competitor AI deployment; vendor pricing; model switching cost','Technology function'],
+['Governance tightening','IRDAI AI framework publications; DPDP Board enforcement; audit findings on model governance; explainability challenge rate','Compliance & Legal']
+];
+const ICS=[
+['IC-01','Stakeholder split reconciles to net annual benefit','The Sheet 3 split does not drift from the P&L'],
+['IC-02','Benefit lines sum to gross annual benefit','No benefit line is double counted or dropped'],
+['IC-03','Group consolidated benefit equals net annual benefit','Who-books-what adds back to the same total'],
+['IC-04','Summary headline equals the Workings result','The summary is a formula, not a retyped number'],
+['IC-05','Investor Metrics net benefit equals the Workings result','Every sheet reads the same engine'],
+['IC-06','Forecast 3-year total equals the sum of its years','The forecast block adds up'],
+['IC-07','Combined ratio equals loss plus expense ratio','Both halves of the ratio are accounted for'],
+['IC-08','Claims-handling hours reconcile to touches avoided','The chart source ties to the touch model']
+];
+const BUILD_STACK=[['Trust Score orchestration core',1.878],['CV damage assessment',1.002],['Fraud & duplicate graph engine',1.002],['Systems integration',1.002],['Production hardening & explainability',0.751],['Synthetic/tampered image screening',0.626],['Training data set',0.600],['Repair cost estimation engine',0.501],['Document AI / OCR extraction',0.438],['Claimant/surveyor/garage consoles',0.438],['Model QC & UAT window',0.400],['Guided live-capture SDK',0.376],['Policy validation RAG',0.313],['EXIF/metadata forensics engine',0.313],['Security, DPDP & SOC2 setup',0.250]];
+const NODE_INFO={
+ fnol:'<b>FNOL — Guided live capture, gallery disabled.</b> This is the hard rule that makes every downstream integrity check reliable. It costs us something real: B-20 assumes 8% of honest claimants cannot use live capture and are downgraded from green to amber. That friction cost is carried as a negative line in the benefit build, not hidden.',
+ gate:'<b>GATE 00 — Capture Integrity Shield. The moat.</b> Three build lines (EXIF forensics ₹0.31 Cr, synthetic screening ₹0.63 Cr, live-capture SDK ₹0.38 Cr) plus ₹0.60 Cr of training data. It is trained on Bajaj\'s own claim media, which means <b>no API sells it and no competitor can buy it</b> — the reason it is excluded from the build-vs-buy comparison entirely. It also carries its own benefit lines: ₹6.14 Cr of fraud avoided and ₹6.30 Cr of synthetic-media exposure avoided each year.',
+ e1:'<b>ENGINE 01 — Document OCR + VAHAN cross-validation.</b> Deliberately deterministic and run BEFORE any multimodal model call. Reading text off a document with a vision model is the expensive way to obtain a few hundred characters; OCR is cheap and only the extracted fields go downstream. Build ₹0.44 Cr.',
+ e2:'<b>ENGINE 02 — CV Damage Depth.</b> 360° walk-around video with photogrammetric depth, separating cosmetic scratches from structural dents. The single largest technical build line after orchestration at ₹1.00 Cr, and the dominant consumer of GPU time — which is why video de-duplication and damage-frame selection is the highest-value cost lever on the sheet.',
+ e3:'<b>ENGINE 03 — Fraud Graph Network.</b> Models connections between garages, claimants, vehicles and devices. Deliberately batched in 10-minute clusters for two reasons: batch inference is 50% cheaper at every vendor, and more importantly <b>a fraud ring cannot be seen by scoring claims one at a time</b>. Batching improves detection, it does not merely cheapen it. Build ₹1.00 Cr.',
+ e4:'<b>ENGINE 04 — Repair Cost Engine.</b> Settled claims plus live garage parts feeds, returning an indicative band at first notification. Cuts garage estimate-to-approval from 4 days to 1. Note: <b>we claim no rupee benefit from repair-cost accuracy anywhere in the model</b>, because the overpayment base it would multiply has no published source (gap U-03). Build ₹0.50 Cr.',
+ e5:'<b>ENGINE 05 — Policy RAG.</b> Policy wordings are byte-identical across thousands of claims, so they are parsed once offline into a clause table rather than re-read per claim. That converts a per-claim inference cost into a one-time per-product cost, and makes claim-time a lookup. Build ₹0.31 Cr.',
+ trust:'<b>Trust Score — the orchestration core, and the concentration point of the whole architecture.</b> All five engines feed it. Its dependency rating is CRITICAL: if it fails, every lane routing decision fails with it. That is why it carries the largest single build line at ₹1.88 Cr plus ₹0.75 Cr of production hardening for audit trail, human override, rollback and explainability. We name this as the architecture\'s biggest concentration risk rather than presenting it as a strength.',
+ green:'<b>GREEN LANE — auto-settled, zero human touch.</b> 65% of claims by design, settling in 1.5 days at 0.2 touches. Sits deliberately inside the IRDAI ₹50,000 surveyor-exemption corridor, which is what makes autonomous settlement legally available rather than merely technically possible. 65% of claims are designed to clear on rules and integrity checks <b>without a model call at all</b> — the cheapest inference is the one never run.',
+ amber:'<b>AMBER LANE — one reviewer on an AI-prepared file.</b> 25% of claims at 3.5 days and 2.0 touches. Signals are inconclusive rather than contradictory. This lane also absorbs the 8% of honest claimants downgraded by live-capture friction, which is a real cost of the hard capture rule and is carried as such.',
+ red:'<b>RED LANE — full investigation with the evidence pack pre-attached.</b> 10% of claims at 7.0 days and 6.0 touches — still faster than today\'s 9.8-day average, because the investigator starts with a compiled evidence pack rather than assembling one. Triggered by hard contradiction at the capture gate.'
+};
+
+/* =============== RENDER =============== */
+function renderTrends(filter){
+  document.getElementById('trendBody').innerHTML=TRENDS.filter(t=>filter==='all'||t[1]===filter).map(t=>
+    `<tr><td class="imp">${t[0]}</td><td class="txt">${t[1]}</td><td class="txt">${t[2]}</td><td><span class="tag ${t[4]}">${t[3]}</span></td><td class="txt" style="font-size:calc(11px * var(--fs));">${t[5]}</td><td><span class="tag ${t[8]}" style="white-space:normal;">${t[7]}</span><div style="font-size:calc(10px * var(--fs));color:var(--mist-dim);margin-top:2px;">${t[6]}</div></td><td class="txt">${t[9]}</td></tr>`).join('');
+}
+function filterTrends(f,btn){document.querySelectorAll('#page2 .filter-row .fbtn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderTrends(f);}
+function renderStatic(){
+  document.getElementById('gapBody').innerHTML=GAPS.map(g=>`<tr><td class="imp">${g[0]}</td><td class="lbl">${g[1]}</td><td class="txt">${g[2]}</td></tr>`).join('');
+  document.getElementById('settledList').innerHTML=SETTLED.map((s,i)=>`<div style="display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--line);"><span style="font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(11px * var(--fs));font-weight:700;color:var(--brand-blue);flex-shrink:0;">${i+1}.</span><div style="font-size:calc(12px * var(--fs));"><b style="color:var(--heading);">${s[0]}</b> <span style="color:var(--mist);">— ${s[1]}.</span></div></div>`).join('');
+  document.getElementById('depBody').innerHTML=DEPS.map(d=>`<tr><td class="lbl">${d[0]}<div style="font-size:calc(10px * var(--fs));color:var(--mist-dim);font-weight:400;">${d[5]}</div></td><td class="txt">${d[1]}</td><td class="txt">${d[2]}</td><td><span class="tag ${d[4]}">${d[3]}</span></td></tr>`).join('');
+  document.getElementById('convergeList').innerHTML=CONVERGE.map(c=>`<div style="padding:8px 0;border-bottom:1px solid var(--line);"><div style="font-size:calc(12px * var(--fs));font-weight:700;color:var(--brand-blue);font-family:var(--f-sub);font-variant-numeric:tabular-nums;">${c[0]}</div><div style="font-size:calc(11.5px * var(--fs));color:var(--mist);margin-top:2px;">${c[1]}</div></div>`).join('');
+  document.getElementById('dispBody').innerHTML=DISPLACE.map(d=>{
+    const cell=v=>v==='—'?'<span style="color:var(--mist-dim);">—</span>':(v.startsWith('YES')?`<span style="color:var(--red);font-weight:700;">${v}</span>`:`<span style="color:var(--green);">${v}</span>`);
+    return `<tr><td class="lbl">${d[0]}</td><td>${cell(d[1])}</td><td>${cell(d[2])}</td><td>${cell(d[3])}</td><td>${cell(d[4])}</td></tr>`;}).join('');
+  document.getElementById('interBody').innerHTML=INTERACTIONS.map(i=>`<tr><td class="lbl">${i[0]}</td><td><span class="sign ${i[2]}">${i[1]}</span></td><td class="txt">${i[3]}</td></tr>`).join('');
+  document.getElementById('gradeList').innerHTML=GRADES.map(g=>`<div style="display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--line);"><div style="flex:1;"><div style="font-size:calc(11.5px * var(--fs));color:var(--mist);">If this happens at G4:</div><div style="font-size:calc(12px * var(--fs));font-weight:700;color:var(--heading);">${g[0]}</div><div style="font-size:calc(11.5px * var(--fs));color:var(--brand-blue);margin-top:3px;">→ ClaimPulse becomes ${g[1]}</div></div></div>`).join('');
+  document.getElementById('ladderList').innerHTML=LADDER.map(l=>`<div style="display:flex;gap:9px;align-items:flex-start;padding:6px 0;"><span class="tag ${l[3]}" style="flex-shrink:0;">${l[0]}</span><div><b style="font-size:calc(12px * var(--fs));color:var(--heading);">${l[1]}</b><div style="font-size:calc(11.5px * var(--fs));color:var(--mist);">${l[2]}</div></div></div>`).join('');
+  document.getElementById('ewBody').innerHTML=EW.map(e=>`<tr><td class="lbl">${e[0]}</td><td class="txt">${e[1]}</td><td class="txt">${e[2]}</td></tr>`).join('');
+  document.getElementById('icBody').innerHTML=ICS.map(c=>`<tr><td class="imp">${c[0]}</td><td class="txt">${c[1]}</td><td><span class="tag g">PASS</span></td><td><span class="tag g">PASS</span></td><td><span class="tag g">PASS</span></td><td class="txt">${c[2]}</td></tr>`).join('')
+    +`<tr class="hl"><td class="imp">IC-09</td><td class="lbl">OVERALL</td><td colspan="3" style="text-align:center;"><span class="tag g" style="font-size:calc(12px * var(--fs));padding:4px 12px;">ALL 24 CHECKS PASS</span></td><td class="txt">Eight checks across three plans</td></tr>`;
+  document.getElementById('libBody').innerHTML='';renderLib('all');
+  document.getElementById('bpList').innerHTML=BPS.map(b=>{
+    const col=b[5]==='g'?'var(--green)':b[5]==='a'?'var(--gold)':'var(--mist-dim)';
+    return `<div class="bp-row"><div class="bp-ref">${b[0]}</div><div class="bp-info"><div class="bp-nm">${b[1]}</div><div class="bp-q">${b[2]}</div></div><div class="bp-gauge"><div class="bp-track"><div class="bp-fill" style="width:${b[3]||4}%;background:${col};"></div></div><div class="bp-stat" style="color:${col};">${b[4]}</div></div></div>`;}).join('');
+}
+function renderLib(f){
+  const rows=LIB.filter(l=>f==='all'?true:(f==='breach'?l[4]!=='No':l[0]===f));
+  document.getElementById('libBody').innerHTML=rows.map(l=>{
+    const cls=l[4]==='YES'?'r':(l[4]==='No'?'g':'a');
+    return `<tr${l[4]==='YES'?' class="hl" style="background:rgba(239,68,68,0.12);"':''}><td class="txt">${l[0]}</td><td class="lbl">${l[1]}</td><td class="txt">${l[2]}</td><td class="txt">${l[3]}</td><td><span class="tag ${cls}">${l[4]}</span></td></tr>`;}).join('');
+}
+function filterLib(f,btn){document.querySelectorAll('#page4 .card .filter-row .fbtn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderLib(f);}
+
+/* =============== SCENARIO LAB =============== */
+let curScen='S1',curLevel=1;
+function pickScenario(s,btn){
+  curScen=s;curLevel=(s==='S1')?1:0;
+  document.querySelectorAll('#page4 .grid21 .filter-row:first-of-type .fbtn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');renderLevels();applyScenario();
+}
+function renderLevels(){
+  const lv=SCEN[curScen].levels;
+  document.getElementById('levelRow').innerHTML='<span style="font-size:calc(11px * var(--fs));color:var(--mist);font-weight:700;text-transform:uppercase;">Intensity:</span>'+
+    lv.map((l,i)=>`<button class="fbtn ${i===curLevel?'active':''}" onclick="pickLevel(${i},this)">${l[0]} · ${l[1]}</button>`).join('');
+}
+function pickLevel(i,btn){curLevel=i;document.querySelectorAll('#levelRow .fbtn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');applyScenario();}
+function applyScenario(){
+  const L=SCEN[curScen].levels[curLevel];
+  setText('sc-net','₹'+fmt(L[4])+' Cr');
+  setText('sc-payback',fmt(L[6])+' Mo');
+  setText('sc-build','Build ₹'+fmt(L[5])+' Cr');
+  setText('sc-cr',fmt(L[7])+' pp');
+  setText('sc-tat','TAT '+fmt(L[3])+' d · '+fmt(L[2])+' touches');
+  const d=L[8];
+  setText('sc-delta', d===0?'= Base case':(d>0?'+₹'+fmt(d)+' Cr vs Base':'−₹'+fmt(Math.abs(d))+' Cr vs Base'));
+  document.getElementById('sc-delta').style.color = d===0?'var(--mist-dim)':(d>0?'var(--green)':'var(--red)');
+  document.getElementById('scenarioNote').innerHTML=SCEN[curScen].note;
+  document.getElementById('scenarioNote').className='note-box '+(curScen==='S2'?'bad':(curScen==='S3'?'warn':'good'));
+  if(chartScenario){
+    const lv=SCEN[curScen].levels;
+    chartScenario.data.labels=lv.map(l=>l[0]);
+    chartScenario.data.datasets[0].data=lv.map(l=>l[4]);
+    chartScenario.data.datasets[1].data=lv.map(l=>l[6]);
+    chartScenario.data.datasets[0].backgroundColor=lv.map((l,i)=>i===curLevel?'#2e8fe6':'rgba(46,143,230,0.35)');
+    chartScenario.update('none');
+  }
+}
+function updateFraudCurve(){
+  const fd=getNum('sl-fdcurve')/100;
+  setText('val-fdcurve',Math.round(fd*100)+'%');
+  const m=core(0.6,65,45000,fd,7,250);
+  const run=FIXED_RUN+m.gpu+m.storage, net=m.gross-run, pb=BUILD_COST/(net/12);
+  setText('fd-net','₹'+fmt(net)+' Cr'); setText('fd-pb',fmt(pb)+' Mo');
+  const base=43.310, loss=net-base;
+  setText('fd-loss',(loss>=0?'+':'−')+'₹'+fmt(Math.abs(loss))+' Cr');
+  document.getElementById('fd-loss').style.color=loss>=-0.01?'var(--green)':'var(--red)';
+  if(chartFraudCurve){chartFraudCurve.data.datasets[1].data=chartFraudCurve.data.labels.map(l=>parseInt(l)===Math.round(fd*100)?net:null);chartFraudCurve.update('none');}
+}
+
+/* =============== TRANSMISSION CHAIN =============== */
+function runChain(k,btn){
+  document.querySelectorAll('#page5 .filter-row .fbtn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const c=CHAINS[k];
+  document.getElementById('chainList').innerHTML=c.steps.map((s,i)=>
+    `<div class="chain-step${i===11?' terminal':''}" data-i="${i}"><div class="chain-num">${i+1}</div><div class="chain-body"><div class="chain-t">${s[0]}</div><div class="chain-d">${s[1]}</div></div><div class="chain-v">${s[2]}</div></div>`).join('');
+  const els=document.querySelectorAll('#chainList .chain-step');
+  els.forEach((el,i)=>setTimeout(()=>el.classList.add('lit'),i*180));
+}
+
+/* =============== NODE INSPECT =============== */
+function bindNodes(){
+  document.querySelectorAll('.fg').forEach(g=>{
+    g.addEventListener('click',()=>{
+      document.querySelectorAll('.fg rect').forEach(r=>r.classList.remove('active'));
+      g.querySelector('rect').classList.add('active');
+      document.getElementById('nodeInspect').innerHTML=NODE_INFO[g.dataset.node];
+    });
+  });
+}
+
+/* =============== ECONOMICS =============== */
+function applyPlan(t){
+  currentPlan=t;
+  document.querySelectorAll('#page6 .filter-row .fbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn-'+t).classList.add('active');
+  document.getElementById('sl-rollout').value=PLAN[t].rollout*100;update();
+}
+function onRollout(){
+  const r=getNum('sl-rollout')/100;
+  document.querySelectorAll('#page6 .filter-row .fbtn').forEach(b=>b.classList.remove('active'));
+  for(const k in PLAN) if(Math.abs(PLAN[k].rollout-r)<0.001){document.getElementById('btn-'+k).classList.add('active');currentPlan=k;}
+  update();
+}
+function update(){
+  const rollout=getNum('sl-rollout')/100, greenPct=getNum('sl-green'), cv=getNum('sl-claimval');
+  const fd=getNum('sl-fraud')/100, tt=getNum('sl-touches'), cpt=PLAN[currentPlan]?PLAN[currentPlan].cost:250;
+  setText('val-rollout',Math.round(rollout*100)+'%'); setText('val-green',greenPct+'%');
+  setText('val-claimval','₹'+cv.toLocaleString('en-IN')); setText('val-fraud',Math.round(fd*100)+'%'); setText('val-touches',tt);
+  const m=core(rollout,greenPct,cv,fd,tt,cpt);
+  const gpuEff=getNum('sl-gpueff')/100;
+  const runAdj=FIXED_RUN+m.gpu*(1-gpuEff)+m.storage, runFull=FIXED_RUN+m.gpu+m.storage;
+  const net=m.gross-runAdj, netFull=m.gross-runFull;
+  const pb=BUILD_COST/(net/12), pbFull=BUILD_COST/(netFull/12);
+  // Forecast built exactly as Sheet 4: benefit carries the realisation ramp, run cost carries market growth only
+  const g2=GROWTH, g3=GROWTH*GROWTH;
+  const y1=m.gross*R1-runAdj, y2=m.gross*R2*g2-runAdj*g2, y3=m.gross*R3*g3-runAdj*g3;
+  const npv=-BUILD_COST+y1/1.12+y2/1.2544+y3/1.404928;
+  const pbKick=paybackFromKickoff([y1,y2,y3]);
+  // H-13 / H-14: downside priced at the in-house touch rate F-01, fraud landing at F-02,
+  // with synthetic-media and renewal benefit both excluded entirely
+  const touchOnCur=(greenPct/100)*TOUCH_G+(1-greenPct/100-RED_SHARE)*TOUCH_A+RED_SHARE*TOUCH_R;
+  const lab83=m.cpa*(tt*F01_TOUCH-touchOnCur*F01_TOUCH)/1e7-m.cpa*FRICTION*(TOUCH_A-TOUCH_G)*F01_TOUCH/1e7;
+  const pool=m.cpa*cv*0.0315/1e7, fr82=pool*(1-((1-F02_FRAUD)/(1-0.62)));
+  const downNet=(lab83+fr82)-runFull, floorNet=lab83-runFull;
+  setText('hero-tat',fmt(m.tatBlend)+' d'); setText('hero-tat-note','On platform: '+fmt(m.tatOn)+' d');
+  setText('hero-touch',fmt(m.touchOn)); setText('hero-net','₹'+fmt(net)+' Cr');
+  setText('hero-gross','Gross ₹'+fmt(m.gross)+' Cr less run cost'); setText('hero-build','₹'+fmt(BUILD_COST)+' Cr');
+  setText('hero-pb',fmt(pb)+' Mo'); setText('hero-pb2',fmt(pbKick)+' Mo from kickoff');
+  // Renewal sits outside both ratios, so it is excluded from the combined-ratio impact
+  const crMotor=(net-m.renewal)/(A01*A02)*100;
+  setText('hero-cr',fmt(crMotor)+' pp');
+  setText('kpi-claims',Math.round(m.cpm).toLocaleString('en-IN'));
+  setText('kpi-claims-sub',Math.round(rollout*100)+'% of addressable book');
+  setText('kpi-monthly','₹'+fmt(net/12)+' Cr');
+  setText('kpi-3yr','₹'+fmt(y1+y2+y3)+' Cr'); setText('kpi-npv','₹'+fmt(npv,0)+' Cr');
+  setText('kpi-down',downNet>0?fmt(BUILD_COST/(downNet/12))+' Mo':'never');
+  setText('kpi-floor',floorNet>0?fmt(BUILD_COST/(floorNet/12))+' Mo':'never');
+  setText('val-gpueff',Math.round(gpuEff*100)+'%');
+  setText('ceil-a',fmt(pbFull)); setText('ceil-b',fmt(BUILD_COST/((m.gross-FIXED_RUN-m.storage)/12)));
+  setText('fc-pb1',fmt(pb)); setText('fc-pb2',fmt(pbKick));
+  document.getElementById('svg-green-share').textContent=greenPct+'% of claims';
+  document.getElementById('svg-amber-share').textContent=Math.round(100-greenPct-10)+'% of claims';
+  document.getElementById('svg-blend-tat').textContent=fmt(m.tatOn)+' d';
+  if(chartBenefit){chartBenefit.data.datasets[0].data=[m.labour,m.fGraph,m.fGate,m.synth,m.renewal,-m.friction];chartBenefit.update('none');}
+  if(chartForecast){chartForecast.data.datasets[0].data=[-BUILD_COST,-BUILD_COST+y1,-BUILD_COST+y1+y2,-BUILD_COST+y1+y2+y3];
+    chartForecast.data.datasets[1].data=[null,y1,y2,y3];chartForecast.update('none');}
+  if(chartRun){chartRun.data.datasets[0].data=[m.gpu*(1-gpuEff),0.8005,0.644,0.25,m.storage,0.12];chartRun.update('none');}
+  updateBuyBuild(m.cpa);
+}
+function updateBuyBuild(claims0){
+  const tokensIn=25084, scope=0.45;
+  const api1=((M14*tokensIn+M15*O05)/1e6)*FX*(1+M24);
+  const gpu1=E01*scope*E02*E03*(E04*FX);
+  let nBuy=0,nBuild=0,c=claims0;
+  for(let y=1;y<=5;y++){if(y>1)c*=1.087;
+    nBuy+=(c*api1*Math.pow(1+A12,y-1)/1e7)/Math.pow(1+WACC,y);
+    nBuild+=(c*gpu1*Math.pow(1+A13,y-1)/1e7)/Math.pow(1+WACC,y);}
+  setText('bb-adv','₹'+fmt(nBuild-nBuy)+' Cr');
+  setText('bb-be',Math.round((api1/(E04*FX))*3600));
+  if(chartBuyBuild){chartBuyBuild.data.datasets[0].data=[nBuy,nBuild];chartBuyBuild.update('none');}
+}
+
+/* =============== CHARTS =============== */
+let chartSqueeze,chartGrievance,chartReadiness,chartVector,chartEvidence,chartDomain,
+    chartScenario,chartTornado,chartCompound,chartFraudCurve,chartSimLane,
+    chartBenefit,chartForecast,chartBuild,chartRun,chartBuyBuild,chartTokens,chartTokenBreak;
+/* ============================================================
+   CHART FONT SIZE CONTROL — the canvas cannot read CSS variables,
+   so keep this in step with --fs in the CSS at the top of the file.
+   1 = current, 1.1 = 10% bigger.
+   ============================================================ */
+const CFS=1;
+const GRID={color:'rgba(255,255,255,0.05)'},NOGRID={display:false};
+/* Data labels: minimum font size 8 everywhere, Outfit only */
+const DL=(fmtFn,opts={})=>Object.assign({
+  display:true,color:'#e2e8f0',font:{family:'Outfit,sans-serif',size:10*CFS,weight:'600'},
+  formatter:fmtFn||(v=>v===null||v===undefined?'':(typeof v==='number'?v.toFixed(2):v))
+},opts);
+const DL_OFF={display:false};
+function initCharts(){
+  Chart.defaults.color='#94a3b8';
+  Chart.defaults.font.size=Math.round(11*CFS);Chart.defaults.font.family='Outfit,sans-serif';
+  if(window.ChartDataLabels){Chart.register(window.ChartDataLabels);}
+  Chart.defaults.set('plugins.datalabels',{display:false});
+  const L={labels:{boxWidth:10,font:{size:10.5*CFS}}};
+
+  chartSqueeze=new Chart(document.getElementById('chartSqueeze'),{data:{labels:['Q1 FY26','Q1 FY27'],
+    datasets:[{type:'bar',label:'Combined ratio %',data:[103.6,104.7],backgroundColor:['#0060ae','#ef4444'],yAxisID:'y',order:2},
+      {type:'bar',label:'Net incurred claim ratio %',data:[71.1,74.3],backgroundColor:['#2e8fe6','#f59e0b'],yAxisID:'y',order:2},
+      {type:'line',label:'Underwriting loss ₹ Cr',data:[116,130],borderColor:'#10b981',borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#10b981',yAxisID:'y1',order:1}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:L,datalabels:DL(v=>v,{anchor:'end',align:'top',offset:2})},
+      scales:{y:{grid:GRID,title:{display:true,text:'%',font:{size:10*CFS}},min:60},y1:{position:'right',grid:NOGRID,title:{display:true,text:'₹ Cr',font:{size:10*CFS}},min:0},x:{grid:NOGRID}}}});
+
+  chartGrievance=new Chart(document.getElementById('chartGrievance'),{type:'doughnut',
+    data:{labels:['Claims-related (69%)','All other themes (31%)'],datasets:[{data:[69,31],backgroundColor:['#ef4444','#1e3a5f'],borderColor:'#0b2545',borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10.5*CFS}}},datalabels:DL(v=>v+'%',{color:'#fff',font:{family:'Outfit,sans-serif',size:12*CFS,weight:'700'}})}}});
+
+  chartReadiness=new Chart(document.getElementById('chartReadiness'),{type:'bar',
+    data:{labels:['Digital servicing','AI bot coverage','Chatbot','Voicebot'],datasets:[{data:[90.9,64.5,41.33,23.2],backgroundColor:['#10b981','#2e8fe6','#0060ae','#22d3ee']}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:NOGRID,title:{display:true,text:'% of customers · FY26 filed',font:{size:10.5*CFS}},datalabels:DL(v=>v+'%',{anchor:'end',align:'right',offset:3,color:'#f8fafc'})},scales:{x:{grid:GRID,max:112},y:{grid:NOGRID}}}});
+
+  const vcol=e=>e>=4?'rgba(16,185,129,0.75)':e===3?'rgba(245,158,11,0.75)':'rgba(239,68,68,0.8)';
+  chartVector=new Chart(document.getElementById('chartVector'),{type:'bubble',
+    data:{datasets:[{data:VECTOR.map(v=>({x:v[3],y:v[4],r:v[8]*3.1,_d:v})),
+      backgroundColor:VECTOR.map(v=>vcol(v[6])),borderColor:VECTOR.map(v=>vcol(v[6]).replace('0.75','1').replace('0.8','1')),borderWidth:1.5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:NOGRID,datalabels:DL(null,{formatter:(v,c)=>v._d[0],color:'#f8fafc',font:{family:'Outfit,sans-serif',size:9*CFS,weight:'700'},anchor:'center',align:'center'}),tooltip:{callbacks:{label:c=>{const d=c.raw._d;
+      return [d[0]+' · '+d[2],'Field: '+d[1],'Magnitude '+d[3]+' · Velocity '+d[4]+' · Persistence '+d[5],'Evidence confidence '+d[6]+' · Motor relevance '+d[7]+' · Exposure '+d[8],'Anchor: '+d[9]];}}}},
+      scales:{x:{grid:GRID,title:{display:true,text:'MAGNITUDE  →  how big the force is',font:{size:11*CFS,weight:'bold'}},min:1.2,max:4.8},
+              y:{grid:GRID,title:{display:true,text:'VELOCITY  →  how fast it is arriving',font:{size:11*CFS,weight:'bold'}},min:1.2,max:4.8}}}});
+
+  chartEvidence=new Chart(document.getElementById('chartEvidence'),{type:'doughnut',
+    data:{labels:['Verified clean (18)','Stated lower tier (9)','No source — declared gap (8)'],
+      datasets:[{data:[18,9,8],backgroundColor:['#10b981','#f59e0b','#ef4444'],borderColor:'#0b2545',borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10*CFS}}},datalabels:DL(v=>v,{color:'#fff',font:{family:'Outfit,sans-serif',size:13*CFS,weight:'700'}})}}});
+
+  const doms=['Customer','Technology','Social','Industry'];
+  const avg=(d,i)=>{const r=VECTOR.filter(v=>v[1]===d);return r.reduce((s,v)=>s+v[i],0)/r.length;};
+  chartDomain=new Chart(document.getElementById('chartDomain'),{type:'radar',
+    data:{labels:['Magnitude','Velocity','Persistence','Evidence conf.','Motor relevance','Exposure'],
+      datasets:doms.map((d,i)=>({label:d,data:[3,4,5,6,7,8].map(k=>avg(d,k)),
+        borderColor:['#2e8fe6','#ef4444','#a78bfa','#10b981'][i],
+        backgroundColor:['rgba(46,143,230,0.13)','rgba(239,68,68,0.13)','rgba(167,139,250,0.13)','rgba(16,185,129,0.13)'][i],borderWidth:1.8,pointRadius:2}))},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:9,font:{size:10*CFS}}}},
+      scales:{r:{min:0,max:5,grid:{color:'rgba(255,255,255,0.08)'},angleLines:{color:'rgba(255,255,255,0.08)'},pointLabels:{font:{size:10*CFS}},ticks:{display:false}}}}});
+
+  chartScenario=new Chart(document.getElementById('chartScenario'),{
+    data:{labels:[],datasets:[
+      {type:'bar',label:'Net annual benefit ₹ Cr',data:[],backgroundColor:'#2e8fe6',yAxisID:'y'},
+      {type:'line',label:'Payback from kickoff, months',data:[],borderColor:'#f59e0b',borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#f59e0b',yAxisID:'y1'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:L,datalabels:DL(v=>v==null?'':v.toFixed(2),{anchor:'end',align:'top',offset:3})},
+      scales:{y:{grid:GRID,title:{display:true,text:'₹ Cr',font:{size:10*CFS}},beginAtZero:true},y1:{position:'right',grid:NOGRID,title:{display:true,text:'Months',font:{size:10*CFS}},beginAtZero:true},x:{grid:NOGRID}}}});
+
+  const TOR=[];Object.keys(SCEN).forEach(k=>SCEN[k].levels.forEach(l=>{if(l[8]!==0)TOR.push([k+' '+l[0].split(' ')[0]+' · '+l[1],l[8]]);}));
+  TOR.sort((a,b)=>a[1]-b[1]);
+  chartTornado=new Chart(document.getElementById('chartTornado'),{type:'bar',
+    data:{labels:TOR.map(t=>t[0]),datasets:[{data:TOR.map(t=>t[1]),backgroundColor:TOR.map(t=>t[1]<0?'#ef4444':'#10b981')}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:NOGRID,title:{display:true,text:'Δ net annual benefit vs Base, ₹ Cr',font:{size:10.5*CFS}},datalabels:DL(v=>(v>0?'+':'')+v.toFixed(2),{anchor:'end',align:'end',offset:3,color:'#f8fafc'})},scales:{x:{grid:GRID,suggestedMin:-27,suggestedMax:4},y:{grid:NOGRID,ticks:{font:{size:10*CFS}}}}}});
+
+  chartCompound=new Chart(document.getElementById('chartCompound'),{type:'bar',
+    data:{labels:['Net annual ₹ Cr','Payback months','Combined ratio pp'],
+      datasets:[{label:'Base',data:[43.31,2.74,2.58],backgroundColor:'#2e8fe6'},
+                {label:'Compound severe',data:[25.01,5.70,1.48],backgroundColor:'#ef4444'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:L,datalabels:DL(v=>v.toFixed(2),{anchor:'end',align:'top',offset:2})},scales:{y:{grid:GRID,beginAtZero:true},x:{grid:NOGRID}}}});
+
+  const fdL=[],fdD=[];for(let f=62;f<=90;f+=2){fdL.push(f);const mm=core(0.6,65,45000,f/100,7,250);fdD.push(mm.gross-(FIXED_RUN+mm.gpu+mm.storage));}
+  chartFraudCurve=new Chart(document.getElementById('chartFraudCurve'),{
+    data:{labels:fdL,datasets:[
+      {type:'line',label:'Net annual benefit ₹ Cr',data:fdD,borderColor:'#2e8fe6',backgroundColor:'rgba(46,143,230,0.18)',fill:true,borderWidth:2.5,pointRadius:0,tension:.25},
+      {type:'line',label:'Selected',data:fdL.map(l=>l===90?fdD[fdD.length-1]:null),borderColor:'#f59e0b',pointRadius:7,pointBackgroundColor:'#f59e0b',showLine:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:L,datalabels:DL(null,{formatter:(v,c)=>c.datasetIndex===1&&v!=null?'₹'+v.toFixed(2)+' Cr':'',anchor:'end',align:'top',offset:6,color:'#f59e0b',font:{family:'Outfit,sans-serif',size:11*CFS,weight:'700'}})},
+      scales:{y:{grid:GRID,title:{display:true,text:'₹ Cr per year',font:{size:10*CFS}},beginAtZero:true},x:{grid:NOGRID,title:{display:true,text:'Fraud detection achieved, %',font:{size:10*CFS}}}}}});
+
+  chartBenefit=new Chart(document.getElementById('chartBenefit'),{type:'bar',
+    data:{labels:['Labour: touches removed','Fraud: graph engine','Fraud: INTEGRITY GATE','Synthetic media: THE GATE','Renewal retention','less: live-capture friction'],
+      datasets:[{data:[23.74,11.05,6.14,6.30,0.58,-0.59],backgroundColor:['#2e8fe6','#10b981','#0060ae','#0060ae','#94a3b8','#ef4444']}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:NOGRID,title:{display:true,text:'₹ Cr per year, steady state',font:{size:10.5*CFS}},datalabels:DL(v=>'₹'+v.toFixed(2),{anchor:'end',align:'end',offset:3,color:'#f8fafc'})},scales:{x:{grid:GRID,suggestedMax:28},y:{grid:NOGRID,ticks:{font:{size:10.5*CFS}}}}}});
+
+  chartForecast=new Chart(document.getElementById('chartForecast'),{type:'line',
+    data:{labels:['Go-live','Year 1 (45%)','Year 2 (92%)','Year 3 (100%)'],
+      datasets:[{label:'Cumulative net position ₹ Cr',data:[-9.89,7.45,50.43,101.60],borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.18)',fill:true,borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#10b981',tension:.2,yAxisID:'y'},
+        {type:'bar',label:'Net benefit that year ₹ Cr',data:[null,17.34,42.97,51.17],backgroundColor:'rgba(46,143,230,0.55)',yAxisID:'y'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:L,datalabels:DL(v=>v==null?'':'₹'+v.toFixed(1),{anchor:'end',align:'top',offset:4})},scales:{y:{grid:GRID,title:{display:true,text:'₹ Cr',font:{size:10*CFS}}},x:{grid:NOGRID}}}});
+
+  chartBuild=new Chart(document.getElementById('chartBuild'),{type:'doughnut',
+    data:{labels:BUILD_STACK.map(x=>x[0]),datasets:[{data:BUILD_STACK.map(x=>x[1]),
+      backgroundColor:['#2e8fe6','#0060ae','#10b981','#f59e0b','#94a3b8','#ef4444','#38bdf8','#a78bfa','#f472b6','#facc15','#4ade80','#fb923c','#22d3ee','#c084fc','#e879f9'],borderColor:'#0b2545',borderWidth:1.5}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'42%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,font:{size:9*CFS}}},
+      datalabels:DL(null,{formatter:v=>v>=0.4?'₹'+v.toFixed(2):'',color:'#06111e',font:{family:'Outfit,sans-serif',size:10*CFS,weight:'700'}}),
+      tooltip:{callbacks:{label:c=>c.label+': ₹'+c.raw.toFixed(3)+' Cr ('+(c.raw/9.8905*100).toFixed(1)+'%)'}}}}});
+
+  chartRun=new Chart(document.getElementById('chartRun'),{type:'bar',
+    data:{labels:['GPU compute','MLOps tooling','Operations team','Security & compliance','Storage','Legal & regulatory'],
+      datasets:[{data:[1.8822,0.80052,0.6440004,0.2499996,0.20390,0.12],backgroundColor:['#2e8fe6','#64748b','#64748b','#64748b','#22d3ee','#64748b']}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:NOGRID,title:{display:true,text:'₹ Cr per year · blue = variable, grey = fixed floor',font:{size:10.5*CFS}},datalabels:DL(v=>'₹'+v.toFixed(3),{anchor:'end',align:'end',offset:3,color:'#f8fafc'})},scales:{x:{grid:GRID,suggestedMax:2.1},y:{grid:NOGRID,ticks:{font:{size:10.5*CFS}}}}}});
+
+  chartSimLane=new Chart(document.getElementById('chartSimLane'),{type:'bar',
+    data:{labels:['Green · auto','Amber · assist','Red · investigate'],
+      datasets:[{data:[0,0,0],backgroundColor:['#10b981','#f59e0b','#ef4444']}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:{duration:200},
+      plugins:{legend:NOGRID,title:{display:true,text:'Claims routed this session',font:{size:10.5*CFS}},
+        datalabels:DL(v=>v>0?v:'',{anchor:'end',align:'end',offset:3,color:'#f8fafc'})},
+      scales:{x:{grid:GRID,beginAtZero:true},y:{grid:NOGRID,ticks:{font:{size:10.5*CFS}}}}}});
+
+  chartTokens=new Chart(document.getElementById('chartTokens'),{
+    data:{labels:['LOW · 4,962','CENTRAL · 25,084','HIGH · 88,720'],
+      datasets:[
+        {type:'bar',label:'Annual inference cost ₹ Cr',data:[0.017,0.082,0.286],backgroundColor:['#10b981','#2e8fe6','#f59e0b'],yAxisID:'y',order:2},
+        {type:'line',label:'Payback, months',data:[3.074,3.079,3.096],borderColor:'#ef4444',borderWidth:3,pointRadius:6,pointBackgroundColor:'#ef4444',yAxisID:'y1',order:1}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:L,datalabels:DL(null,{formatter:(v,c)=>c.datasetIndex===0?'₹'+v.toFixed(3)+' Cr':v.toFixed(3)+' mo',
+        anchor:'end',align:'top',offset:4,color:(c)=>c.datasetIndex===1?'#ef4444':'#f8fafc',font:{family:'Outfit,sans-serif',size:10*CFS,weight:'700'}})},
+      scales:{y:{grid:GRID,title:{display:true,text:'₹ Cr per year',font:{size:10*CFS}},beginAtZero:true,suggestedMax:0.38},
+              y1:{position:'right',grid:NOGRID,title:{display:true,text:'Payback, months',font:{size:10*CFS}},min:3.0,max:3.2},x:{grid:NOGRID}}}});
+
+  chartTokenBreak=new Chart(document.getElementById('chartTokenBreak'),{type:'bar',
+    data:{labels:['ClaimPulse today\n(40 sec video)','1% of benefit','5% of benefit','10% of benefit'],
+      datasets:[{label:'Tokens per claim',data:[25084,150156,750778,1501557],
+        backgroundColor:['#10b981','#f59e0b','#fb923c','#ef4444']}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:NOGRID,title:{display:true,text:'Tokens per claim needed to reach each threshold — log scale',font:{size:10.5*CFS}},
+        datalabels:DL(v=>v.toLocaleString('en-IN'),{anchor:'end',align:'top',offset:3,color:'#f8fafc',font:{family:'Outfit,sans-serif',size:10*CFS,weight:'700'}})},
+      scales:{y:{type:'logarithmic',grid:GRID,title:{display:true,text:'Tokens / claim',font:{size:10*CFS}}},x:{grid:NOGRID,ticks:{font:{size:10*CFS}}}}}});
+
+  chartBuyBuild=new Chart(document.getElementById('chartBuyBuild'),{type:'bar',
+    data:{labels:['BUY — third-party API','BUILD — self-host GPU'],datasets:[{data:[0.24,2.94],backgroundColor:['#10b981','#ef4444']}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:NOGRID,title:{display:true,text:'Incremental 5-year NPV, ₹ Cr — lower is better',font:{size:10.5*CFS}},datalabels:DL(v=>'₹'+v.toFixed(2)+' Cr',{anchor:'end',align:'top',offset:3,color:'#f8fafc',font:{family:'Outfit,sans-serif',size:12*CFS,weight:'700'}})},scales:{y:{grid:GRID,beginAtZero:true},x:{grid:NOGRID}}}});
+}
+
+/* =============== LIVE TELEMETRY ENGINE =============== */
+let simTimer=null,simOn=false,simStats={total:0,green:0,amber:0,red:0,tat:0,saved:0},simSeq=90000;
+const SPEEDS=[1800,1200,800,500,280],SPEEDNAMES=['Very slow','Slow','Normal','Fast','Very fast'];
+const NAMES=['Rohan Sharma','Priya Patel','Amit Verma','Rajesh Kumar','Sneha Gupta','Vikram Singh','Ananya Iyer','Karan Mehta','Deepak Nair','Meera Joshi','Arjun Reddy','Kavya Menon'];
+const VEHICLES=['Maruti Swift','Hyundai Creta','Tata Nexon','Honda City','Mahindra XUV700','Kia Seltos','Maruti Baleno','Tata Punch'];
+const PLATES=['MH02','DL01','KA03','TS09','MH12','GJ01','TN10','UP16'];
+const CITIES=['Mumbai','Delhi','Bengaluru','Hyderabad','Pune','Ahmedabad','Chennai','Noida'];
+function setSimSpeed(){const i=getNum('sl-simspeed')-1;setText('val-simspeed',SPEEDNAMES[i]);
+  if(simOn){clearInterval(simTimer);simTimer=setInterval(pushClaim,SPEEDS[i]);}}
+function toggleSim(){
+  simOn=!simOn;const b=document.getElementById('simToggleBtn');
+  if(simOn){b.classList.add('stop');setText('simBtnIcon','■');setText('simBtnText','Stop Live Engine');
+    document.getElementById('simFeed').innerHTML='';pushClaim();
+    simTimer=setInterval(pushClaim,SPEEDS[getNum('sl-simspeed')-1]);}
+  else{b.classList.remove('stop');setText('simBtnIcon','▶');setText('simBtnText','Resume Live Engine');clearInterval(simTimer);}
+}
+function drawLane(){const r=Math.random(),g=getNum('sl-green')/100,a=1-g-RED_SHARE;
+  return r<g?'G':(r<g+a?'A':'R');}
+function makeClaim(lane){
+  const L={G:{tat:TAT_G,touch:TOUCH_G},A:{tat:TAT_A,touch:TOUCH_A},R:{tat:TAT_R,touch:TOUCH_R}}[lane];
+  const i=Math.floor(Math.random()*NAMES.length);
+  return {id:'CLM-'+(++simSeq),name:NAMES[i],veh:VEHICLES[Math.floor(Math.random()*VEHICLES.length)],
+    plate:PLATES[Math.floor(Math.random()*PLATES.length)]+' '+CITIES[Math.floor(Math.random()*CITIES.length)],
+    lane:lane,tat:L.tat,touch:L.touch,
+    score:lane==='G'?90+Math.floor(Math.random()*10):lane==='A'?58+Math.floor(Math.random()*24):12+Math.floor(Math.random()*30),
+    amt:8000+Math.floor(Math.random()*42000)};
+}
+function pushClaim(){
+  const c=makeClaim(drawLane());
+  simStats.total++;simStats[{G:'green',A:'amber',R:'red'}[c.lane]]++;
+  simStats.tat+=c.tat;simStats.saved+=(getNum('sl-touches')-c.touch);
+  const pc=k=>simStats.total?Math.round(simStats[k]/simStats.total*100):0;
+  setText('st-total',simStats.total.toLocaleString('en-IN'));
+  setText('st-green',simStats.green+' ('+pc('green')+'%)');
+  setText('st-amber',simStats.amber+' ('+pc('amber')+'%)');
+  setText('st-red',simStats.red+' ('+pc('red')+'%)');
+  setText('st-tat',(simStats.tat/simStats.total).toFixed(2)+' d');
+  setText('st-saved',Math.round(simStats.saved).toLocaleString('en-IN'));
+  const feed=document.getElementById('simFeed');
+  const row=document.createElement('div');row.className='feed-row';
+  row.innerHTML='<span>'+c.id+' · '+c.name+'</span><span class="lane-badge '+c.lane+'">'+
+    {G:'GREEN',A:'AMBER',R:'RED'}[c.lane]+'</span>';
+  row.onclick=()=>{document.querySelectorAll('.feed-row').forEach(r=>r.classList.remove('sel'));row.classList.add('sel');inspect(c);};
+  feed.prepend(row);while(feed.children.length>14)feed.removeChild(feed.lastChild);
+  inspect(c);
+  if(chartSimLane){chartSimLane.data.datasets[0].data=[simStats.green,simStats.amber,simStats.red];chartSimLane.update('none');}
+}
+function inspect(c){
+  setText('insp-id',c.id+' — '+c.name);setText('insp-veh',c.veh+' • '+c.plate);
+  const b=document.getElementById('insp-badge');b.style.visibility='visible';
+  b.className='lane-badge '+c.lane;b.textContent={G:'GREEN LANE',A:'AMBER LANE',R:'RED LANE'}[c.lane];
+  const col={G:'var(--green)',A:'var(--gold)',R:'var(--red)'}[c.lane];
+  const set=(id,txt,cl)=>{const e=document.getElementById(id);if(e){e.textContent=txt;e.style.color=cl||col;}};
+  set('insp-score',c.score+' / 100');
+  set('insp-exif',c.lane==='R'?'MISMATCH — GPS + time':c.lane==='A'?'PARTIAL — GPS drift':'MATCH — GPS + time');
+  set('insp-synth',c.lane==='R'?'FLAGGED — 0.71 risk':c.lane==='A'?'INCONCLUSIVE — 0.18':'PASS — 0.02 risk');
+  set('insp-ocr',c.lane==='R'?'RC MISMATCH':c.lane==='A'?'PARTIAL EXTRACT':'VERIFIED vs VAHAN');
+  set('insp-damage','₹'+c.amt.toLocaleString('en-IN')+(c.lane==='G'?' · minor':c.lane==='A'?' · moderate':' · disputed'));
+  set('insp-fraud',c.lane==='R'?'HIGH — ring match 0.7':c.lane==='A'?'MEDIUM — 0.18':'LOW — 0.04');
+  set('insp-cost',c.lane==='R'?'OUT OF BAND':c.lane==='A'?'±9% confidence':'±3% confidence');
+  set('insp-policy',c.lane==='R'?'UNDER REVIEW':c.lane==='A'?'PENDING CHECK':'100% COVERED');
+  set('insp-tat',c.tat.toFixed(1)+' days');set('insp-touch',c.touch.toFixed(1)+' touches');
+  document.getElementById('insp-action').innerHTML='<b>Action:</b> '+
+    (c.lane==='G'?'Instant pre-approval issued. Zero human touch, settled inside the ₹50,000 surveyor-exemption corridor. Payout dispatched to network garage.'
+    :c.lane==='A'?'Signals inconclusive rather than contradictory. Routed to one reviewer with the AI-prepared file already assembled.'
+    :'Hard contradiction at the capture gate. Escalated to investigation with the full evidence pack pre-attached — the investigator starts with a compiled case, not a blank one.');
+}
+const PROFILES={
+ clean:{lane:'G',name:'Rohan Sharma',veh:'Maruti Swift',plate:'MH02 Pune',score:94,amt:18500,tat:TAT_G,touch:TOUCH_G,id:'TEST-CLEAN'},
+ amber:{lane:'A',name:'Priya Patel',veh:'Hyundai Creta',plate:'GJ01 Ahmedabad',score:68,amt:32400,tat:TAT_A,touch:TOUCH_A,id:'TEST-MARGINAL'},
+ synthetic:{lane:'R',name:'Unverified claimant',veh:'Honda City',plate:'DL01 Delhi',score:19,amt:47800,tat:TAT_R,touch:TOUCH_R,id:'TEST-SYNTHETIC'}
+};
+function testProfile(k){
+  const c=PROFILES[k];inspect(c);
+  if(k==='synthetic'){document.getElementById('insp-action').innerHTML=
+    '<b>Action — this is the case the platform exists for.</b> Spatial-frequency screening detected diffusion artefacts in the submitted images and the EXIF timestamp contradicts the claimed incident window. <b>A traditional rules engine would have passed this claim.</b> The gate caught it before a single downstream model ran, which is exactly why evidence integrity is checked first rather than scored alongside everything else.';}
+}
+
+/* =============== NAV =============== */
+function switchPage(n){
+  document.querySelectorAll('.page-view').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.page-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page'+n).classList.add('active');
+  document.getElementById('tab-btn-'+n).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>{[chartSqueeze,chartGrievance,chartReadiness,chartVector,chartEvidence,chartDomain,chartScenario,chartTornado,chartCompound,chartFraudCurve,chartSimLane,chartBenefit,chartForecast,chartBuild,chartRun,chartBuyBuild,chartTokens,chartTokenBreak].forEach(c=>c&&c.resize());},90);
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  initCharts();renderTrends('all');renderStatic();bindNodes();
+  renderLevels();applyScenario();runChain('parity',null);
+  document.querySelector('#page5 .filter-row .fbtn').classList.add('active');
+  setSimSpeed();updateFraudCurve();update();
+});
+</script>
+</body>
+</html>
