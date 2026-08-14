@@ -11,249 +11,345 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <style>
 :root{
-  /* ============================================================
-     FONT SIZE CONTROL — change this ONE number and every text
-     size on the page scales with it. 1 = current, 1.1 = 10% bigger.
-     ============================================================ */
+  /* Golden Ratio type scale: 12 → 14 → 19 → 22 → 31 (×1.618) */
   --fs:1;
+  --phi:1.618;
+  --s-xs:calc(12px * var(--fs));     /* minimum */
+  --s-sm:calc(13px * var(--fs));     /* body small */
+  --s-base:calc(14px * var(--fs));   /* body */
+  --s-md:calc(16px * var(--fs));     /* card headers */
+  --s-lg:calc(19px * var(--fs));     /* section titles */
+  --s-xl:calc(22px * var(--fs));     /* KPI values */
+  --s-2xl:calc(26px * var(--fs));    /* hero numbers */
 
-  --brand-blue:#2e8fe6; --brand-blue-mid:#0060ae; --brand-navy:#0b2545; --dark-bg:#06111e;
-  --card-bg:rgba(13,33,58,0.82); --card-bg-alt:rgba(16,42,72,0.88);
-  --blue-tint:rgba(46,143,230,0.15);
-  --line:rgba(27,56,90,0.8); --line-bright:rgba(43,82,128,0.7);
-  --heading:#f8fafc; --ink:#e2e8f0; --mist:#94a3b8; --mist-dim:#64748b;
-  --green:#10b981; --green-dim:rgba(16,185,129,0.2);
-  --gold:#f59e0b; --gold-dim:rgba(245,158,11,0.2);
-  --red:#ef4444; --red-dim:rgba(239,68,68,0.2);
-  --purple:#a78bfa; --cyan:#22d3ee;
-  /* THREE TYPE ROLES — one family, Outfit, differentiated by weight */
-  --f-head:'Outfit',system-ui,sans-serif;   /* headers */
-  --f-sub:'Outfit',system-ui,sans-serif;    /* subtopics, refs, numbers */
-  --f-body:'Outfit',system-ui,sans-serif;   /* everything else */
+  /* Premium dark palette — vibrant on dark */
+  --brand-blue:#3b9eff; --brand-blue-mid:#0070cc; --brand-navy:#0b2545; --dark-bg:#050e1a;
+  --card-bg:rgba(12,24,45,0.72); --card-bg-alt:rgba(18,38,65,0.80);
+  --blue-tint:rgba(59,158,255,0.12);
+  --line:rgba(40,70,110,0.5); --line-bright:rgba(59,158,255,0.25);
+  --heading:#ffffff; --ink:#f1f5f9; --mist:#a8b8cc; --mist-dim:#7a8ea6;
+  --green:#34d399; --green-dim:rgba(52,211,153,0.18);
+  --gold:#fbbf24; --gold-dim:rgba(251,191,36,0.18);
+  --red:#f87171; --red-dim:rgba(248,113,113,0.18);
+  --purple:#c084fc; --cyan:#22d3ee;
+  --f-head:'Outfit',system-ui,sans-serif;
+  --f-sub:'Outfit',system-ui,sans-serif;
+  --f-body:'Outfit',system-ui,sans-serif;
+
+  /* Golden ratio spacing */
+  --sp-1:5px; --sp-2:8px; --sp-3:13px; --sp-4:21px; --sp-5:34px;
+  /* Sidebar */
+  --sidebar-w:68px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
   background-color:var(--dark-bg);
   background-image:
     url('assets/Background.png'),
-    radial-gradient(circle at 90% 90%, rgba(245,158,11,0.22) 0%, transparent 40%),
-    radial-gradient(circle at 10% 20%, rgba(46,143,230,0.20) 0%, transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(11,37,69,0.35) 0%, transparent 60%),
-    linear-gradient(135deg,#050d18 0%,#081728 50%,#101c30 100%);
+    radial-gradient(circle at 90% 90%, rgba(251,191,36,0.18) 0%, transparent 40%),
+    radial-gradient(circle at 10% 20%, rgba(59,158,255,0.18) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(11,37,69,0.30) 0%, transparent 60%),
+    linear-gradient(135deg,#040a14 0%,#071524 50%,#0e1a2e 100%);
   background-repeat:no-repeat; background-position:center center;
   background-attachment:fixed; background-size:cover;
   color:var(--ink); font-family:var(--f-body);
-  font-size:calc(13.5px * var(--fs)); line-height:1.5; padding:18px; max-width:1560px; margin:0 auto; min-height:100vh; position:relative;
+  font-size:var(--s-base); line-height:1.55;
+  padding:var(--sp-3); max-width:1560px; margin:0 auto 0 calc(var(--sidebar-w) + 8px);
+  min-height:100vh; position:relative;
 }
 body::before{
   content:''; position:fixed; inset:0;
   background:
-    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.15), rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 40px 70px, rgba(46,143,230,0.20), rgba(0,0,0,0));
+    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.10), rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, rgba(59,158,255,0.14), rgba(0,0,0,0));
   background-size:100px 100px; pointer-events:none; z-index:0;
 }
+
+/* === SIDEBAR NAV === */
+.sidebar{
+  position:fixed; left:0; top:0; bottom:0; width:var(--sidebar-w);
+  background:rgba(6,14,28,0.92); backdrop-filter:blur(16px);
+  border-right:1px solid var(--line-bright); z-index:100;
+  display:flex; flex-direction:column; align-items:center;
+  padding:var(--sp-3) 0; gap:var(--sp-1);
+}
+.sidebar .brand-icon{
+  width:40px; height:40px; border-radius:10px;
+  background:linear-gradient(135deg,var(--brand-blue),var(--brand-blue-mid));
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--f-head); font-weight:800; font-size:16px; color:#fff;
+  margin-bottom:var(--sp-3); box-shadow:0 4px 16px rgba(59,158,255,0.35);
+}
+.sidebar-nav{display:flex;flex-direction:column;gap:var(--sp-1);width:100%;padding:0 6px;}
+.page-tab-btn{
+  background:transparent; border:none; color:var(--mist); font-family:var(--f-head);
+  font-weight:700; font-size:12px; padding:10px 6px; border-radius:10px;
+  cursor:pointer; transition:all .2s; display:flex; flex-direction:column;
+  align-items:center; gap:3px; text-align:center; line-height:1.2; width:100%;
+}
+.page-tab-btn .tab-icon{font-size:18px;display:block;}
+.page-tab-btn.active{
+  background:rgba(59,158,255,0.18); color:var(--brand-blue);
+  box-shadow:inset 3px 0 0 var(--brand-blue);
+}
+.page-tab-btn:hover:not(.active){color:#fff;background:rgba(255,255,255,0.04);}
+
 .app-container{position:relative;z-index:1;}
-.top-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:16px;
-  border-bottom:2px solid var(--brand-blue-mid);background:rgba(6,17,30,0.75);backdrop-filter:blur(12px);
-  padding:12px 18px;border-radius:14px;border:1px solid var(--line-bright);}
-.brand-group{display:flex;align-items:center;gap:16px;}
-.brand-logo-wrap{display:flex;align-items:center;gap:12px;background:rgba(13,33,58,0.85);border:1px solid var(--line-bright);padding:8px 14px;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,0.4);}
-.brand-title-box h1{font-family:var(--f-head);font-weight:800;font-size:calc(21px * var(--fs));color:var(--heading);letter-spacing:-0.3px;}
-.brand-title-box p{color:var(--mist);font-size:calc(12.5px * var(--fs));}
-.page-nav-tabs{display:flex;gap:5px;background:rgba(11,37,69,0.7);padding:4px;border-radius:100px;border:1px solid var(--line-bright);flex-wrap:wrap;}
-.page-tab-btn{background:transparent;border:none;color:var(--mist);font-family:var(--f-head);font-weight:700;font-size:calc(12.5px * var(--fs));padding:8px 14px;border-radius:100px;cursor:pointer;transition:all .2s;white-space:nowrap;}
-.page-tab-btn.active{background:var(--brand-blue);color:#fff;box-shadow:0 4px 12px rgba(46,143,230,0.4);}
-.page-tab-btn:hover:not(.active){color:#fff;background:rgba(255,255,255,0.05);}
+.top-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--sp-3);margin-bottom:var(--sp-3);
+  background:rgba(6,17,30,0.70);backdrop-filter:blur(12px);
+  padding:var(--sp-2) var(--sp-3);border-radius:var(--sp-3);border:1px solid var(--line-bright);}
+.brand-group{display:flex;align-items:center;gap:var(--sp-3);}
+.brand-logo-wrap{display:flex;align-items:center;gap:var(--sp-2);background:rgba(13,33,58,0.85);border:1px solid var(--line-bright);padding:var(--sp-2) var(--sp-3);border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,0.4);}
+.brand-title-box h1{font-family:var(--f-head);font-weight:800;font-size:var(--s-lg);color:var(--heading);letter-spacing:-0.3px;}
+.brand-title-box p{color:var(--mist);font-size:var(--s-xs);}
 .page-view{display:none;} .page-view.active{display:block;animation:fadeIn .25s ease-in-out;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
-.card,.hero-pitch,.kpi{background:var(--card-bg);backdrop-filter:blur(12px);border:1px solid var(--line-bright);border-radius:14px;padding:18px;box-shadow:0 8px 32px rgba(0,0,0,0.35);}
-.hero-pitch{background:linear-gradient(150deg,rgba(13,33,58,0.9) 0%,rgba(8,23,40,0.95) 100%);padding:20px 24px;margin-bottom:16px;}
-.pitch-eyebrow{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(12px * var(--fs));letter-spacing:1.2px;color:var(--brand-blue);text-transform:uppercase;font-weight:700;}
-.pitch-title{font-family:var(--f-head);font-size:calc(19px * var(--fs));font-weight:700;color:var(--heading);margin-top:2px;}
-.pitch-sub{color:var(--mist);font-size:calc(13.5px * var(--fs));max-width:1100px;margin-top:4px;line-height:1.55;}
-.stat-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px;}
+
+/* === CARDS & HERO === */
+.card,.hero-pitch,.kpi{background:var(--card-bg);backdrop-filter:blur(14px);border:1px solid var(--line-bright);border-radius:var(--sp-3);padding:var(--sp-3);box-shadow:0 6px 24px rgba(0,0,0,0.30);transition:border-color .2s;}
+.card:hover{border-color:rgba(59,158,255,0.4);}
+.hero-pitch{background:linear-gradient(150deg,rgba(12,28,50,0.88) 0%,rgba(7,20,36,0.92) 100%);padding:var(--sp-3) var(--sp-4);margin-bottom:var(--sp-3);}
+.pitch-eyebrow{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:var(--s-xs);letter-spacing:1.2px;color:var(--brand-blue);text-transform:uppercase;font-weight:700;}
+.pitch-title{font-family:var(--f-head);font-size:var(--s-lg);font-weight:700;color:var(--heading);margin-top:2px;}
+.pitch-sub{color:var(--mist);font-size:var(--s-sm);max-width:1100px;margin-top:var(--sp-1);line-height:1.55;}
+
+/* === COLLAPSIBLE SECTIONS === */
+details.collapsible{margin-top:var(--sp-2);}
+details.collapsible summary{
+  font-size:var(--s-xs); font-weight:700; color:var(--mist); cursor:pointer;
+  list-style:none; display:flex; align-items:center; gap:6px;
+  padding:6px 10px; border-radius:6px; border:1px solid var(--line);
+  background:rgba(11,37,69,0.3); transition:all .15s; user-select:none;
+}
+details.collapsible summary:hover{border-color:var(--brand-blue);color:var(--brand-blue);}
+details.collapsible summary::before{content:'▶';font-size:10px;transition:transform .2s;display:inline-block;}
+details.collapsible[open] summary::before{transform:rotate(90deg);}
+details.collapsible summary::-webkit-details-marker{display:none;}
+details.collapsible .note-box{margin-top:var(--sp-2);}
+
+/* === STAT STRIPS & KPIs === */
+.stat-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--sp-2);margin-top:var(--sp-3);}
 @media(max-width:1200px){.stat-strip{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:600px){.stat-strip{grid-template-columns:repeat(2,1fr);}}
-.p-stat{background:rgba(11,37,69,0.5);border:1px solid var(--line);border-radius:10px;padding:10px 12px;transition:all .2s;}
+.p-stat{background:rgba(11,37,69,0.45);border:1px solid var(--line);border-radius:8px;padding:var(--sp-2) var(--sp-2);transition:all .2s;}
 .p-stat:hover{border-color:var(--brand-blue);transform:translateY(-2px);}
-.p-k{font-size:calc(10.5px * var(--fs));color:var(--mist);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:4px;}
+.p-k{font-size:var(--s-xs);color:var(--mist);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:3px;}
 .p-row{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;}
-.p-from{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(13.5px * var(--fs));color:var(--mist-dim);text-decoration:line-through;text-decoration-color:rgba(239,68,68,.7);}
-.p-arrow{color:var(--brand-blue);font-weight:bold;font-size:calc(13px * var(--fs));}
-.p-to{font-family:var(--f-head);font-weight:700;font-size:calc(20px * var(--fs));color:var(--heading);}
-.p-to.highlight{color:var(--green);} .p-to.warn{color:var(--gold);} .p-to.bad{color:var(--red);}
-.p-note{font-size:calc(10px * var(--fs));color:var(--mist-dim);margin-top:3px;}
-.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:16px;}
+.p-from{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:var(--s-sm);color:var(--mist-dim);text-decoration:line-through;text-decoration-color:rgba(248,113,113,.7);}
+.p-arrow{color:var(--brand-blue);font-weight:bold;font-size:var(--s-sm);}
+.p-to{font-family:var(--f-head);font-weight:700;font-size:var(--s-xl);color:var(--heading);}
+.p-to.highlight{color:var(--green);text-shadow:0 0 12px rgba(52,211,153,0.4);}
+.p-to.warn{color:var(--gold);text-shadow:0 0 12px rgba(251,191,36,0.4);}
+.p-to.bad{color:var(--red);text-shadow:0 0 12px rgba(248,113,113,0.4);}
+.p-note{font-size:var(--s-xs);color:var(--mist-dim);margin-top:3px;}
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--sp-2);margin-bottom:var(--sp-3);}
 @media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
-.kpi{border-left:4px solid var(--brand-blue);padding:12px 14px;}
+.kpi{border-left:4px solid var(--brand-blue);padding:var(--sp-2) var(--sp-3);}
 .kpi.green-border{border-left-color:var(--green);} .kpi.gold-border{border-left-color:var(--gold);} .kpi.red-border{border-left-color:var(--red);}
-.kpi .k{font-size:calc(10px * var(--fs));color:var(--mist);text-transform:uppercase;letter-spacing:.5px;font-weight:700;}
-.kpi .v{font-family:var(--f-head);font-weight:700;font-size:calc(19px * var(--fs));margin-top:4px;color:var(--heading);}
-.kpi .v.green{color:var(--green);} .kpi .v.amber{color:var(--gold);} .kpi .v.teal{color:var(--brand-blue);} .kpi .v.red{color:var(--red);}
-.kpi .d{font-size:calc(10.5px * var(--fs));color:var(--mist-dim);margin-top:2px;line-height:1.35;}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
-.grid21{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px;}
-.grid12{display:grid;grid-template-columns:1fr 2fr;gap:16px;margin-bottom:16px;}
+.kpi .k{font-size:var(--s-xs);color:var(--mist);text-transform:uppercase;letter-spacing:.5px;font-weight:700;}
+.kpi .v{font-family:var(--f-head);font-weight:700;font-size:var(--s-xl);margin-top:3px;color:var(--heading);}
+.kpi .v.green{color:var(--green);text-shadow:0 0 10px rgba(52,211,153,0.35);}
+.kpi .v.amber{color:var(--gold);text-shadow:0 0 10px rgba(251,191,36,0.35);}
+.kpi .v.teal{color:var(--brand-blue);text-shadow:0 0 10px rgba(59,158,255,0.35);}
+.kpi .v.red{color:var(--red);text-shadow:0 0 10px rgba(248,113,113,0.35);}
+.kpi .d{font-size:var(--s-xs);color:var(--mist-dim);margin-top:2px;line-height:1.35;}
+
+/* === GRID LAYOUTS (golden ratio: 1fr 1.618fr ≈ 2:1) === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-3);}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-3);}
+.grid21{display:grid;grid-template-columns:1.618fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-3);}
+.grid12{display:grid;grid-template-columns:1fr 1.618fr;gap:var(--sp-3);margin-bottom:var(--sp-3);}
 @media(max-width:1100px){.grid2,.grid3,.grid21,.grid12{grid-template-columns:1fr;}}
-.card h3{font-family:var(--f-head);font-weight:700;font-size:calc(16px * var(--fs));margin:0 0 2px;color:var(--heading);display:flex;align-items:center;justify-content:space-between;gap:8px;}
-.card .sub{font-size:calc(12px * var(--fs));color:var(--mist);margin-bottom:12px;line-height:1.5;}
-.chart-box{position:relative;height:230px;width:100%;}
-.chart-box.tall{height:320px;} .chart-box.short{height:180px;}
-table{width:100%;border-collapse:collapse;font-size:calc(13px * var(--fs));}
-th{text-align:left;color:var(--mist);font-weight:700;font-size:calc(10.5px * var(--fs));text-transform:uppercase;padding:7px 8px;border-bottom:2px solid var(--line);position:sticky;top:0;background:rgba(13,33,58,0.97);z-index:2;}
-td{padding:7px 8px;border-bottom:1px solid var(--line);font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(12px * var(--fs));vertical-align:top;}
+
+/* === CARDS INNER === */
+.card h3{font-family:var(--f-head);font-weight:700;font-size:var(--s-md);margin:0 0 2px;color:var(--heading);display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);}
+.card .sub{font-size:var(--s-xs);color:var(--mist);margin-bottom:var(--sp-2);line-height:1.5;}
+
+/* === CHARTS — compact === */
+.chart-box{position:relative;height:170px;width:100%;}
+.chart-box.tall{height:220px;} .chart-box.short{height:140px;}
+
+/* === TABLES === */
+table{width:100%;border-collapse:collapse;font-size:var(--s-xs);}
+th{text-align:left;color:var(--mist);font-weight:700;font-size:var(--s-xs);text-transform:uppercase;padding:6px 8px;border-bottom:2px solid var(--line);position:sticky;top:0;background:rgba(12,24,45,0.97);z-index:2;}
+td{padding:6px 8px;border-bottom:1px solid var(--line);font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:var(--s-xs);vertical-align:top;}
 td.lbl{font-family:var(--f-body);font-weight:600;color:var(--heading);}
-td.txt{font-family:var(--f-body);color:var(--mist);font-size:calc(12px * var(--fs));}
-td.imp{color:var(--brand-blue);font-weight:700;}
-tr.hl{background:rgba(46,143,230,0.12);}
-.scroll-y{max-height:420px;overflow-y:auto;}
+td.txt{font-family:var(--f-body);color:var(--mist);font-size:var(--s-xs);}
+td.imp{color:var(--brand-blue);font-weight:700;text-shadow:0 0 8px rgba(59,158,255,0.25);}
+tr.hl{background:rgba(59,158,255,0.10);}
+.scroll-y{max-height:340px;overflow-y:auto;}
 .scroll-y::-webkit-scrollbar{width:8px;} .scroll-y::-webkit-scrollbar-thumb{background:var(--line-bright);border-radius:4px;}
-.tag{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(9.5px * var(--fs));font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;display:inline-block;}
-.tag.fact{background:var(--green-dim);color:var(--green);border:1px solid rgba(16,185,129,.4);}
-.tag.bench{background:rgba(46,143,230,.18);color:var(--brand-blue);border:1px solid rgba(46,143,230,.4);}
-.tag.gap{background:var(--red-dim);color:var(--red);border:1px solid rgba(239,68,68,.4);}
-.tag.tier{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,158,11,.4);}
+
+/* === TAGS === */
+.tag{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:var(--s-xs);font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;display:inline-block;}
+.tag.fact{background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,.4);}
+.tag.bench{background:rgba(59,158,255,.15);color:var(--brand-blue);border:1px solid rgba(59,158,255,.4);}
+.tag.gap{background:var(--red-dim);color:var(--red);border:1px solid rgba(248,113,113,.4);}
+.tag.tier{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(251,191,36,.4);}
 .tag.g{background:var(--green-dim);color:var(--green);} .tag.a{background:var(--gold-dim);color:var(--gold);} .tag.r{background:var(--red-dim);color:var(--red);}
-.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
-.fbtn{background:var(--card-bg-alt);border:1.5px solid var(--line-bright);color:var(--mist);font-size:calc(12px * var(--fs));font-weight:700;padding:5px 12px;border-radius:100px;cursor:pointer;font-family:var(--f-body);transition:all .15s;}
-.fbtn.active{background:var(--brand-blue);color:#fff;border-color:var(--brand-blue);box-shadow:0 4px 10px -3px rgba(46,143,230,.6);}
+
+/* === FILTERS & CONTROLS === */
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:var(--sp-2);align-items:center;}
+.fbtn{background:var(--card-bg-alt);border:1.5px solid var(--line-bright);color:var(--mist);font-size:var(--s-xs);font-weight:700;padding:5px 12px;border-radius:100px;cursor:pointer;font-family:var(--f-body);transition:all .15s;}
+.fbtn.active{background:var(--brand-blue);color:#fff;border-color:var(--brand-blue);box-shadow:0 4px 10px -3px rgba(59,158,255,.5);}
 .fbtn:hover:not(.active){border-color:var(--brand-blue);color:var(--brand-blue);}
-.fbtn.danger.active{background:var(--red);border-color:var(--red);box-shadow:0 4px 10px -3px rgba(239,68,68,.6);}
-.ctrl{background:rgba(11,37,69,0.4);padding:10px 12px;border-radius:8px;border:1px solid var(--line);}
-.ctrl label{display:flex;justify-content:space-between;align-items:center;font-size:calc(10.5px * var(--fs));color:var(--mist);margin-bottom:6px;font-weight:700;text-transform:uppercase;gap:6px;}
-.ctrl label .val{font-family:var(--f-sub);font-variant-numeric:tabular-nums;color:var(--brand-blue);font-weight:700;font-size:calc(12.5px * var(--fs));}
+.fbtn.danger.active{background:var(--red);border-color:var(--red);box-shadow:0 4px 10px -3px rgba(248,113,113,.5);}
+.ctrl{background:rgba(11,37,69,0.35);padding:var(--sp-2) var(--sp-2);border-radius:8px;border:1px solid var(--line);}
+.ctrl label{display:flex;justify-content:space-between;align-items:center;font-size:var(--s-xs);color:var(--mist);margin-bottom:5px;font-weight:700;text-transform:uppercase;gap:6px;}
+.ctrl label .val{font-family:var(--f-sub);font-variant-numeric:tabular-nums;color:var(--brand-blue);font-weight:700;font-size:var(--s-sm);}
 input[type=range]{-webkit-appearance:none;width:100%;height:5px;border-radius:4px;background:#16324f;outline:none;}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--brand-blue);cursor:pointer;border:2px solid #fff;}
-.controls{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.controls{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--sp-2);}
 @media(max-width:1150px){.controls{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:650px){.controls{grid-template-columns:repeat(2,1fr);}}
-/* ---- Flow diagram ---- */
+
+/* === FLOW DIAGRAM === */
 .flow-wrap{width:100%;overflow-x:auto;}
 .flow-svg{min-width:1000px;width:100%;height:auto;}
 .fnode{fill:rgba(11,37,69,0.92);stroke:var(--line-bright);stroke-width:1.2;rx:8;}
 .fnode.gate{stroke:var(--brand-blue);stroke-width:2;}
 .fnode.green{stroke:var(--green);stroke-width:2;} .fnode.amber{stroke:var(--gold);stroke-width:2;} .fnode.red{stroke:var(--red);stroke-width:2;}
-.fnode.active{fill:rgba(46,143,230,0.30);stroke:var(--brand-blue);stroke-width:2.5;}
+.fnode.active{fill:rgba(59,158,255,0.30);stroke:var(--brand-blue);stroke-width:2.5;}
 .ftext{fill:var(--heading);font-family:var(--f-head);font-size:11.5px;font-weight:700;text-anchor:middle;}
 .fsub{fill:var(--mist);font-family:var(--f-body);font-size:9px;text-anchor:middle;}
 .fnum{fill:var(--brand-blue);font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:9px;font-weight:700;text-anchor:middle;}
 .fline{stroke:var(--line-bright);stroke-width:1.5;fill:none;}
 .fline.g{stroke:var(--green);} .fline.a{stroke:var(--gold);} .fline.r{stroke:var(--red);}
 .fdot{fill:var(--brand-blue);}
-/* ---- Transmission chain ---- */
+
+/* === CHAIN === */
 .chain{display:flex;flex-direction:column;gap:4px;}
-.chain-step{display:flex;align-items:flex-start;gap:10px;background:rgba(11,37,69,0.35);border:1px solid var(--line);border-left:3px solid var(--line-bright);border-radius:8px;padding:8px 11px;opacity:.35;transition:all .35s ease;}
-.chain-step.lit{opacity:1;border-left-color:var(--brand-blue);background:rgba(46,143,230,0.12);}
-.chain-step.lit.terminal{border-left-color:var(--green);background:rgba(16,185,129,0.12);}
-.chain-num{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(10.5px * var(--fs));font-weight:700;color:var(--brand-blue);flex-shrink:0;width:18px;padding-top:1px;}
+.chain-step{display:flex;align-items:flex-start;gap:10px;background:rgba(11,37,69,0.35);border:1px solid var(--line);border-left:3px solid var(--line-bright);border-radius:8px;padding:var(--sp-2) var(--sp-2);opacity:.35;transition:all .35s ease;}
+.chain-step.lit{opacity:1;border-left-color:var(--brand-blue);background:rgba(59,158,255,0.10);}
+.chain-step.lit.terminal{border-left-color:var(--green);background:rgba(52,211,153,0.10);}
+.chain-num{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:var(--s-xs);font-weight:700;color:var(--brand-blue);flex-shrink:0;width:18px;padding-top:1px;}
 .chain-body{flex:1;}
-.chain-t{font-size:calc(12px * var(--fs));font-weight:700;color:var(--heading);}
-.chain-d{font-size:calc(11.5px * var(--fs));color:var(--mist);margin-top:1px;}
-.chain-v{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(12px * var(--fs));font-weight:700;color:var(--gold);flex-shrink:0;text-align:right;min-width:96px;}
-/* ---- Breakpoint gauges ---- */
-.bp-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);}
+.chain-t{font-size:var(--s-xs);font-weight:700;color:var(--heading);}
+.chain-d{font-size:var(--s-xs);color:var(--mist);margin-top:1px;}
+.chain-v{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:var(--s-xs);font-weight:700;color:var(--gold);flex-shrink:0;text-align:right;min-width:96px;}
+
+/* === BREAKPOINT GAUGES === */
+.bp-row{display:flex;align-items:center;gap:10px;padding:var(--sp-2) 0;border-bottom:1px solid var(--line);}
 .bp-row:last-child{border-bottom:none;}
-.bp-ref{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(11px * var(--fs));font-weight:700;color:var(--brand-blue);width:52px;flex-shrink:0;}
+.bp-ref{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:var(--s-xs);font-weight:700;color:var(--brand-blue);width:52px;flex-shrink:0;}
 .bp-info{flex:1;min-width:0;}
-.bp-nm{font-size:calc(12.5px * var(--fs));font-weight:600;color:var(--heading);}
-.bp-q{font-size:calc(11px * var(--fs));color:var(--mist);margin-top:1px;}
+.bp-nm{font-size:var(--s-sm);font-weight:600;color:var(--heading);}
+.bp-q{font-size:var(--s-xs);color:var(--mist);margin-top:1px;}
 .bp-gauge{width:110px;flex-shrink:0;}
 .bp-track{height:7px;background:rgba(11,37,69,0.7);border-radius:4px;overflow:hidden;border:1px solid var(--line);}
 .bp-fill{height:100%;transition:width .4s ease,background .4s ease;}
-.bp-stat{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(10px * var(--fs));margin-top:3px;text-align:right;}
-/* ---- Matrix ---- */
+.bp-stat{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:var(--s-xs);margin-top:3px;text-align:right;}
+
+/* === MATRIX === */
 .mx{display:grid;gap:4px;}
-.mx-cell{border-radius:6px;padding:7px 8px;font-size:calc(11px * var(--fs));border:1px solid var(--line);background:rgba(11,37,69,0.4);}
-.mx-cell.head{background:rgba(46,143,230,0.15);color:var(--heading);font-weight:700;font-size:calc(10.5px * var(--fs));text-transform:uppercase;}
-.sign{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(10px * var(--fs));font-weight:700;padding:2px 6px;border-radius:4px;}
+.mx-cell{border-radius:6px;padding:6px 8px;font-size:var(--s-xs);border:1px solid var(--line);background:rgba(11,37,69,0.4);}
+.mx-cell.head{background:rgba(59,158,255,0.12);color:var(--heading);font-weight:700;font-size:var(--s-xs);text-transform:uppercase;}
+.sign{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:var(--s-xs);font-weight:700;padding:2px 6px;border-radius:4px;}
 .sign.amb{background:var(--gold-dim);color:var(--gold);} .sign.opp{background:var(--red-dim);color:var(--red);}
-.sign.rein{background:var(--green-dim);color:var(--green);} .sign.con{background:rgba(167,139,250,.2);color:var(--purple);}
-.sign.amp{background:rgba(34,211,238,.2);color:var(--cyan);}
-/* ---- Telemetry engine ---- */
-.sim-card{display:flex;flex-direction:column;gap:12px;}
-.sim-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:rgba(13,42,74,0.6);padding:10px 14px;border-radius:10px;border:1px solid var(--line);}
-.sim-btn{background:var(--brand-blue);color:#fff;border:none;font-family:var(--f-sub);font-weight:700;font-size:calc(13px * var(--fs));padding:9px 18px;border-radius:6px;cursor:pointer;box-shadow:0 4px 10px -3px rgba(46,143,230,.5);white-space:nowrap;}
-.sim-btn.stop{background:var(--red);box-shadow:0 4px 10px -3px rgba(239,68,68,.5);}
-.sim-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;flex:1;min-width:340px;}
+.sign.rein{background:var(--green-dim);color:var(--green);} .sign.con{background:rgba(192,132,252,.18);color:var(--purple);}
+.sign.amp{background:rgba(34,211,238,.18);color:var(--cyan);}
+
+/* === TELEMETRY ENGINE === */
+.sim-card{display:flex;flex-direction:column;gap:var(--sp-2);}
+.sim-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--sp-2);background:rgba(13,42,74,0.5);padding:var(--sp-2) var(--sp-3);border-radius:10px;border:1px solid var(--line);}
+.sim-btn{background:var(--brand-blue);color:#fff;border:none;font-family:var(--f-sub);font-weight:700;font-size:var(--s-sm);padding:8px 16px;border-radius:6px;cursor:pointer;box-shadow:0 4px 10px -3px rgba(59,158,255,.4);white-space:nowrap;}
+.sim-btn.stop{background:var(--red);box-shadow:0 4px 10px -3px rgba(248,113,113,.4);}
+.sim-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--sp-2);flex:1;min-width:340px;}
 @media(max-width:900px){.sim-stats{grid-template-columns:repeat(3,1fr);}}
-.sim-stat{background:rgba(11,37,69,0.45);border:1px solid var(--line);border-radius:8px;padding:7px 9px;}
-.sim-stat .k{font-size:calc(9px * var(--fs));color:var(--mist);text-transform:uppercase;font-weight:700;letter-spacing:.4px;}
-.sim-stat .v{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-weight:700;font-size:calc(15px * var(--fs));margin-top:2px;color:var(--heading);}
-.sim-body{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.sim-stat{background:rgba(11,37,69,0.40);border:1px solid var(--line);border-radius:8px;padding:6px 8px;}
+.sim-stat .k{font-size:var(--s-xs);color:var(--mist);text-transform:uppercase;font-weight:700;letter-spacing:.4px;}
+.sim-stat .v{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-weight:700;font-size:var(--s-md);margin-top:2px;color:var(--heading);}
+.sim-body{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
 @media(max-width:900px){.sim-body{grid-template-columns:1fr;}}
-.feed{height:236px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;padding-right:4px;}
+.feed{height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-right:4px;}
 .feed::-webkit-scrollbar{width:8px;} .feed::-webkit-scrollbar-thumb{background:var(--line-bright);border-radius:4px;}
-.feed-row{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(13,33,58,0.8);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(12px * var(--fs));cursor:pointer;transition:all .15s;animation:slideIn .3s ease;}
-.feed-row:hover{border-color:var(--brand-blue);background:rgba(46,143,230,0.14);}
-.feed-row.sel{border-color:var(--brand-blue);background:rgba(46,143,230,0.2);}
+.feed-row{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(13,33,58,0.75);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:var(--s-xs);cursor:pointer;transition:all .15s;animation:slideIn .3s ease;}
+.feed-row:hover{border-color:var(--brand-blue);background:rgba(59,158,255,0.12);}
+.feed-row.sel{border-color:var(--brand-blue);background:rgba(59,158,255,0.18);}
 @keyframes slideIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
-.lane-badge{font-size:calc(9px * var(--fs));font-weight:800;padding:3px 8px;border-radius:100px;letter-spacing:.3px;text-transform:uppercase;font-family:var(--f-sub);}
-.lane-badge.G{background:var(--green-dim);color:var(--green);border:1px solid rgba(16,185,129,.45);}
-.lane-badge.A{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,158,11,.45);}
-.lane-badge.R{background:var(--red-dim);color:var(--red);border:1px solid rgba(239,68,68,.45);}
-.inspector-box{background:rgba(11,37,69,0.4);border:1px solid var(--line);border-radius:10px;padding:13px;display:flex;flex-direction:column;}
-.inspector-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:8px;gap:8px;}
-.inspector-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px;}
-.inspector-item{background:rgba(13,33,58,0.6);padding:6px 8px;border-radius:6px;border:1px solid var(--line);}
-.inspector-item .lbl{font-size:calc(9px * var(--fs));color:var(--mist);text-transform:uppercase;font-weight:700;letter-spacing:.3px;}
-.inspector-item .val{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);margin-top:2px;font-size:calc(12px * var(--fs));}
+.lane-badge{font-size:var(--s-xs);font-weight:800;padding:3px 8px;border-radius:100px;letter-spacing:.3px;text-transform:uppercase;font-family:var(--f-sub);}
+.lane-badge.G{background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,.4);}
+.lane-badge.A{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(251,191,36,.4);}
+.lane-badge.R{background:var(--red-dim);color:var(--red);border:1px solid rgba(248,113,113,.4);}
+.inspector-box{background:rgba(11,37,69,0.35);border:1px solid var(--line);border-radius:10px;padding:var(--sp-3);display:flex;flex-direction:column;}
+.inspector-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:var(--sp-2);gap:var(--sp-2);}
+.inspector-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:var(--sp-2);}
+.inspector-item{background:rgba(13,33,58,0.55);padding:5px 8px;border-radius:6px;border:1px solid var(--line);}
+.inspector-item .lbl{font-size:var(--s-xs);color:var(--mist);text-transform:uppercase;font-weight:700;letter-spacing:.3px;}
+.inspector-item .val{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);margin-top:2px;font-size:var(--s-xs);}
 .sandbox-preset-btns{display:flex;gap:7px;flex-wrap:wrap;}
-.sb-btn{background:var(--card-bg-alt);border:1px solid var(--line-bright);color:var(--ink);font-size:calc(12px * var(--fs));font-weight:600;padding:7px 12px;border-radius:6px;cursor:pointer;font-family:var(--f-body);}
+.sb-btn{background:var(--card-bg-alt);border:1px solid var(--line-bright);color:var(--ink);font-size:var(--s-xs);font-weight:600;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:var(--f-body);}
 .sb-btn:hover{border-color:var(--brand-blue);color:var(--brand-blue);}
-/* ---- Token economics ---- */
-.tok-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+
+/* === TOKEN ECONOMICS === */
+.tok-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2);margin-bottom:var(--sp-2);}
 @media(max-width:900px){.tok-grid{grid-template-columns:1fr;}}
-.tok-case{border-radius:10px;padding:13px;border:1.5px solid var(--line-bright);background:rgba(11,37,69,0.45);}
+.tok-case{border-radius:10px;padding:var(--sp-3);border:1.5px solid var(--line-bright);background:rgba(11,37,69,0.40);}
 .tok-case.low{border-color:var(--green);} .tok-case.mid{border-color:var(--brand-blue);} .tok-case.high{border-color:var(--gold);}
-.tok-case h4{font-family:var(--f-head);font-weight:700;font-size:calc(14px * var(--fs));color:var(--heading);margin-bottom:2px;}
-.tok-case .toks{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(22px * var(--fs));font-weight:700;margin:6px 0 1px;}
-.tok-case.low .toks{color:var(--green);} .tok-case.mid .toks{color:var(--brand-blue);} .tok-case.high .toks{color:var(--gold);}
-.tok-case .lbl{font-size:calc(10px * var(--fs));color:var(--mist);text-transform:uppercase;font-weight:700;letter-spacing:.4px;}
-.tok-line{display:flex;justify-content:space-between;font-size:calc(11.5px * var(--fs));padding:3px 0;border-bottom:1px solid var(--line);}
+.tok-case h4{font-family:var(--f-head);font-weight:700;font-size:var(--s-sm);color:var(--heading);margin-bottom:2px;}
+.tok-case .toks{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:var(--s-xl);font-weight:700;margin:5px 0 1px;}
+.tok-case.low .toks{color:var(--green);text-shadow:0 0 10px rgba(52,211,153,0.3);} .tok-case.mid .toks{color:var(--brand-blue);text-shadow:0 0 10px rgba(59,158,255,0.3);} .tok-case.high .toks{color:var(--gold);text-shadow:0 0 10px rgba(251,191,36,0.3);}
+.tok-case .lbl{font-size:var(--s-xs);color:var(--mist);text-transform:uppercase;font-weight:700;letter-spacing:.4px;}
+.tok-line{display:flex;justify-content:space-between;font-size:var(--s-xs);padding:3px 0;border-bottom:1px solid var(--line);}
 .tok-line:last-child{border-bottom:none;}
 .tok-line span:last-child{font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);}
-.note-box{margin-top:10px;font-size:calc(11.5px * var(--fs));color:var(--mist);border-left:3px solid var(--brand-blue);padding-left:10px;line-height:1.6;}
+
+/* === NOTE BOX === */
+.note-box{margin-top:var(--sp-2);font-size:var(--s-xs);color:var(--mist);border-left:3px solid var(--brand-blue);padding-left:10px;line-height:1.6;}
 .note-box b{color:var(--heading);}
 .note-box.warn{border-left-color:var(--gold);} .note-box.bad{border-left-color:var(--red);} .note-box.good{border-left-color:var(--green);}
-.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:calc(10.5px * var(--fs));color:var(--mist);margin-top:8px;}
+
+/* === MISC === */
+.legend{display:flex;gap:var(--sp-2);flex-wrap:wrap;font-size:var(--s-xs);color:var(--mist);margin-top:var(--sp-2);}
 .legend span{display:flex;align-items:center;gap:4px;}
 .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
-.footer-note{margin-top:18px;text-align:center;color:var(--mist-dim);font-size:calc(11.5px * var(--fs));font-family:var(--f-sub);font-variant-numeric:tabular-nums;border-top:1px solid var(--line);padding-top:12px;line-height:1.7;}
-.pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
-.pill{background:rgba(13,33,58,0.8);border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:calc(11px * var(--fs));color:var(--mist);flex:1;min-width:110px;text-align:center;}
-.pill b{display:block;color:var(--heading);font-family:var(--f-head);font-size:calc(15px * var(--fs));margin-bottom:1px;}
-.sec-head{font-weight:700;font-family:var(--f-head);font-size:calc(14px * var(--fs));font-weight:700;color:var(--brand-blue);text-transform:uppercase;letter-spacing:1px;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);}
+.footer-note{margin-top:var(--sp-4);text-align:center;color:var(--mist-dim);font-size:var(--s-xs);font-family:var(--f-sub);font-variant-numeric:tabular-nums;border-top:1px solid var(--line);padding-top:var(--sp-3);line-height:1.7;}
+.pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:var(--sp-2);}
+.pill{background:rgba(13,33,58,0.75);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:var(--s-xs);color:var(--mist);flex:1;min-width:110px;text-align:center;}
+.pill b{display:block;color:var(--heading);font-family:var(--f-head);font-size:var(--s-md);margin-bottom:1px;text-shadow:0 0 8px rgba(59,158,255,0.25);}
+.sec-head{font-weight:700;font-family:var(--f-head);font-size:var(--s-sm);color:var(--brand-blue);text-transform:uppercase;letter-spacing:1px;margin:0 0 var(--sp-2);padding-bottom:5px;border-bottom:1px solid var(--line);}
+
+/* === SIDEBAR RESPONSIVE === */
+@media(max-width:768px){
+  :root{--sidebar-w:48px;}
+  .page-tab-btn{font-size:0;padding:10px 4px;}
+  .page-tab-btn .tab-icon{font-size:20px;}
+  .page-tab-btn .tab-label{display:none;}
+  body{margin-left:calc(var(--sidebar-w) + 4px);padding:8px;}
+}
 </style>
 </head>
 <body>
 <div class="app-container">
+<aside class="sidebar">
+  <div class="brand-icon">CP</div>
+  <nav class="sidebar-nav">
+    <button class="page-tab-btn active" id="tab-btn-1" onclick="switchPage(1)"><span class="tab-icon">📊</span><span class="tab-label">Problem</span></button>
+    <button class="page-tab-btn" id="tab-btn-6" onclick="switchPage(6)"><span class="tab-icon">💰</span><span class="tab-label">Economics</span></button>
+    <button class="page-tab-btn" id="tab-btn-3" onclick="switchPage(3)"><span class="tab-icon">⚙️</span><span class="tab-label">How It Works</span></button>
+    <button class="page-tab-btn" id="tab-btn-2" onclick="switchPage(2)"><span class="tab-icon">🎯</span><span class="tab-label">Trends</span></button>
+    <button class="page-tab-btn" id="tab-btn-4" onclick="switchPage(4)"><span class="tab-icon">🧪</span><span class="tab-label">Scenarios</span></button>
+    <button class="page-tab-btn" id="tab-btn-5" onclick="switchPage(5)"><span class="tab-icon">⚡</span><span class="tab-label">Breakpoints</span></button>
+  </nav>
+</aside>
 <header class="top-bar">
   <div class="brand-group">
     <div class="brand-logo-wrap">
       <svg width="118" height="30" viewBox="0 0 170 42" fill="none">
-        <path d="M10 6 C16 2, 30 4, 24 14 C20 20, 10 18, 6 26 C3 32, 13 36, 26 32 C18 35, 2 35, 2 26 C2 18, 14 18, 18 12 C22 6, 12 5, 10 6 Z" fill="#2e8fe6"/>
-        <path d="M14 10 C20 6, 34 8, 28 18 C24 24, 14 22, 10 30 C7 36, 17 40, 30 36 C22 39, 6 39, 6 30 C6 22, 18 22, 22 16 C26 10, 16 9, 14 10 Z" fill="#0060ae"/>
+        <path d="M10 6 C16 2, 30 4, 24 14 C20 20, 10 18, 6 26 C3 32, 13 36, 26 32 C18 35, 2 35, 2 26 C2 18, 14 18, 18 12 C22 6, 12 5, 10 6 Z" fill="#3b9eff"/>
+        <path d="M14 10 C20 6, 34 8, 28 18 C24 24, 14 22, 10 30 C7 36, 17 40, 30 36 C22 39, 6 39, 6 30 C6 22, 18 22, 22 16 C26 10, 16 9, 14 10 Z" fill="#0070cc"/>
         <text x="38" y="22" font-family="Outfit,sans-serif" font-weight="800" font-size="15" fill="#fff" letter-spacing="1">BAJAJ</text>
-        <text x="38" y="35" font-family="Outfit,sans-serif" font-weight="700" font-size="10" fill="#2e8fe6" letter-spacing="2.5">FINSERV</text>
+        <text x="38" y="35" font-family="Outfit,sans-serif" font-weight="700" font-size="10" fill="#3b9eff" letter-spacing="2.5">FINSERV</text>
       </svg>
       <div style="width:1px;height:26px;background:var(--line-bright);"></div>
-      <div style="font-family:var(--f-head);font-weight:700;font-size:calc(13px * var(--fs));color:var(--heading);">ATOM <span style="color:var(--brand-blue);">Season 9</span></div>
+      <div style="font-family:var(--f-head);font-weight:700;font-size:var(--s-sm);color:var(--heading);">ATOM <span style="color:var(--brand-blue);">Season 9</span></div>
     </div>
     <div class="brand-title-box">
       <h1>ClaimPulse</h1>
       <p>AI Claims Orchestration · Team Finsighters · NMIMS Mumbai · PS_BFDL Motor Claims TAT</p>
     </div>
   </div>
-  <nav class="page-nav-tabs">
-    <button class="page-tab-btn active" id="tab-btn-1" onclick="switchPage(1)">① The Problem</button>
-    <button class="page-tab-btn" id="tab-btn-6" onclick="switchPage(6)">② The Economics</button>
-    <button class="page-tab-btn" id="tab-btn-3" onclick="switchPage(3)">③ How It Works</button>
-    <button class="page-tab-btn" id="tab-btn-2" onclick="switchPage(2)">④ Trend Radar</button>
-    <button class="page-tab-btn" id="tab-btn-4" onclick="switchPage(4)">⑤ Scenario Lab</button>
-    <button class="page-tab-btn" id="tab-btn-5" onclick="switchPage(5)">⑥ Breakpoints</button>
-  </nav>
 </header>
 
 <!-- ==================== PAGE 1 — THE PROBLEM ==================== -->
@@ -261,7 +357,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   <section class="hero-pitch">
     <div class="pitch-eyebrow">Problem Appreciation · Motor Own Damage Book · Bajaj General Insurance</div>
     <div class="pitch-title">Claims cost is being paid at exactly the moment pricing cannot absorb it</div>
+    <details class="collapsible"><summary>📋 Bajaj General's combined ratio crossed 100% and kept go…</summary>
     <div class="pitch-sub">Bajaj General's combined ratio crossed 100% and kept going. Motor has been deliberately slowed because pricing is inadequate, which means the segment cannot grow its way out. The one lever left is cost-to-serve and leakage on the claims that are already being written. Every figure on this page is from a filed source, dated and named.</div>
+    </details>
     <div class="stat-strip">
       <div class="p-stat"><div class="p-k">Group Combined Ratio</div><div class="p-row"><span class="p-from">103.6%</span><span class="p-arrow">→</span><span class="p-to bad">104.7%</span></div><div class="p-note">Q1 FY27 vs Q1 FY26 · BFL Investor Presentation</div></div>
       <div class="p-stat"><div class="p-k">Underwriting Loss</div><div class="p-row"><span class="p-from">₹116 Cr</span><span class="p-arrow">→</span><span class="p-to bad">₹130 Cr</span></div><div class="p-note">Q1 FY27, widened YoY</div></div>
@@ -277,7 +375,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <h3>The Squeeze, Quantified <span>📉</span></h3>
       <div class="sub">Every bar is a filed figure. The gap between the combined ratio and 100% is money leaving the business on written premium.</div>
       <div class="chart-box"><canvas id="chartSqueeze"></canvas></div>
+      <details class="collapsible"><summary>🔴 Why this is not a pricing problem</summary>
       <div class="note-box bad"><b>Why this is not a pricing problem.</b> Management has explicitly slowed motor because pricing is inadequate, with return-on-risk-capital gating re-entry. Growth is not available as a response. Separately, the Supreme Court motor third-party judgment forced a peer (ICICI Lombard) to strengthen reserves by <b>2.8 pp of combined ratio in a single quarter</b> — a shock of that size against a 104.7% starting point is not absorbable by pricing alone.</div>
+      </details>
     </div>
     <div class="card">
       <h3>Who Feels It <span>👥</span></h3>
@@ -287,7 +387,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         <div class="pill"><b>257,790</b>grievances FY25<br>on Bima Bharosa, +20% YoY</div>
         <div class="pill"><b>69%</b>claims-related<br>the dominant theme</div>
       </div>
+      <details class="collapsible"><summary>🔵 The counter-fact we carry openly</summary>
       <div class="note-box"><b>The counter-fact we carry openly.</b> Motor's share of complaints actually <i>fell</i> from 26.18% to 24.8% (Rajya Sabha, Dec 2025). We report it because it cuts against our own narrative.</div>
+      </details>
     </div>
   </div>
 
@@ -307,7 +409,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
           <tr><td class="lbl">Claims ops staff</td><td class="txt">Capacity released, not headcount removed</td><td><span class="tag a">CONDITIONS</span></td></tr>
         </tbody>
       </table>
+      <details class="collapsible"><summary>🟡 The stakeholder we do not pretend is neutral</summary>
       <div class="note-box warn"><b>The stakeholder we do not pretend is neutral.</b> Surveyor assignments fall as automation rises. That group has an organised regulatory voice. We price this as regulatory friction, not as goodwill.</div>
+      </details>
     </div>
     <div class="card">
       <h3>The Regulatory Window <span>📜</span></h3>
@@ -315,13 +419,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <table>
         <thead><tr><th>Instrument</th><th>Effective</th><th>Effect</th></tr></thead>
         <tbody>
-          <tr><td class="lbl">IRDAI Fraud Monitoring Framework<br><span style="font-size:calc(10px * var(--fs));color:var(--mist-dim);">IRDAI/IID/GDL/MISC/112/10/2025</span></td><td>1 Apr 2026</td><td class="txt">Board-governed fraud monitoring becomes <b>mandatory</b>, not a differentiator</td></tr>
+          <tr><td class="lbl">IRDAI Fraud Monitoring Framework<br><span style="font-size:calc(12px * var(--fs));color:var(--mist-dim);">IRDAI/IID/GDL/MISC/112/10/2025</span></td><td>1 Apr 2026</td><td class="txt">Board-governed fraud monitoring becomes <b>mandatory</b>, not a differentiator</td></tr>
           <tr><td class="lbl">Master Circular, Policyholders' Interests</td><td>11 Jun 2024</td><td class="txt">Losses under <b>₹50,000</b> need no registered surveyor; AI assessment explicitly contemplated</td></tr>
           <tr><td class="lbl">DPDP Rules 2025</td><td>13 May 2027</td><td class="txt">Penalties to <b>₹250 Cr</b> from day one. No grace period.</td></tr>
           <tr><td class="lbl">IRDAI AI Working Group</td><td>Jun 2026</td><td class="txt">7 members, 3-month mandate. Norms <b>not yet published</b> — a known unknown, priced as a build overlay.</td></tr>
         </tbody>
       </table>
+      <details class="collapsible"><summary>🟢 The corridor the design sits inside</summary>
       <div class="note-box good"><b>The corridor the design sits inside.</b> The ₹50,000 surveyor exemption is why the green lane exists at all, and why an average claim of ₹45,000 is the right design point rather than a convenient one.</div>
+      </details>
     </div>
     <div class="card">
       <h3>What Bajaj Already Has <span>🏗️</span></h3>
@@ -331,7 +437,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         <div class="pill"><b>193.4 M</b>bot message exchanges, FY26</div>
         <div class="pill"><b>78</b>Motor NPS, FY26</div>
       </div>
+      <details class="collapsible"><summary>🟢 This is the argument against "build it from scratch"</summary>
       <div class="note-box good"><b>This is the argument against "build it from scratch".</b> 90.9% digital servicing and 64.5% of customers already served by AI bots means the evidence pipeline, the channel and the customer behaviour already exist. ClaimPulse is an orchestration layer on top of a digital estate, not a digital transformation programme.</div>
+      </details>
     </div>
   </div>
 </main>
@@ -341,7 +449,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   <section class="hero-pitch">
     <div class="pitch-eyebrow">Scenario Planning · Step 1 · The Exogenous Forces</div>
     <div class="pitch-title">A trend is a force we do not control. Nothing becomes a rupee unless it survives the evidence test.</div>
+    <details class="collapsible"><summary>📋 21 named trends across Consumer, Technology, Social, In…</summary>
     <div class="pitch-sub">21 named trends across Consumer, Technology, Social, Industrial and Regulatory domains — each carrying a named publisher, a publication date and an evidence class. 18 are verified clean against a live source and quotable without qualification. 9 are carried at a stated lower tier. 8 figures have no source at all and are listed as gaps rather than filled with estimates.</div>
+    </details>
     <div class="stat-strip" style="grid-template-columns:repeat(5,1fr);">
       <div class="p-stat"><div class="p-k">Trends Mapped</div><div class="p-row"><span class="p-to">21</span></div><div class="p-note">Across 5 domains</div></div>
       <div class="p-stat"><div class="p-k">Verified Clean</div><div class="p-row"><span class="p-to highlight">18</span></div><div class="p-note">Quotable without qualification</div></div>
@@ -361,7 +471,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         <span><i class="dot" style="background:#f59e0b"></i> Confidence 3 (moderate)</span>
         <span><i class="dot" style="background:#ef4444"></i> Confidence 1–2 (weak / no source)</span>
       </div>
+      <details class="collapsible"><summary>🔴 Read the top-right red bubbles first</summary>
       <div class="note-box bad"><b>Read the top-right red bubbles first.</b> High magnitude, high velocity, high exposure — and no evidence. That is <b>T5 Synthetic-media capability</b> and <b>S3 Fraud behaviour</b>, both resting on the same gap: no published incidence of synthetic claim media in Indian motor exists anywhere. All four research engines rediscovered this independently. It is the reason the Capture Integrity Gate is a costed build line rather than a slide claim.</div>
+      </details>
     </div>
     <div class="card">
       <h3>Evidence Class Split <span>📑</span></h3>
@@ -369,7 +481,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <div class="chart-box short"><canvas id="chartEvidence"></canvas></div>
       <div class="sec-head" style="margin-top:14px;">Domain Average Scores</div>
       <div class="chart-box short"><canvas id="chartDomain"></canvas></div>
+      <details class="collapsible"><summary>🔵 Regulatory scores highest on evidence and lowest on ambig…</summary>
       <div class="note-box"><b>Regulatory scores highest on evidence and lowest on ambiguity</b> — every regulatory trend is legally anchored and dated. Technology scores highest on magnitude and velocity but lowest on evidence confidence, which is exactly why nothing in the technology domain drives a rupee figure on its own.</div>
+      </details>
     </div>
   </div>
 
@@ -377,7 +491,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     <h3>The Trend Field — named, dated, independently verified <span>🔍</span></h3>
     <div class="sub">Filter by domain. Every row carries its publisher, date and verification status as at 12 August 2026.</div>
     <div class="filter-row">
-      <span style="font-size:calc(11px * var(--fs));color:var(--mist);font-weight:700;text-transform:uppercase;">Domain:</span>
+      <span style="font-size:calc(12px * var(--fs));color:var(--mist);font-weight:700;text-transform:uppercase;">Domain:</span>
       <button class="fbtn active" onclick="filterTrends('all',this)">All 21</button>
       <button class="fbtn" onclick="filterTrends('Consumer',this)">Consumer</button>
       <button class="fbtn" onclick="filterTrends('Technology',this)">Technology</button>
@@ -403,7 +517,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
           <tbody id="gapBody"></tbody>
         </table>
       </div>
+      <details class="collapsible"><summary>🟡 U-06 is the one to ask us about</summary>
       <div class="note-box warn"><b>U-06 is the one to ask us about.</b> The human exception-handling capacity ceiling was flagged by two of four research engines as the breakpoint most likely to bind first — and modelled by none of them. It is the single most actionable data request in the whole submission.</div>
+      </details>
     </div>
     <div class="card">
       <h3>What the Trend Work Actually Settled <span>✅</span></h3>
@@ -418,7 +534,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   <section class="hero-pitch">
     <div class="pitch-eyebrow">Solution Architecture · The Claim Journey</div>
     <div class="pitch-title">One parallel orchestration layer replacing four sequential manual handoffs</div>
+    <details class="collapsible"><summary>📋 Everything gates behind the Capture Integrity Shield. I…</summary>
     <div class="pitch-sub">Everything gates behind the Capture Integrity Shield. If evidence cannot be trusted, no downstream model is safe — so integrity is checked first, once, and the five engines then run in parallel rather than in sequence. Click any stage in the diagram to inspect it.</div>
+    </details>
   </section>
 
   <div class="card" style="margin-bottom:16px;">
@@ -539,14 +657,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <div>
         <div class="sec-head" style="font-size:calc(12px * var(--fs));margin-bottom:7px;">Live Claim Intake Stream</div>
         <div class="feed" id="simFeed"><div style="color:var(--mist-dim);font-size:calc(12px * var(--fs));padding:10px;">Press <b>Start Live Engine</b> to begin the stream.</div></div>
-        <div class="chart-box short" style="height:130px;margin-top:10px;"><canvas id="chartSimLane"></canvas></div>
+        <div class="chart-box short" style="height:110px;margin-top:8px;"><canvas id="chartSimLane"></canvas></div>
       </div>
       <div>
         <div class="sec-head" style="font-size:calc(12px * var(--fs));margin-bottom:7px;">Active Claim Inspector</div>
         <div class="inspector-box" style="height:auto;">
           <div class="inspector-header">
             <div><div style="font-family:var(--f-head);font-weight:700;font-size:calc(14.5px * var(--fs));" id="insp-id">Awaiting stream…</div>
-                 <div style="font-size:calc(11.5px * var(--fs));color:var(--mist);" id="insp-veh">—</div></div>
+                 <div style="font-size:calc(12px * var(--fs));color:var(--mist);" id="insp-veh">—</div></div>
             <span class="lane-badge G" id="insp-badge" style="visibility:hidden;">—</span>
           </div>
           <div class="inspector-grid">
@@ -561,7 +679,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
             <div class="inspector-item"><div class="lbl">Settlement TAT</div><div class="val" id="insp-tat">—</div></div>
             <div class="inspector-item"><div class="lbl">Manual touches</div><div class="val" id="insp-touch">—</div></div>
           </div>
-          <div style="margin-top:9px;background:rgba(13,33,58,0.8);padding:7px 9px;border-radius:6px;border:1px solid var(--line);font-size:calc(11.5px * var(--fs));color:var(--mist);" id="insp-action"><b>Action:</b> Start the engine to see live routing decisions.</div>
+          <div style="margin-top:9px;background:rgba(13,33,58,0.8);padding:7px 9px;border-radius:6px;border:1px solid var(--line);font-size:calc(12px * var(--fs));color:var(--mist);" id="insp-action"><b>Action:</b> Start the engine to see live routing decisions.</div>
         </div>
         <div class="sec-head" style="font-size:calc(12px * var(--fs));margin:12px 0 7px;">Test a Specific Claim Profile</div>
         <div class="sandbox-preset-btns">
@@ -571,7 +689,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         </div>
       </div>
     </div>
+    <details class="collapsible"><summary>🔵 What the stream is actually showing</summary>
     <div class="note-box"><b>What the stream is actually showing.</b> Every claim is scored by the Capture Integrity Gate first — EXIF timestamp, GPS proximity and diffusion-artefact screening — and only then routed. A red-lane claim is not a rejected claim; it is a claim where the gate found a hard contradiction and the investigator receives a pre-compiled evidence pack. Try the <b>fabricated claim</b> button to see the gate catch a synthetic submission that would pass every traditional check.</div>
+    </details>
   </div>
 
   <div class="grid3">
@@ -582,13 +702,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         <thead><tr><th>Component</th><th style="width:78px;">Tech dep.</th><th style="width:78px;">Data dep.</th><th style="width:88px;">Failure impact</th></tr></thead>
         <tbody id="depBody"></tbody>
       </table>
+      <details class="collapsible"><summary>🔴 The concentration point</summary>
       <div class="note-box bad"><b>The concentration point.</b> Trust Score is where all five engines converge, which makes it the single most critical dependency in the architecture. We name it rather than hide it, and it is the reason production hardening carries its own ₹0.75 Cr build line.</div>
+      </details>
     </div>
     <div class="card">
       <h3>Technology Convergence <span>🔬</span></h3>
       <div class="sub">What becomes possible when two capabilities interact — closer to the real moat than any single-technology claim</div>
       <div id="convergeList"></div>
+      <details class="collapsible"><summary>🟢 Why convergence is the moat, not the models</summary>
       <div class="note-box good"><b>Why convergence is the moat, not the models.</b> Any competitor can buy computer vision. What is hard to copy is CV cross-checked against the collision event, a suspicious image connected to claimant-vehicle-garage-device history, and policy wording translated straight into a settlement decision. The value is in the joins.</div>
+      </details>
     </div>
     <div class="card">
       <h3>Displacement Test <span>⚔️</span></h3>
@@ -597,7 +721,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         <thead><tr><th>Development</th><th style="width:52px;">Helps</th><th style="width:76px;">Commoditises</th><th style="width:56px;">Replaces</th><th style="width:56px;">New risk</th></tr></thead>
         <tbody id="dispBody"></tbody>
       </table>
+      <details class="collapsible"><summary>🟡 Read the Multimodal AI and Agentic rows</summary>
       <div class="note-box warn"><b>Read the Multimodal AI and Agentic rows.</b> Both enhance us and commoditise us simultaneously. That is not a contradiction — it is the argument for putting the investment into data, orchestration and governance rather than into the model layer, which is exactly what the build cost split does.</div>
+      </details>
     </div>
   </div>
 </main>
@@ -607,7 +733,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   <section class="hero-pitch">
     <div class="pitch-eyebrow">Scenario Planning · Step 2 · Five Scenarios, Three Intensities Each</div>
     <div class="pitch-title">Every scenario moves ONE lever and holds everything else at Base, so the effect is attributable</div>
+    <details class="collapsible"><summary>📋 S1 Level 2 </summary>
     <div class="pitch-sub">S1 Level 2 <i>is</i> the Base case by construction — which is how the engine checks itself. All six anchors tie to the live financial model. Select a scenario and intensity below; every number recomputes.</div>
+    </details>
     <div class="stat-strip" style="grid-template-columns:repeat(6,1fr);">
       <div class="p-stat"><div class="p-k">Engine Anchors</div><div class="p-row"><span class="p-to highlight">6 / 6 TIE</span></div><div class="p-note">Scenario sheet is live, not stale</div></div>
       <div class="p-stat"><div class="p-k">Scenarios × Intensities</div><div class="p-row"><span class="p-to">13</span></div><div class="p-note">Computed on the live engine</div></div>
@@ -642,7 +770,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <h3>Impact Ranking <span>📊</span></h3>
       <div class="sub">Delta vs Base, ₹ Cr per year, across all 13 scenario-intensity combinations</div>
       <div class="chart-box tall"><canvas id="chartTornado"></canvas></div>
+      <details class="collapsible"><summary>🔴 Only one bar matters</summary>
       <div class="note-box bad"><b>Only one bar matters.</b> Synthetic evidence at full detection neutralisation costs <b>₹23.49 Cr a year</b> — five times larger than every other scenario combined. Every other lever is noise against it. That single fact is why the Capture Integrity Shield is the largest block of build spend and why we call it the moat rather than a feature.</div>
+      </details>
     </div>
   </div>
 
@@ -662,7 +792,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
           <tr class="hl"><td class="lbl">COMBINED RATIO, Motor OD</td><td class="imp">2.58 pp</td><td style="color:var(--gold);font-weight:700;">1.48 pp</td></tr>
         </tbody>
       </table>
+      <details class="collapsible"><summary>🟢 There is no combination of the live-model scenarios (Part…</summary>
       <div class="note-box good"><b>There is no combination of the live-model scenarios (Parts A–D) in which ClaimPulse fails to return its capital inside a year of steady-state operation.</b> Recomputed on the current engine — the figures originally filed for this table (38.62 / 3.07 / 2.57) were carried from a superseded build cost and are corrected here. The single exception anywhere in the research is the Technology engine's separate cross-engine library case (W8, shown below), which is a different, more extreme combination than this compound test runs.</div>
+      </details>
     </div>
     <div class="card">
       <h3>Fraud Detection Curve — the variable that actually decides this <span>📉</span></h3>
@@ -674,7 +806,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         <div class="kpi gold-border"><div class="k">Payback</div><div class="v amber" id="fd-pb">2.74 Mo</div></div>
         <div class="kpi"><div class="k">vs 90% Target</div><div class="v teal" id="fd-loss">—</div></div>
       </div>
+      <details class="collapsible"><summary>🟡 Our +28 pp sits above the published range</summary>
       <div class="note-box warn"><b>Our +28 pp sits above the published range.</b> Graph-AI lift is published at +10 to 20 pp; we model +28. That is why the downside test lands it at 82%, why this curve runs all the way back to 62%, and why the case is presented against the floor rather than the target.</div>
+      </details>
     </div>
   </div>
 
@@ -682,7 +816,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     <h3>Four-Engine Scenario Library — every scenario tested from four independent directions <span>🧭</span></h3>
     <div class="sub">Parts above are the live model. This is the scenario library behind them, consolidated across the Customer, Technology, Social and Industrial research engines. 24 scenarios; one breach.</div>
     <div class="filter-row">
-      <span style="font-size:calc(11px * var(--fs));color:var(--mist);font-weight:700;text-transform:uppercase;">Engine:</span>
+      <span style="font-size:calc(12px * var(--fs));color:var(--mist);font-weight:700;text-transform:uppercase;">Engine:</span>
       <button class="fbtn active" onclick="filterLib('all',this)">All 24</button>
       <button class="fbtn" onclick="filterLib('Customer',this)">Customer</button>
       <button class="fbtn" onclick="filterLib('Technology',this)">Technology</button>
@@ -696,7 +830,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         <tbody id="libBody"></tbody>
       </table>
     </div>
+    <details class="collapsible"><summary>🔴 The only failure mode, stated plainly</summary>
     <div class="note-box bad"><b>The only failure mode, stated plainly.</b> Across all four engines and every grade tested, exactly one case turns net benefit negative: the Technology engine's W8 Combined Stress Test at Extreme, at minus ₹0.531 Cr per month. It requires automation depth, capacity realisation and fraud detection to collapse <i>simultaneously</i>. We report it rather than exclude it.</div>
+    </details>
   </div>
 </main>
 
@@ -705,7 +841,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   <section class="hero-pitch">
     <div class="pitch-eyebrow">Resilience · Stated as Breakpoints, Not as an Adjective</div>
     <div class="pitch-title">Do not say ClaimPulse is resilient. Say where it breaks.</div>
+    <details class="collapsible"><summary>📋 Nine breakpoints are defined. Five are computable from…</summary>
     <div class="pitch-sub">Nine breakpoints are defined. Five are computable from the live model today; four are not, and we say which. The fraud floor has already been breached in testing and the model survived it — at the absolute floor (in-house touch handling, zero fraud benefit), the case still returns ₹3.78 Cr a year and repays in 31.4 months.</div>
+    </details>
   </section>
 
   <div class="grid21">
@@ -723,7 +861,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <h3>The Nine Breakpoints <span>🎚️</span></h3>
       <div class="sub">Bar shows headroom before the breakpoint binds. Grey means not computable from the model today — we say so rather than assert a number.</div>
       <div id="bpList"></div>
+      <details class="collapsible"><summary>🟡 H* is the one that binds first</summary>
       <div class="note-box warn"><b>H* is the one that binds first.</b> The human exception-handling capacity ceiling was raised by two research engines and modelled by none. It needs Bajaj claims-operations data, and it is the first thing the 90-day pilot instruments.</div>
+      </details>
     </div>
   </div>
 
@@ -737,7 +877,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
           <tbody id="interBody"></tbody>
         </table>
       </div>
+      <details class="collapsible"><summary>🔵 The five that determine the case:</summary>
       <div class="note-box"><b>The five that determine the case:</b> the <b>adversarial gap</b> (detection minus generation, not either alone), the <b>automation frontier</b> (what AI is permitted to decide, not what it can do), the <b>evidence integrity function</b> (what share of evidence is trustworthy enough to auto-decide on), the <b>orchestration ownership question</b> (who owns the layer), and the <b>evidence usability gap</b> (available evidence always exceeds legally usable evidence).</div>
+      </details>
     </div>
     <div class="card">
       <h3>Grade G4 — Repurposing, not failure <span>🔄</span></h3>
@@ -757,7 +899,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         <tbody id="ewBody"></tbody>
       </table>
     </div>
+    <details class="collapsible"><summary>🟢 The strategic response is pre-decided, not improvised</summary>
     <div class="note-box good"><b>The strategic response is pre-decided, not improvised.</b> Each scenario carries a named response and a named trigger to act — invest ahead of the friction frontier, build governance as a production requirement rather than a compliance layer, shift investment from AI components to data and orchestration as commoditisation arrives, and treat the combined stress case as something to be <i>survivable</i> rather than optimal.</div>
+    </details>
   </div>
 </main>
 
@@ -766,7 +910,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   <section class="hero-pitch">
     <div class="pitch-eyebrow">Business Impact · The Live Investment Engine</div>
     <div class="pitch-title">Every figure below is a formula, not a typed number</div>
+    <details class="collapsible"><summary>📋 Three implementation plans differing by exactly two lev…</summary>
     <div class="pitch-sub">Three implementation plans differing by exactly two levers: rollout share and cost per touch. Build cost is identical in all three because the same system is built. The workbook runs 24 integrity checks on itself and all 24 pass. Move any slider and everything recomputes.</div>
+    </details>
     <div class="stat-strip">
       <div class="p-stat"><div class="p-k">Blended TAT</div><div class="p-row"><span class="p-from">9.8 d</span><span class="p-arrow">→</span><span class="p-to highlight" id="hero-tat">5.55 d</span></div><div class="p-note" id="hero-tat-note">On platform: 2.71 d</div></div>
       <div class="p-stat"><div class="p-k">Touches / Claim</div><div class="p-row"><span class="p-from">7.0</span><span class="p-arrow">→</span><span class="p-to highlight" id="hero-touch">1.23</span></div><div class="p-note">On ClaimPulse</div></div>
@@ -779,7 +925,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 
   <div class="card" style="margin-bottom:16px;">
     <div class="filter-row" style="margin-bottom:12px;">
-      <span style="font-size:calc(11px * var(--fs));color:var(--mist);font-weight:700;text-transform:uppercase;">Implementation plan:</span>
+      <span style="font-size:calc(12px * var(--fs));color:var(--mist);font-weight:700;text-transform:uppercase;">Implementation plan:</span>
       <button class="fbtn" id="btn-conservative" onclick="applyPlan('conservative')">Conservative · 20% rollout</button>
       <button class="fbtn active" id="btn-base" onclick="applyPlan('base')">Base · 60% rollout</button>
       <button class="fbtn" id="btn-aggressive" onclick="applyPlan('aggressive')">Aggressive · 100% rollout</button>
@@ -807,13 +953,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <h3>Where the Benefit Comes From <span>💧</span></h3>
       <div class="sub">₹ Cr per year at steady state. Two of these lines are the Capture Integrity Shield paying for itself.</div>
       <div class="chart-box"><canvas id="chartBenefit"></canvas></div>
+      <details class="collapsible"><summary>🔵 Note what is NOT counted</summary>
       <div class="note-box"><b>Note what is NOT counted.</b> Repair-network gains are excluded entirely (customer benefit that does not accrue to us). Whole-book NPS effect is excluded. Renewal uplift is applied to the claimant cohort only. Repair-cost overpayment carries no benefit anywhere in the model because the rupee base it would multiply has no source.</div>
+      </details>
     </div>
     <div class="card">
       <h3>Three-Year Cumulative Position <span>📈</span></h3>
       <div class="sub">Net cumulative ₹ Cr, including the 10-month build before benefit accrues</div>
       <div class="chart-box"><canvas id="chartForecast"></canvas></div>
+      <details class="collapsible"><summary>🟡 Two paybacks, never mixed</summary>
       <div class="note-box warn"><b>Two paybacks, never mixed.</b> Steady-state payback (<span id="fc-pb1">2.74</span> months) answers "once running, how fast does it repay?". Payback from kickoff (<span id="fc-pb2">16.84</span> months) includes the 10-month build during which nothing accrues. The second is the honest one for a capital committee.</div>
+      </details>
     </div>
   </div>
 
@@ -828,7 +978,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <div class="sub">Six lines. Half is engineerable, half is not — we state the ceiling rather than let it be found.</div>
       <div class="chart-box"><canvas id="chartRun"></canvas></div>
       <div class="ctrl" style="margin-top:12px;"><label>GPU Efficiency Gain (9 design levers) <span class="val" id="val-gpueff">0%</span></label><input type="range" id="sl-gpueff" min="0" max="100" step="5" value="0" oninput="update()"></div>
+      <details class="collapsible"><summary>🔴 The honest finding</summary>
       <div class="note-box bad"><b>The honest finding.</b> Even eliminating <i>every rupee</i> of compute moves payback from <span id="ceil-a">2.74</span> to <span id="ceil-b">2.74</span> months. Cost optimisation is not what makes this case work. We present it to prove the run cost will not run away at scale — the objection that actually gets asked.</div>
+      </details>
     </div>
     <div class="card">
       <h3>GenAI: Build vs Buy <span>⚖️</span></h3>
@@ -838,7 +990,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         <div class="pill"><b id="bb-adv">₹2.70 Cr</b>NPV advantage to buying</div>
         <div class="pill"><b id="bb-be">77</b>breakeven GPU-sec/claim</div>
       </div>
+      <details class="collapsible"><summary>🔵 Volume does not decide this</summary>
       <div class="note-box"><b>Volume does not decide this.</b> Both options scale linearly with claims, so there is no crossover volume — doubling claims doubles both sides. The decision is set entirely by GPU-seconds per claim, and that single measurement from the pilot settles it.</div>
+      </details>
     </div>
   </div>
 
@@ -905,7 +1059,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <div>
         <div class="sec-head">The insensitivity, drawn</div>
         <div class="chart-box"><canvas id="chartTokens"></canvas></div>
+        <details class="collapsible"><summary>🟢 Input token volume varies eighteen-fold between LOW and H…</summary>
         <div class="note-box good"><b>Input token volume varies eighteen-fold between LOW and HIGH. Payback moves from 3.074 to 3.096 months — a spread of 0.02 months.</b> An order-of-magnitude error in our token estimate does not change the investment decision. That is the honest reason we can present a range instead of pretending to a precision we have not earned.</div>
+        </details>
       </div>
       <div>
         <div class="sec-head">Breakeven — how large would inference have to get before it mattered?</div>
@@ -919,7 +1075,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
             <tr><td class="lbl">50 per cent</td><td>₹1,309.35</td><td>7,507,785</td><td>about 8 hours</td></tr>
           </tbody>
         </table>
+        <details class="collapsible"><summary>🔴 Read this line to the panel</summary>
         <div class="note-box bad"><b>Read this line to the panel.</b> A ClaimPulse claim carries <b>forty seconds</b> of video. Inference consumption would have to rise roughly fifteen-fold — to about <b>ten minutes of video per claim</b> — before it consumed even <b>one per cent</b> of net annual benefit. Inference cost cannot break this case at any plausible volume.</div>
+        </details>
       </div>
     </div>
 
@@ -936,7 +1094,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
             <tr><td class="lbl">Blended economy</td><td style="color:var(--green);">$0.50</td><td style="color:var(--green);">$2.90</td></tr>
           </tbody>
         </table>
-        <div style="font-size:calc(10px * var(--fs));color:var(--mist-dim);margin-top:5px;">USD per 1M tokens. Every rate from the vendor's own pricing page — no aggregator, no blog.</div>
+        <div style="font-size:calc(12px * var(--fs));color:var(--mist-dim);margin-top:5px;">USD per 1M tokens. Every rate from the vendor's own pricing page — no aggregator, no blog.</div>
       </div>
       <div>
         <div class="sec-head">Discounts every vendor publishes</div>
@@ -949,7 +1107,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
             <tr><td class="lbl">Data-residency premium</td><td style="color:var(--red);">+10%</td><td><span class="tag g">APPLIED</span></td></tr>
           </tbody>
         </table>
+        <details class="collapsible"><summary>🟡 Deliberately unfavourable to ourselves</summary>
         <div class="note-box warn" style="margin-top:8px;"><b>Deliberately unfavourable to ourselves.</b> We apply the cost-increasing residency premium and none of the three cost-reducing discounts, even though all three are published and available. The real number is lower than what we show.</div>
+        </details>
       </div>
       <div>
         <div class="sec-head">Tokenisation rates used</div>
@@ -961,7 +1121,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
             <tr><td class="lbl">Audio</td><td class="imp">32 tokens/sec</td><td class="txt">Google, vendor-published</td></tr>
           </tbody>
         </table>
+        <details class="collapsible"><summary>🔵 Why video dominates every case</summary>
         <div class="note-box"><b>Why video dominates every case.</b> At 263 tokens per second, forty seconds of claim video is 10,520 tokens on its own. That is why video de-duplication and damage-frame selection is the single highest-value cost lever in the whole architecture — and why its reduction ratio is the measurement the pilot instruments first.</div>
+        </details>
       </div>
     </div>
   </div>
@@ -981,6 +1143,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   </div>
 </main>
 </div>
+
 
 <script>
 /* =============== LIVE MODEL — verified line-by-line against ClaimPulse_Investor_Dashboard_R5.xlsx =============== */
@@ -1295,20 +1458,20 @@ const NODE_INFO={
 /* =============== RENDER =============== */
 function renderTrends(filter){
   document.getElementById('trendBody').innerHTML=TRENDS.filter(t=>filter==='all'||t[1]===filter).map(t=>
-    `<tr><td class="imp">${t[0]}</td><td class="txt">${t[1]}</td><td class="txt">${t[2]}</td><td><span class="tag ${t[4]}">${t[3]}</span></td><td class="txt" style="font-size:calc(11px * var(--fs));">${t[5]}</td><td><span class="tag ${t[8]}" style="white-space:normal;">${t[7]}</span><div style="font-size:calc(10px * var(--fs));color:var(--mist-dim);margin-top:2px;">${t[6]}</div></td><td class="txt">${t[9]}</td></tr>`).join('');
+    `<tr><td class="imp">${t[0]}</td><td class="txt">${t[1]}</td><td class="txt">${t[2]}</td><td><span class="tag ${t[4]}">${t[3]}</span></td><td class="txt" style="font-size:calc(12px * var(--fs));">${t[5]}</td><td><span class="tag ${t[8]}" style="white-space:normal;">${t[7]}</span><div style="font-size:calc(12px * var(--fs));color:var(--mist-dim);margin-top:2px;">${t[6]}</div></td><td class="txt">${t[9]}</td></tr>`).join('');
 }
 function filterTrends(f,btn){document.querySelectorAll('#page2 .filter-row .fbtn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderTrends(f);}
 function renderStatic(){
   document.getElementById('gapBody').innerHTML=GAPS.map(g=>`<tr><td class="imp">${g[0]}</td><td class="lbl">${g[1]}</td><td class="txt">${g[2]}</td></tr>`).join('');
-  document.getElementById('settledList').innerHTML=SETTLED.map((s,i)=>`<div style="display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--line);"><span style="font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(11px * var(--fs));font-weight:700;color:var(--brand-blue);flex-shrink:0;">${i+1}.</span><div style="font-size:calc(12px * var(--fs));"><b style="color:var(--heading);">${s[0]}</b> <span style="color:var(--mist);">— ${s[1]}.</span></div></div>`).join('');
-  document.getElementById('depBody').innerHTML=DEPS.map(d=>`<tr><td class="lbl">${d[0]}<div style="font-size:calc(10px * var(--fs));color:var(--mist-dim);font-weight:400;">${d[5]}</div></td><td class="txt">${d[1]}</td><td class="txt">${d[2]}</td><td><span class="tag ${d[4]}">${d[3]}</span></td></tr>`).join('');
-  document.getElementById('convergeList').innerHTML=CONVERGE.map(c=>`<div style="padding:8px 0;border-bottom:1px solid var(--line);"><div style="font-size:calc(12px * var(--fs));font-weight:700;color:var(--brand-blue);font-family:var(--f-sub);font-variant-numeric:tabular-nums;">${c[0]}</div><div style="font-size:calc(11.5px * var(--fs));color:var(--mist);margin-top:2px;">${c[1]}</div></div>`).join('');
+  document.getElementById('settledList').innerHTML=SETTLED.map((s,i)=>`<div style="display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--line);"><span style="font-family:var(--f-sub);font-variant-numeric:tabular-nums;font-size:calc(12px * var(--fs));font-weight:700;color:var(--brand-blue);flex-shrink:0;">${i+1}.</span><div style="font-size:calc(12px * var(--fs));"><b style="color:var(--heading);">${s[0]}</b> <span style="color:var(--mist);">— ${s[1]}.</span></div></div>`).join('');
+  document.getElementById('depBody').innerHTML=DEPS.map(d=>`<tr><td class="lbl">${d[0]}<div style="font-size:calc(12px * var(--fs));color:var(--mist-dim);font-weight:400;">${d[5]}</div></td><td class="txt">${d[1]}</td><td class="txt">${d[2]}</td><td><span class="tag ${d[4]}">${d[3]}</span></td></tr>`).join('');
+  document.getElementById('convergeList').innerHTML=CONVERGE.map(c=>`<div style="padding:8px 0;border-bottom:1px solid var(--line);"><div style="font-size:calc(12px * var(--fs));font-weight:700;color:var(--brand-blue);font-family:var(--f-sub);font-variant-numeric:tabular-nums;">${c[0]}</div><div style="font-size:calc(12px * var(--fs));color:var(--mist);margin-top:2px;">${c[1]}</div></div>`).join('');
   document.getElementById('dispBody').innerHTML=DISPLACE.map(d=>{
     const cell=v=>v==='—'?'<span style="color:var(--mist-dim);">—</span>':(v.startsWith('YES')?`<span style="color:var(--red);font-weight:700;">${v}</span>`:`<span style="color:var(--green);">${v}</span>`);
     return `<tr><td class="lbl">${d[0]}</td><td>${cell(d[1])}</td><td>${cell(d[2])}</td><td>${cell(d[3])}</td><td>${cell(d[4])}</td></tr>`;}).join('');
   document.getElementById('interBody').innerHTML=INTERACTIONS.map(i=>`<tr><td class="lbl">${i[0]}</td><td><span class="sign ${i[2]}">${i[1]}</span></td><td class="txt">${i[3]}</td></tr>`).join('');
-  document.getElementById('gradeList').innerHTML=GRADES.map(g=>`<div style="display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--line);"><div style="flex:1;"><div style="font-size:calc(11.5px * var(--fs));color:var(--mist);">If this happens at G4:</div><div style="font-size:calc(12px * var(--fs));font-weight:700;color:var(--heading);">${g[0]}</div><div style="font-size:calc(11.5px * var(--fs));color:var(--brand-blue);margin-top:3px;">→ ClaimPulse becomes ${g[1]}</div></div></div>`).join('');
-  document.getElementById('ladderList').innerHTML=LADDER.map(l=>`<div style="display:flex;gap:9px;align-items:flex-start;padding:6px 0;"><span class="tag ${l[3]}" style="flex-shrink:0;">${l[0]}</span><div><b style="font-size:calc(12px * var(--fs));color:var(--heading);">${l[1]}</b><div style="font-size:calc(11.5px * var(--fs));color:var(--mist);">${l[2]}</div></div></div>`).join('');
+  document.getElementById('gradeList').innerHTML=GRADES.map(g=>`<div style="display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--line);"><div style="flex:1;"><div style="font-size:calc(12px * var(--fs));color:var(--mist);">If this happens at G4:</div><div style="font-size:calc(12px * var(--fs));font-weight:700;color:var(--heading);">${g[0]}</div><div style="font-size:calc(12px * var(--fs));color:var(--brand-blue);margin-top:3px;">→ ClaimPulse becomes ${g[1]}</div></div></div>`).join('');
+  document.getElementById('ladderList').innerHTML=LADDER.map(l=>`<div style="display:flex;gap:9px;align-items:flex-start;padding:6px 0;"><span class="tag ${l[3]}" style="flex-shrink:0;">${l[0]}</span><div><b style="font-size:calc(12px * var(--fs));color:var(--heading);">${l[1]}</b><div style="font-size:calc(12px * var(--fs));color:var(--mist);">${l[2]}</div></div></div>`).join('');
   document.getElementById('ewBody').innerHTML=EW.map(e=>`<tr><td class="lbl">${e[0]}</td><td class="txt">${e[1]}</td><td class="txt">${e[2]}</td></tr>`).join('');
   document.getElementById('icBody').innerHTML=ICS.map(c=>`<tr><td class="imp">${c[0]}</td><td class="txt">${c[1]}</td><td><span class="tag g">PASS</span></td><td><span class="tag g">PASS</span></td><td><span class="tag g">PASS</span></td><td class="txt">${c[2]}</td></tr>`).join('')
     +`<tr class="hl"><td class="imp">IC-09</td><td class="lbl">OVERALL</td><td colspan="3" style="text-align:center;"><span class="tag g" style="font-size:calc(12px * var(--fs));padding:4px 12px;">ALL 24 CHECKS PASS</span></td><td class="txt">Eight checks across three plans</td></tr>`;
@@ -1334,7 +1497,7 @@ function pickScenario(s,btn){
 }
 function renderLevels(){
   const lv=SCEN[curScen].levels;
-  document.getElementById('levelRow').innerHTML='<span style="font-size:calc(11px * var(--fs));color:var(--mist);font-weight:700;text-transform:uppercase;">Intensity:</span>'+
+  document.getElementById('levelRow').innerHTML='<span style="font-size:calc(12px * var(--fs));color:var(--mist);font-weight:700;text-transform:uppercase;">Intensity:</span>'+
     lv.map((l,i)=>`<button class="fbtn ${i===curLevel?'active':''}" onclick="pickLevel(${i},this)">${l[0]} · ${l[1]}</button>`).join('');
 }
 function pickLevel(i,btn){curLevel=i;document.querySelectorAll('#levelRow .fbtn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');applyScenario();}
@@ -1355,7 +1518,7 @@ function applyScenario(){
     chartScenario.data.labels=lv.map(l=>l[0]);
     chartScenario.data.datasets[0].data=lv.map(l=>l[4]);
     chartScenario.data.datasets[1].data=lv.map(l=>l[6]);
-    chartScenario.data.datasets[0].backgroundColor=lv.map((l,i)=>i===curLevel?'#2e8fe6':'rgba(46,143,230,0.35)');
+    chartScenario.data.datasets[0].backgroundColor=lv.map((l,i)=>i===curLevel?'#3b9eff':'rgba(46,143,230,0.35)');
     chartScenario.update('none');
   }
 }
@@ -1483,25 +1646,25 @@ const DL=(fmtFn,opts={})=>Object.assign({
 },opts);
 const DL_OFF={display:false};
 function initCharts(){
-  Chart.defaults.color='#94a3b8';
+  Chart.defaults.color='#a8b8cc';
   Chart.defaults.font.size=Math.round(11*CFS);Chart.defaults.font.family='Outfit,sans-serif';
   if(window.ChartDataLabels){Chart.register(window.ChartDataLabels);}
   Chart.defaults.set('plugins.datalabels',{display:false});
   const L={labels:{boxWidth:10,font:{size:10.5*CFS}}};
 
   chartSqueeze=new Chart(document.getElementById('chartSqueeze'),{data:{labels:['Q1 FY26','Q1 FY27'],
-    datasets:[{type:'bar',label:'Combined ratio %',data:[103.6,104.7],backgroundColor:['#0060ae','#ef4444'],yAxisID:'y',order:2},
-      {type:'bar',label:'Net incurred claim ratio %',data:[71.1,74.3],backgroundColor:['#2e8fe6','#f59e0b'],yAxisID:'y',order:2},
-      {type:'line',label:'Underwriting loss ₹ Cr',data:[116,130],borderColor:'#10b981',borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#10b981',yAxisID:'y1',order:1}]},
+    datasets:[{type:'bar',label:'Combined ratio %',data:[103.6,104.7],backgroundColor:['#0060ae','#f87171'],yAxisID:'y',order:2},
+      {type:'bar',label:'Net incurred claim ratio %',data:[71.1,74.3],backgroundColor:['#3b9eff','#fbbf24'],yAxisID:'y',order:2},
+      {type:'line',label:'Underwriting loss ₹ Cr',data:[116,130],borderColor:'#34d399',borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#34d399',yAxisID:'y1',order:1}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:L,datalabels:DL(v=>v,{anchor:'end',align:'top',offset:2})},
       scales:{y:{grid:GRID,title:{display:true,text:'%',font:{size:10*CFS}},min:60},y1:{position:'right',grid:NOGRID,title:{display:true,text:'₹ Cr',font:{size:10*CFS}},min:0},x:{grid:NOGRID}}}});
 
   chartGrievance=new Chart(document.getElementById('chartGrievance'),{type:'doughnut',
-    data:{labels:['Claims-related (69%)','All other themes (31%)'],datasets:[{data:[69,31],backgroundColor:['#ef4444','#1e3a5f'],borderColor:'#0b2545',borderWidth:2}]},
+    data:{labels:['Claims-related (69%)','All other themes (31%)'],datasets:[{data:[69,31],backgroundColor:['#f87171','#1a2d4a'],borderColor:'#0b2545',borderWidth:2}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10.5*CFS}}},datalabels:DL(v=>v+'%',{color:'#fff',font:{family:'Outfit,sans-serif',size:12*CFS,weight:'700'}})}}});
 
   chartReadiness=new Chart(document.getElementById('chartReadiness'),{type:'bar',
-    data:{labels:['Digital servicing','AI bot coverage','Chatbot','Voicebot'],datasets:[{data:[90.9,64.5,41.33,23.2],backgroundColor:['#10b981','#2e8fe6','#0060ae','#22d3ee']}]},
+    data:{labels:['Digital servicing','AI bot coverage','Chatbot','Voicebot'],datasets:[{data:[90.9,64.5,41.33,23.2],backgroundColor:['#34d399','#3b9eff','#0060ae','#22d3ee']}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:NOGRID,title:{display:true,text:'% of customers · FY26 filed',font:{size:10.5*CFS}},datalabels:DL(v=>v+'%',{anchor:'end',align:'right',offset:3,color:'#f8fafc'})},scales:{x:{grid:GRID,max:112},y:{grid:NOGRID}}}});
 
   const vcol=e=>e>=4?'rgba(16,185,129,0.75)':e===3?'rgba(245,158,11,0.75)':'rgba(239,68,68,0.8)';
@@ -1515,7 +1678,7 @@ function initCharts(){
 
   chartEvidence=new Chart(document.getElementById('chartEvidence'),{type:'doughnut',
     data:{labels:['Verified clean (18)','Stated lower tier (9)','No source — declared gap (8)'],
-      datasets:[{data:[18,9,8],backgroundColor:['#10b981','#f59e0b','#ef4444'],borderColor:'#0b2545',borderWidth:2}]},
+      datasets:[{data:[18,9,8],backgroundColor:['#34d399','#fbbf24','#f87171'],borderColor:'#0b2545',borderWidth:2}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10*CFS}}},datalabels:DL(v=>v,{color:'#fff',font:{family:'Outfit,sans-serif',size:13*CFS,weight:'700'}})}}});
 
   const doms=['Customer','Technology','Social','Industry'];
@@ -1523,64 +1686,64 @@ function initCharts(){
   chartDomain=new Chart(document.getElementById('chartDomain'),{type:'radar',
     data:{labels:['Magnitude','Velocity','Persistence','Evidence conf.','Motor relevance','Exposure'],
       datasets:doms.map((d,i)=>({label:d,data:[3,4,5,6,7,8].map(k=>avg(d,k)),
-        borderColor:['#2e8fe6','#ef4444','#a78bfa','#10b981'][i],
+        borderColor:['#3b9eff','#f87171','#a78bfa','#34d399'][i],
         backgroundColor:['rgba(46,143,230,0.13)','rgba(239,68,68,0.13)','rgba(167,139,250,0.13)','rgba(16,185,129,0.13)'][i],borderWidth:1.8,pointRadius:2}))},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:9,font:{size:10*CFS}}}},
       scales:{r:{min:0,max:5,grid:{color:'rgba(255,255,255,0.08)'},angleLines:{color:'rgba(255,255,255,0.08)'},pointLabels:{font:{size:10*CFS}},ticks:{display:false}}}}});
 
   chartScenario=new Chart(document.getElementById('chartScenario'),{
     data:{labels:[],datasets:[
-      {type:'bar',label:'Net annual benefit ₹ Cr',data:[],backgroundColor:'#2e8fe6',yAxisID:'y'},
-      {type:'line',label:'Payback from kickoff, months',data:[],borderColor:'#f59e0b',borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#f59e0b',yAxisID:'y1'}]},
+      {type:'bar',label:'Net annual benefit ₹ Cr',data:[],backgroundColor:'#3b9eff',yAxisID:'y'},
+      {type:'line',label:'Payback from kickoff, months',data:[],borderColor:'#fbbf24',borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#fbbf24',yAxisID:'y1'}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:L,datalabels:DL(v=>v==null?'':v.toFixed(2),{anchor:'end',align:'top',offset:3})},
       scales:{y:{grid:GRID,title:{display:true,text:'₹ Cr',font:{size:10*CFS}},beginAtZero:true},y1:{position:'right',grid:NOGRID,title:{display:true,text:'Months',font:{size:10*CFS}},beginAtZero:true},x:{grid:NOGRID}}}});
 
   const TOR=[];Object.keys(SCEN).forEach(k=>SCEN[k].levels.forEach(l=>{if(l[8]!==0)TOR.push([k+' '+l[0].split(' ')[0]+' · '+l[1],l[8]]);}));
   TOR.sort((a,b)=>a[1]-b[1]);
   chartTornado=new Chart(document.getElementById('chartTornado'),{type:'bar',
-    data:{labels:TOR.map(t=>t[0]),datasets:[{data:TOR.map(t=>t[1]),backgroundColor:TOR.map(t=>t[1]<0?'#ef4444':'#10b981')}]},
+    data:{labels:TOR.map(t=>t[0]),datasets:[{data:TOR.map(t=>t[1]),backgroundColor:TOR.map(t=>t[1]<0?'#f87171':'#34d399')}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:NOGRID,title:{display:true,text:'Δ net annual benefit vs Base, ₹ Cr',font:{size:10.5*CFS}},datalabels:DL(v=>(v>0?'+':'')+v.toFixed(2),{anchor:'end',align:'end',offset:3,color:'#f8fafc'})},scales:{x:{grid:GRID,suggestedMin:-27,suggestedMax:4},y:{grid:NOGRID,ticks:{font:{size:10*CFS}}}}}});
 
   chartCompound=new Chart(document.getElementById('chartCompound'),{type:'bar',
     data:{labels:['Net annual ₹ Cr','Payback months','Combined ratio pp'],
-      datasets:[{label:'Base',data:[43.31,2.74,2.58],backgroundColor:'#2e8fe6'},
-                {label:'Compound severe',data:[25.01,5.70,1.48],backgroundColor:'#ef4444'}]},
+      datasets:[{label:'Base',data:[43.31,2.74,2.58],backgroundColor:'#3b9eff'},
+                {label:'Compound severe',data:[25.01,5.70,1.48],backgroundColor:'#f87171'}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:L,datalabels:DL(v=>v.toFixed(2),{anchor:'end',align:'top',offset:2})},scales:{y:{grid:GRID,beginAtZero:true},x:{grid:NOGRID}}}});
 
   const fdL=[],fdD=[];for(let f=62;f<=90;f+=2){fdL.push(f);const mm=core(0.6,65,45000,f/100,7,250);fdD.push(mm.gross-(FIXED_RUN+mm.gpu+mm.storage));}
   chartFraudCurve=new Chart(document.getElementById('chartFraudCurve'),{
     data:{labels:fdL,datasets:[
-      {type:'line',label:'Net annual benefit ₹ Cr',data:fdD,borderColor:'#2e8fe6',backgroundColor:'rgba(46,143,230,0.18)',fill:true,borderWidth:2.5,pointRadius:0,tension:.25},
-      {type:'line',label:'Selected',data:fdL.map(l=>l===90?fdD[fdD.length-1]:null),borderColor:'#f59e0b',pointRadius:7,pointBackgroundColor:'#f59e0b',showLine:false}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:L,datalabels:DL(null,{formatter:(v,c)=>c.datasetIndex===1&&v!=null?'₹'+v.toFixed(2)+' Cr':'',anchor:'end',align:'top',offset:6,color:'#f59e0b',font:{family:'Outfit,sans-serif',size:11*CFS,weight:'700'}})},
+      {type:'line',label:'Net annual benefit ₹ Cr',data:fdD,borderColor:'#3b9eff',backgroundColor:'rgba(46,143,230,0.18)',fill:true,borderWidth:2.5,pointRadius:0,tension:.25},
+      {type:'line',label:'Selected',data:fdL.map(l=>l===90?fdD[fdD.length-1]:null),borderColor:'#fbbf24',pointRadius:7,pointBackgroundColor:'#fbbf24',showLine:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:L,datalabels:DL(null,{formatter:(v,c)=>c.datasetIndex===1&&v!=null?'₹'+v.toFixed(2)+' Cr':'',anchor:'end',align:'top',offset:6,color:'#fbbf24',font:{family:'Outfit,sans-serif',size:11*CFS,weight:'700'}})},
       scales:{y:{grid:GRID,title:{display:true,text:'₹ Cr per year',font:{size:10*CFS}},beginAtZero:true},x:{grid:NOGRID,title:{display:true,text:'Fraud detection achieved, %',font:{size:10*CFS}}}}}});
 
   chartBenefit=new Chart(document.getElementById('chartBenefit'),{type:'bar',
     data:{labels:['Labour: touches removed','Fraud: graph engine','Fraud: INTEGRITY GATE','Synthetic media: THE GATE','Renewal retention','less: live-capture friction'],
-      datasets:[{data:[23.74,11.05,6.14,6.30,0.58,-0.59],backgroundColor:['#2e8fe6','#10b981','#0060ae','#0060ae','#94a3b8','#ef4444']}]},
+      datasets:[{data:[23.74,11.05,6.14,6.30,0.58,-0.59],backgroundColor:['#3b9eff','#34d399','#0060ae','#0060ae','#94a3b8','#f87171']}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:NOGRID,title:{display:true,text:'₹ Cr per year, steady state',font:{size:10.5*CFS}},datalabels:DL(v=>'₹'+v.toFixed(2),{anchor:'end',align:'end',offset:3,color:'#f8fafc'})},scales:{x:{grid:GRID,suggestedMax:28},y:{grid:NOGRID,ticks:{font:{size:10.5*CFS}}}}}});
 
   chartForecast=new Chart(document.getElementById('chartForecast'),{type:'line',
     data:{labels:['Go-live','Year 1 (45%)','Year 2 (92%)','Year 3 (100%)'],
-      datasets:[{label:'Cumulative net position ₹ Cr',data:[-9.89,7.45,50.43,101.60],borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.18)',fill:true,borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#10b981',tension:.2,yAxisID:'y'},
+      datasets:[{label:'Cumulative net position ₹ Cr',data:[-9.89,7.45,50.43,101.60],borderColor:'#34d399',backgroundColor:'rgba(16,185,129,0.18)',fill:true,borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#34d399',tension:.2,yAxisID:'y'},
         {type:'bar',label:'Net benefit that year ₹ Cr',data:[null,17.34,42.97,51.17],backgroundColor:'rgba(46,143,230,0.55)',yAxisID:'y'}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:L,datalabels:DL(v=>v==null?'':'₹'+v.toFixed(1),{anchor:'end',align:'top',offset:4})},scales:{y:{grid:GRID,title:{display:true,text:'₹ Cr',font:{size:10*CFS}}},x:{grid:NOGRID}}}});
 
   chartBuild=new Chart(document.getElementById('chartBuild'),{type:'doughnut',
     data:{labels:BUILD_STACK.map(x=>x[0]),datasets:[{data:BUILD_STACK.map(x=>x[1]),
-      backgroundColor:['#2e8fe6','#0060ae','#10b981','#f59e0b','#94a3b8','#ef4444','#38bdf8','#a78bfa','#f472b6','#facc15','#4ade80','#fb923c','#22d3ee','#c084fc','#e879f9'],borderColor:'#0b2545',borderWidth:1.5}]},
+      backgroundColor:['#3b9eff','#0060ae','#34d399','#fbbf24','#94a3b8','#f87171','#38bdf8','#a78bfa','#f472b6','#facc15','#4ade80','#fb923c','#22d3ee','#c084fc','#e879f9'],borderColor:'#0b2545',borderWidth:1.5}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'42%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,font:{size:9*CFS}}},
       datalabels:DL(null,{formatter:v=>v>=0.4?'₹'+v.toFixed(2):'',color:'#06111e',font:{family:'Outfit,sans-serif',size:10*CFS,weight:'700'}}),
       tooltip:{callbacks:{label:c=>c.label+': ₹'+c.raw.toFixed(3)+' Cr ('+(c.raw/9.8905*100).toFixed(1)+'%)'}}}}});
 
   chartRun=new Chart(document.getElementById('chartRun'),{type:'bar',
     data:{labels:['GPU compute','MLOps tooling','Operations team','Security & compliance','Storage','Legal & regulatory'],
-      datasets:[{data:[1.8822,0.80052,0.6440004,0.2499996,0.20390,0.12],backgroundColor:['#2e8fe6','#64748b','#64748b','#64748b','#22d3ee','#64748b']}]},
+      datasets:[{data:[1.8822,0.80052,0.6440004,0.2499996,0.20390,0.12],backgroundColor:['#3b9eff','#64748b','#64748b','#64748b','#22d3ee','#64748b']}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:NOGRID,title:{display:true,text:'₹ Cr per year · blue = variable, grey = fixed floor',font:{size:10.5*CFS}},datalabels:DL(v=>'₹'+v.toFixed(3),{anchor:'end',align:'end',offset:3,color:'#f8fafc'})},scales:{x:{grid:GRID,suggestedMax:2.1},y:{grid:NOGRID,ticks:{font:{size:10.5*CFS}}}}}});
 
   chartSimLane=new Chart(document.getElementById('chartSimLane'),{type:'bar',
     data:{labels:['Green · auto','Amber · assist','Red · investigate'],
-      datasets:[{data:[0,0,0],backgroundColor:['#10b981','#f59e0b','#ef4444']}]},
+      datasets:[{data:[0,0,0],backgroundColor:['#34d399','#fbbf24','#f87171']}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:{duration:200},
       plugins:{legend:NOGRID,title:{display:true,text:'Claims routed this session',font:{size:10.5*CFS}},
         datalabels:DL(v=>v>0?v:'',{anchor:'end',align:'end',offset:3,color:'#f8fafc'})},
@@ -1589,25 +1752,25 @@ function initCharts(){
   chartTokens=new Chart(document.getElementById('chartTokens'),{
     data:{labels:['LOW · 4,962','CENTRAL · 25,084','HIGH · 88,720'],
       datasets:[
-        {type:'bar',label:'Annual inference cost ₹ Cr',data:[0.017,0.082,0.286],backgroundColor:['#10b981','#2e8fe6','#f59e0b'],yAxisID:'y',order:2},
-        {type:'line',label:'Payback, months',data:[3.074,3.079,3.096],borderColor:'#ef4444',borderWidth:3,pointRadius:6,pointBackgroundColor:'#ef4444',yAxisID:'y1',order:1}]},
+        {type:'bar',label:'Annual inference cost ₹ Cr',data:[0.017,0.082,0.286],backgroundColor:['#34d399','#3b9eff','#fbbf24'],yAxisID:'y',order:2},
+        {type:'line',label:'Payback, months',data:[3.074,3.079,3.096],borderColor:'#f87171',borderWidth:3,pointRadius:6,pointBackgroundColor:'#f87171',yAxisID:'y1',order:1}]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:L,datalabels:DL(null,{formatter:(v,c)=>c.datasetIndex===0?'₹'+v.toFixed(3)+' Cr':v.toFixed(3)+' mo',
-        anchor:'end',align:'top',offset:4,color:(c)=>c.datasetIndex===1?'#ef4444':'#f8fafc',font:{family:'Outfit,sans-serif',size:10*CFS,weight:'700'}})},
+        anchor:'end',align:'top',offset:4,color:(c)=>c.datasetIndex===1?'#f87171':'#f8fafc',font:{family:'Outfit,sans-serif',size:10*CFS,weight:'700'}})},
       scales:{y:{grid:GRID,title:{display:true,text:'₹ Cr per year',font:{size:10*CFS}},beginAtZero:true,suggestedMax:0.38},
               y1:{position:'right',grid:NOGRID,title:{display:true,text:'Payback, months',font:{size:10*CFS}},min:3.0,max:3.2},x:{grid:NOGRID}}}});
 
   chartTokenBreak=new Chart(document.getElementById('chartTokenBreak'),{type:'bar',
     data:{labels:['ClaimPulse today\n(40 sec video)','1% of benefit','5% of benefit','10% of benefit'],
       datasets:[{label:'Tokens per claim',data:[25084,150156,750778,1501557],
-        backgroundColor:['#10b981','#f59e0b','#fb923c','#ef4444']}]},
+        backgroundColor:['#34d399','#fbbf24','#fb923c','#f87171']}]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:NOGRID,title:{display:true,text:'Tokens per claim needed to reach each threshold — log scale',font:{size:10.5*CFS}},
         datalabels:DL(v=>v.toLocaleString('en-IN'),{anchor:'end',align:'top',offset:3,color:'#f8fafc',font:{family:'Outfit,sans-serif',size:10*CFS,weight:'700'}})},
       scales:{y:{type:'logarithmic',grid:GRID,title:{display:true,text:'Tokens / claim',font:{size:10*CFS}}},x:{grid:NOGRID,ticks:{font:{size:10*CFS}}}}}});
 
   chartBuyBuild=new Chart(document.getElementById('chartBuyBuild'),{type:'bar',
-    data:{labels:['BUY — third-party API','BUILD — self-host GPU'],datasets:[{data:[0.24,2.94],backgroundColor:['#10b981','#ef4444']}]},
+    data:{labels:['BUY — third-party API','BUILD — self-host GPU'],datasets:[{data:[0.24,2.94],backgroundColor:['#34d399','#f87171']}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:NOGRID,title:{display:true,text:'Incremental 5-year NPV, ₹ Cr — lower is better',font:{size:10.5*CFS}},datalabels:DL(v=>'₹'+v.toFixed(2)+' Cr',{anchor:'end',align:'top',offset:3,color:'#f8fafc',font:{family:'Outfit,sans-serif',size:12*CFS,weight:'700'}})},scales:{y:{grid:GRID,beginAtZero:true},x:{grid:NOGRID}}}});
 }
 
