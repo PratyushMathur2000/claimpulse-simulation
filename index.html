@@ -479,7 +479,7 @@ details.collapsible .note-box{margin-top:8px;}
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:8px;">
-    <button class="btn-cta" onclick="switchPage(2)">▶ Run Live Simulator</button>
+    <span class="tag-badge blue">● SIMULATOR ACCREDITED</span>
   </div>
 </header>
 
@@ -522,7 +522,7 @@ details.collapsible .note-box{margin-top:8px;}
         <b>RECOMMENDATION: Authorize a 90-Day Instrumented Pilot (20% Book)</b>
         <p>Stage capital against 5 quantified operational gates (TAT ≤1.5d, fraud precision ≥90%, touch reduction ≥75%) before triggering 60% general rollout.</p>
       </div>
-      <button class="btn-cta" onclick="switchPage(2)">▶ Explore Interactive Simulation</button>
+      <button class="btn-cta" onclick="switchPage(2)" style="font-size:13px;padding:10px 20px;">▶ Run Live Simulator</button>
     </div>
   </section>
 
@@ -754,6 +754,71 @@ details.collapsible .note-box{margin-top:8px;}
     <div class="kpi red-border"><div class="k">Stress Floor (Zero Fraud Lift)</div><div class="v red" id="kpi-floor">31.36 Mo</div><div class="d">Labour savings only</div></div>
   </div>
 
+  <!-- EXECUTIVE AI COST & TOKEN OPTIMIZATION COMMAND CENTER (PROMINENT AT TOP) -->
+  <div class="card" style="border:1.5px solid var(--brand-blue);background:linear-gradient(145deg,rgba(10,24,48,0.85) 0%,rgba(6,16,34,0.92) 100%);margin-bottom:18px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+      <div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="tag-badge blue">TOKEN EFFICIENCY</span>
+          <h3 style="margin:0;font-size:16px;color:#fff;">AI Inference Cost &amp; Token Optimization</h3>
+        </div>
+        <p style="font-size:12px;color:var(--mist);margin-top:4px;">
+          <b>Strategic Finding:</b> AI inference cost is <b>immaterial to payback</b>. Even under an extreme <b style="color:var(--gold);">18× token surge</b> (10 min video per claim), steady-state payback only shifts from <b style="color:var(--green);">3.074 to 3.096 months</b> (+0.02 mo spread).
+        </p>
+      </div>
+      <div style="background:rgba(37,140,251,0.12);border:1px solid var(--brand-blue);border-radius:8px;padding:8px 14px;text-align:right;">
+        <span style="font-size:10px;color:var(--mist);text-transform:uppercase;font-weight:700;">Cost Impact on Payback</span>
+        <div style="font-family:var(--f-sub);font-weight:800;font-size:18px;color:var(--brand-blue);">&plusmn;0.02 Months</div>
+      </div>
+    </div>
+
+    <!-- 3 COMPARATIVE TOKEN SCENARIO TILES -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      <div style="background:rgba(6,16,34,0.65);border:1px solid rgba(16,185,129,0.35);border-radius:8px;padding:12px 14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:10.5px;color:var(--green);font-weight:700;text-transform:uppercase;">Low Case · Optimized</span>
+          <span style="font-family:var(--f-sub);font-size:11px;color:var(--mist-dim);">10s Video</span>
+        </div>
+        <div style="font-family:var(--f-sub);font-weight:800;font-size:22px;color:var(--green);margin:4px 0 2px;">4,962 toks</div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--mist);border-top:1px solid var(--line);padding-top:6px;margin-top:6px;">
+          <span>Cost per claim: <b style="color:#fff;">₹1.16</b></span>
+          <span>Payback: <b style="color:var(--green);">3.074 mo</b></span>
+        </div>
+      </div>
+
+      <div style="background:rgba(6,16,34,0.65);border:1px solid rgba(37,140,251,0.45);border-radius:8px;padding:12px 14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:10.5px;color:var(--brand-blue);font-weight:700;text-transform:uppercase;">Central Base Case</span>
+          <span style="font-family:var(--f-sub);font-size:11px;color:var(--mist-dim);">40s Video</span>
+        </div>
+        <div style="font-family:var(--f-sub);font-weight:800;font-size:22px;color:var(--brand-blue);margin:4px 0 2px;">25,084 toks</div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--mist);border-top:1px solid var(--line);padding-top:6px;margin-top:6px;">
+          <span>Cost per claim: <b style="color:#fff;">₹5.56</b></span>
+          <span>Payback: <b style="color:var(--brand-blue);">3.079 mo</b></span>
+        </div>
+      </div>
+
+      <div style="background:rgba(6,16,34,0.65);border:1px solid rgba(245,158,11,0.4);border-radius:8px;padding:12px 14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:10.5px;color:var(--gold);font-weight:700;text-transform:uppercase;">High Stress · Raw</span>
+          <span style="font-family:var(--f-sub);font-size:11px;color:var(--mist-dim);">120s Video</span>
+        </div>
+        <div style="font-family:var(--f-sub);font-weight:800;font-size:22px;color:var(--gold);margin:4px 0 2px;">88,720 toks</div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--mist);border-top:1px solid var(--line);padding-top:6px;margin-top:6px;">
+          <span>Cost per claim: <b style="color:#fff;">₹19.41</b></span>
+          <span>Payback: <b style="color:var(--gold);">3.096 mo</b></span>
+        </div>
+      </div>
+    </div>
+
+    <details class="collapsible" style="margin-top:10px;"><summary>Inspect Technical Token Architecture &amp; Vendor Discount Rates</summary>
+      <div style="margin-top:8px;font-size:11.5px;color:var(--mist);line-height:1.5;">
+        • <b>Vendor Pricing Benchmarks (Aug 2026):</b> Gemini 3.5 Flash ($1.50/1M in, $9.00/1M out) · GPT-5.6 ($2.00/1M in, $12.00/1M out) · Claude Sonnet ($2.00/1M in, $10.00/1M out).<br>
+        • <b>Cost Levers Applied:</b> 50% batch discount for non-instant claims, 90% discount on cached system prompts, and offline clause extraction for zero repeated policy parsing.
+      </div>
+    </details>
+  </div>
+
   <!-- WATERFALL & FORECAST -->
   <div class="grid2">
     <div class="card">
@@ -797,22 +862,7 @@ details.collapsible .note-box{margin-top:8px;}
     </div>
   </div>
 
-  <!-- EXECUTIVE AI COST CALLOUT -->
-  <div class="card" style="border-color:var(--brand-blue);">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-      <div>
-        <h3 style="margin:0;">AI Running Cost Is Not a Business Case Breaker</h3>
-        <p style="font-size:11.5px;color:var(--mist);margin-top:2px;">Even under an <b>18× token surge</b> (4,962 to 88,720 tokens per claim), steady-state payback only shifts from <b>3.074 to 3.096 months</b> (+0.02 mo spread).</p>
-      </div>
-      <details class="collapsible"><summary>Inspect Technical Token Model &amp; Rate Cards</summary>
-        <div style="margin-top:8px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
-          <div class="ctrl"><b>Low Case (4,962 toks)</b><br><span style="color:var(--green);">₹1.16 / claim</span> (10s video)</div>
-          <div class="ctrl"><b>Central Case (25,084 toks)</b><br><span style="color:var(--brand-blue);">₹5.56 / claim</span> (40s video)</div>
-          <div class="ctrl"><b>High Stress (88,720 toks)</b><br><span style="color:var(--gold);">₹19.41 / claim</span> (120s video)</div>
-        </div>
-      </details>
-    </div>
-  </div>
+
 </main>
 
 <!-- =========================================================================
