@@ -358,6 +358,20 @@ details.collapsible .note-box{margin-top:8px;}
 .pill b{display:block;color:var(--heading);font-family:var(--f-sub);font-size:15px;margin-bottom:2px;}
 .sec-head{font-weight:800;font-family:var(--f-head);font-size:12px;color:var(--brand-blue);text-transform:uppercase;letter-spacing:0.8px;margin:0 0 8px;padding-bottom:4px;border-bottom:1px solid var(--line);}
 
+
+/* === EXECUTIVE COLOR HIGHLIGHTS FOR BOLDED TEXT === */
+b.hl-cyan, span.hl-cyan { color:#38bdf8; font-weight:700; text-shadow:0 0 12px rgba(56,189,248,0.45); }
+b.hl-green, span.hl-green { color:#10b981; font-weight:700; text-shadow:0 0 12px rgba(16,185,129,0.45); }
+b.hl-gold, span.hl-gold { color:#f59e0b; font-weight:700; text-shadow:0 0 12px rgba(245,158,11,0.45); }
+b.hl-blue, span.hl-blue { color:#60a5fa; font-weight:700; text-shadow:0 0 12px rgba(96,165,250,0.45); }
+b.hl-red, span.hl-red { color:#f87171; font-weight:700; text-shadow:0 0 12px rgba(248,113,113,0.45); }
+b.hl-purple, span.hl-purple { color:#c084fc; font-weight:700; text-shadow:0 0 12px rgba(192,132,252,0.45); }
+
+.hl-pill-cyan { background:rgba(56,189,248,0.14); border:1px solid rgba(56,189,248,0.35); border-radius:4px; padding:1px 6px; color:#38bdf8; font-weight:700; }
+.hl-pill-green { background:rgba(16,185,129,0.14); border:1px solid rgba(16,185,129,0.35); border-radius:4px; padding:1px 6px; color:#10b981; font-weight:700; }
+.hl-pill-gold { background:rgba(245,158,11,0.14); border:1px solid rgba(245,158,11,0.35); border-radius:4px; padding:1px 6px; color:#f59e0b; font-weight:700; }
+.hl-pill-blue { background:rgba(37,140,251,0.14); border:1px solid rgba(37,140,251,0.35); border-radius:4px; padding:1px 6px; color:#60a5fa; font-weight:700; }
+
 /* Mobile */
 @media(max-width:768px){
   :root{--sidebar-w:52px;}
@@ -437,7 +451,7 @@ details.collapsible .note-box{margin-top:8px;}
   <section class="hero-pitch">
     <div class="pitch-eyebrow">Strategic Urgency · Motor Own Damage Portfolio</div>
     <div class="pitch-title">Motor OD Claims Are a Core Profitability Problem</div>
-    <div class="pitch-sub">Bajaj General cannot solve Motor OD underwriting economics purely by writing more volume in an underpriced soft pricing cycle. <b>Claims cost is being paid at exactly the moment premium growth is deliberately gated.</b></div>
+    <div class="pitch-sub">Bajaj General cannot solve Motor OD underwriting economics purely by writing more volume in an underpriced soft pricing cycle. <b class="hl-gold">Claims cost is being paid at exactly the moment premium growth is deliberately gated.</b></div>
   </section>
 
   <!-- 3 LARGE PROBLEM CARDS -->
@@ -536,7 +550,7 @@ details.collapsible .note-box{margin-top:8px;}
   <div class="card" style="background:linear-gradient(90deg,rgba(37,140,251,0.16) 0%,rgba(16,185,129,0.14) 100%);border:1.5px solid var(--brand-blue);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
     <div style="flex:1;min-width:300px;">
       <h3 style="color:#fff;margin:0;">The Core Opportunity</h3>
-      <p style="font-size:12.5px;color:var(--mist);margin-top:3px;">The opportunity is not simply to automate claims. It is to <b>decide which claims deserve automation (65%), which need assistance (25%), and which need investigation (10%).</b></p>
+      <p style="font-size:12.5px;color:var(--mist);margin-top:3px;">The opportunity is not simply to automate claims. It is to <b class="hl-cyan">decide which claims deserve automation (65%)</b>, <b class="hl-gold">which need assistance (25%)</b>, and <b class="hl-red">which need investigation (10%)</b>.</p>
     </div>
     <button class="btn-cta" onclick="switchPage(2)">See ClaimPulse Solution →</button>
   </div>
@@ -549,7 +563,7 @@ details.collapsible .note-box{margin-top:8px;}
   <section class="hero-pitch">
     <div class="pitch-eyebrow">The Complete Solution · Orchestration Architecture</div>
     <div class="pitch-title">Intelligence at the Point of Claim Decision</div>
-    <div class="pitch-sub">ClaimPulse orchestrates five parallel AI engines across a <b>Zero-Trust Capture Gate</b>, triaging claims instantly into Green, Amber, and Red routing lanes with built-in computational efficiency.</div>
+    <div class="pitch-sub">ClaimPulse orchestrates five parallel AI engines across a <b class="hl-cyan">Zero-Trust Capture Gate</b>, triaging claims instantly into Green, Amber, and Red routing lanes with built-in computational efficiency.</div>
   </section>
 
   <!-- ZONE A: CORE FLOW DIAGRAM -->
@@ -679,7 +693,7 @@ details.collapsible .note-box{margin-top:8px;}
           <h3 style="margin:0;font-size:16px;color:#fff;">AI Cost by Design</h3>
         </div>
         <p style="font-size:12px;color:var(--mist);margin-top:4px;">
-          <b>Design Principle:</b> We minimise computational cost by <b>reserving expensive intelligence for claims that actually need it</b>. AI is selectively deployed within the workflow, not forced across every simple interaction.
+          <b class="hl-blue">Design Principle:</b> We minimise computational cost by <b class="hl-cyan">reserving expensive intelligence for claims that actually need it</b>. <b class="hl-green">AI is selectively deployed within the workflow</b>, not forced across every simple interaction.
         </p>
       </div>
       <div style="background:rgba(37,140,251,0.12);border:1px solid var(--brand-blue);border-radius:8px;padding:8px 14px;text-align:right;">
@@ -829,7 +843,7 @@ details.collapsible .note-box{margin-top:8px;}
   <section class="hero-pitch">
     <div class="pitch-eyebrow">Quantitative Sensitivity · "Try to Break Us"</div>
     <div class="pitch-title">What If We're Wrong? Proving Downside Resilience</div>
-    <div class="pitch-sub">Can the investment thesis survive compounding bad assumptions? Even under simultaneous deterioration across adoption, fraud performance and operating costs, the business case remains positive.</div>
+    <div class="pitch-sub">Can the investment thesis survive compounding bad assumptions? <b class="hl-green">Even under simultaneous deterioration across adoption, fraud performance and operating costs, the business case remains strongly accretive.</b></div>
   </section>
 
   <!-- 4-SLIDER CORRELATED STRESS TEST -->
@@ -871,7 +885,7 @@ details.collapsible .note-box{margin-top:8px;}
     </div>
     <div class="card">
       <h3>Fraud Recovery Curve (62% to 90%) <span>📉</span></h3>
-      <div class="sub">Even at 62% baseline, labour savings alone generate ₹19.82 Cr annual profit.</div>
+      <div class="sub">Even at 62% baseline, <b class="hl-green">labour savings alone generate ₹19.82 Cr annual profit</b>.</div>
       <div class="ctrl" style="margin-bottom:8px;"><label>Fraud Recovery <span class="val" id="val-fdcurve">90%</span></label><input type="range" id="sl-fdcurve" min="62" max="90" step="1" value="90" oninput="updateFraudCurve()"></div>
       <div class="chart-box short"><canvas id="chartFraudCurve"></canvas></div>
       <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-top:8px;margin-bottom:0;">
@@ -890,7 +904,7 @@ details.collapsible .note-box{margin-top:8px;}
   <section class="hero-pitch">
     <div class="pitch-eyebrow">Risk Governance &amp; Execution Roadmap</div>
     <div class="pitch-title">90-Day Pilot: Staging Capital Against Empirical Evidence</div>
-    <div class="pitch-sub">We do not ask for full capital deployment upfront. Capital unlocks as each operational gate is empirically proven in production under real claims traffic.</div>
+    <div class="pitch-sub">We do not ask for full capital deployment upfront. <b class="hl-cyan">Capital unlocks as each operational gate is empirically proven in production</b> under real claims traffic.</div>
   </section>
 
   <!-- 90-DAY TIMELINE -->
@@ -999,11 +1013,11 @@ details.collapsible .note-box{margin-top:8px;}
       <div>
         <h3>Why This Is Investable</h3>
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;font-size:12px;color:var(--mist);">
-          <div style="display:flex;gap:8px;"><span style="color:var(--brand-blue);font-weight:700;">1.</span> <span><b>Clear Operational Pain:</b> 104.7% combined ratio squeeze and 69% claims grievances.</span></div>
-          <div style="display:flex;gap:8px;"><span style="color:var(--green);font-weight:700;">2.</span> <span><b>Measurable Economic Upside:</b> ₹43.31 Cr annual profit with 16.8-month payback.</span></div>
+          <div style="display:flex;gap:8px;"><span style="color:var(--brand-blue);font-weight:700;">1.</span> <span><b class="hl-red">Clear Operational Pain:</b> 104.7% combined ratio squeeze and 69% claims grievances.</span></div>
+          <div style="display:flex;gap:8px;"><span style="color:var(--green);font-weight:700;">2.</span> <span><b class="hl-green">Measurable Economic Upside:</b> ₹43.31 Cr annual profit with 16.8-month payback.</span></div>
           <div style="display:flex;gap:8px;"><span style="color:var(--cyan);font-weight:700;">3.</span> <span><b>Cost-Conscious Architecture:</b> Selective token triage keeps AI inference cost immaterial (±0.02 mo).</span></div>
-          <div style="display:flex;gap:8px;"><span style="color:var(--gold);font-weight:700;">4.</span> <span><b>Human Control for Exceptions:</b> Inconclusive files route to assisted reviewers.</span></div>
-          <div style="display:flex;gap:8px;"><span style="color:var(--purple);font-weight:700;">5.</span> <span><b>Explicit Pilot Kill Criteria:</b> 4 quantitative gates protect capital before scaling.</span></div>
+          <div style="display:flex;gap:8px;"><span style="color:var(--gold);font-weight:700;">4.</span> <span><b class="hl-gold">Human Control for Exceptions:</b> Inconclusive files route to assisted reviewers.</span></div>
+          <div style="display:flex;gap:8px;"><span style="color:var(--purple);font-weight:700;">5.</span> <span><b class="hl-purple">Explicit Pilot Kill Criteria:</b> 4 quantitative gates protect capital before scaling.</span></div>
         </div>
       </div>
     </div>
@@ -1013,9 +1027,9 @@ details.collapsible .note-box{margin-top:8px;}
   <div class="card" style="border:1.5px solid var(--brand-blue);background:linear-gradient(145deg,rgba(10,24,48,0.85) 0%,rgba(6,16,34,0.92) 100%);margin-bottom:18px;">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
       <div>
-        <h2 style="font-size:18px;color:#fff;font-family:var(--f-head);margin:0;">BUY THE COMMODITY. BUILD THE MOAT.</h2>
+        <h2 style="font-size:20px;color:#fff;font-family:var(--f-head);margin:0;letter-spacing:0.5px;"><span class="hl-gold">BUY THE COMMODITY.</span> <span class="hl-cyan">BUILD THE MOAT.</span></h2>
         <p style="font-size:12.5px;color:var(--mist);margin-top:6px;max-width:900px;line-height:1.5;">
-          Buy foundation vision and LLM models where they are rapidly commoditising. <b>Build ClaimPulse's proprietary orchestration core, Zero-Trust capture gate, fraud graph networks, and claims intelligence layer</b> on Bajaj's own private claims corpus—where no competitor can buy it.
+          Buy foundation vision and LLM models where they are rapidly commoditising. <b class="hl-cyan">Build ClaimPulse's proprietary orchestration core, Zero-Trust capture gate, fraud graph networks, and claims intelligence layer</b> on Bajaj's own private claims corpus—<b class="hl-green">where no competitor can buy it</b>.
         </p>
       </div>
       <button class="btn-cta" onclick="switchPage(2)" style="font-size:13px;padding:12px 22px;">▶ Launch Live Simulator</button>
