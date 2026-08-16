@@ -133,38 +133,83 @@ body::before{
 .btn-download-pill {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 8px 16px;
+  gap: 8px;
+  padding: 6px 14px 6px 10px;
   border-radius: 9999px;
   font-family: var(--f-head);
   font-size: 12px;
   font-weight: 700;
   text-decoration: none;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
   white-space: nowrap;
+  cursor: pointer;
+}
+.btn-download-pill:active {
+  transform: scale(0.97);
+}
+.btn-download-pill .dl-icon-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background 0.2s;
+  flex-shrink: 0;
+}
+.btn-download-pill:hover .dl-icon-circle {
+  transform: translateY(2px);
+}
+.btn-download-pill .dl-badge {
+  font-family: var(--f-sub);
+  font-size: 9.5px;
+  padding: 1.5px 5.5px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.45);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-left: 2px;
 }
 .btn-download-pill.btn-excel {
-  background: rgba(16,185,129,0.12);
+  background: linear-gradient(135deg, rgba(16,185,129,0.22) 0%, rgba(6,78,59,0.35) 100%);
   color: #34d399;
-  border: 1px solid rgba(16,185,129,0.35);
+  border: 1.5px solid rgba(16,185,129,0.55);
+}
+.btn-download-pill.btn-excel .dl-icon-circle {
+  background: rgba(16,185,129,0.3);
+  color: #10b981;
 }
 .btn-download-pill.btn-excel:hover {
-  background: rgba(16,185,129,0.25);
+  background: linear-gradient(135deg, rgba(16,185,129,0.38) 0%, rgba(16,185,129,0.22) 100%);
   color: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(16,185,129,0.35);
+  border-color: rgba(16,185,129,0.9);
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 22px rgba(16,185,129,0.45);
+}
+.btn-download-pill.btn-excel:hover .dl-icon-circle {
+  background: #10b981;
+  color: #040812;
 }
 .btn-download-pill.btn-pdf {
-  background: rgba(37,140,251,0.14);
+  background: linear-gradient(135deg, rgba(37,140,251,0.24) 0%, rgba(14,56,122,0.35) 100%);
   color: #60a5fa;
-  border: 1px solid rgba(37,140,251,0.35);
+  border: 1.5px solid rgba(37,140,251,0.55);
+}
+.btn-download-pill.btn-pdf .dl-icon-circle {
+  background: rgba(37,140,251,0.3);
+  color: #258cfb;
 }
 .btn-download-pill.btn-pdf:hover {
-  background: rgba(37,140,251,0.28);
+  background: linear-gradient(135deg, rgba(37,140,251,0.4) 0%, rgba(37,140,251,0.22) 100%);
   color: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(37,140,251,0.45);
+  border-color: rgba(37,140,251,0.9);
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 22px rgba(37,140,251,0.5);
+}
+.btn-download-pill.btn-pdf:hover .dl-icon-circle {
+  background: #258cfb;
+  color: #040812;
 }
 
 .page-view{display:none;} .page-view.active{display:block;animation:fadeIn .25s cubic-bezier(0.16, 1, 0.3, 1);}
@@ -481,13 +526,27 @@ b.hl-purple, span.hl-purple { color:#c084fc; font-weight:700; text-shadow:0 0 12
     </div>
   </div>
   <div class="header-actions">
-    <a href="./Finsighters_Investor_Dashboard_R5.xlsx" download="Finsighters_Investor_Dashboard_R5.xlsx" class="btn-download-pill btn-excel" title="Download Full Financial Model & Workings (Excel)">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-      <span>Excel Workings</span>
+    <a href="./Finsighters_Investor_Dashboard_R5.xlsx" download="Finsighters_Investor_Dashboard_R5.xlsx" class="btn-download-pill btn-excel" title="Click to Download Financial Model &amp; Workings (Finsighters_Investor_Dashboard_R5.xlsx)">
+      <span class="dl-icon-circle">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      </span>
+      <span>Download Excel Workings</span>
+      <span class="dl-badge">.XLSX</span>
     </a>
-    <a href="./Finsighters_Report_R5.pdf" download="Finsighters_Report_R5.pdf" class="btn-download-pill btn-pdf" title="Download Full Series A Case Report (PDF)">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
-      <span>Detailed Report</span>
+    <a href="./Finsighters_Report_R5.pdf" download="Finsighters_Report_R5.pdf" class="btn-download-pill btn-pdf" title="Click to Download Full Series A Case Report (Finsighters_Report_R5.pdf)">
+      <span class="dl-icon-circle">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      </span>
+      <span>Download Case Report</span>
+      <span class="dl-badge">.PDF</span>
     </a>
   </div>
 </header>
@@ -1288,13 +1347,27 @@ b.hl-purple, span.hl-purple { color:#c084fc; font-weight:700; text-shadow:0 0 12
         </p>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <a href="./Finsighters_Investor_Dashboard_R5.xlsx" download="Finsighters_Investor_Dashboard_R5.xlsx" class="btn-download-pill btn-excel" style="padding:10px 18px;font-size:13px;" title="Download Full Financial Model & Workings (Excel)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          <span>Financial Model (Excel)</span>
+        <a href="./Finsighters_Investor_Dashboard_R5.xlsx" download="Finsighters_Investor_Dashboard_R5.xlsx" class="btn-download-pill btn-excel" style="padding:8px 18px 8px 12px;font-size:13px;" title="Click to Download Financial Model &amp; Workings (Finsighters_Investor_Dashboard_R5.xlsx)">
+          <span class="dl-icon-circle" style="width:26px;height:26px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </span>
+          <span>Download Financial Model</span>
+          <span class="dl-badge">.XLSX</span>
         </a>
-        <a href="./Finsighters_Report_R5.pdf" download="Finsighters_Report_R5.pdf" class="btn-download-pill btn-pdf" style="padding:10px 18px;font-size:13px;" title="Download Full Series A Case Report (PDF)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
-          <span>Detailed Report (PDF)</span>
+        <a href="./Finsighters_Report_R5.pdf" download="Finsighters_Report_R5.pdf" class="btn-download-pill btn-pdf" style="padding:8px 18px 8px 12px;font-size:13px;" title="Click to Download Full Series A Case Report (Finsighters_Report_R5.pdf)">
+          <span class="dl-icon-circle" style="width:26px;height:26px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </span>
+          <span>Download Detailed Report</span>
+          <span class="dl-badge">.PDF</span>
         </a>
       </div>
     </div>
