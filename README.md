@@ -17,7 +17,7 @@
 |---|---|---|
 | **🌐 Interactive Executive Simulator** | Web Application | [**Launch Live Simulator** (claimpulse-simulation.vercel.app)](https://claimpulse-simulation.vercel.app) |
 | **📊 Comprehensive Investor Dashboard** | Excel Financial Model | [**Download Financial Model** (`SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx`)](./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx) |
-| **📄 Series A Comprehensive Case Report** | PDF Document | [**Download Case Report** (`SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf`)](./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf) |
+| **📄 Series A Comprehensive Investors Report** | PDF Document | [**Download Investors Report** (`SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf`)](./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf) |
 | **📱 Mobile QR Access Code** | PNG Image | [**View Simulator QR Code** (`ClaimPulse_Simulation_QR.png`)](./ClaimPulse_Simulation_QR.png) |
 
 ---
@@ -222,7 +222,7 @@ http://localhost:8080
 ClaimPulse_ATOM_Season_9/
 ├── index.html                                                      # Standalone 6-Module Interactive Decision Simulator
 ├── SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx   # Audited 16-Tab Excel Financial & Operating Model
-├── SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf                # Complete Written Series A Case Report
+├── SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf                # Complete Written Series A Investors Report
 ├── ClaimPulse_Simulation_QR.png                                    # Mobile QR Code for Quick Access
 ├── assets/
 │   └── Background.png                                              # High-Resolution UI Background Asset
