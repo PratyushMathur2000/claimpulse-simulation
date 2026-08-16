@@ -16,8 +16,8 @@
 | Deliverable | Format | Access Link / Direct Action |
 |---|---|---|
 | **🌐 Interactive Executive Simulator** | Web Application | [**Launch Live Simulator** (claimpulse-simulation.vercel.app)](https://claimpulse-simulation.vercel.app) |
-| **📊 Comprehensive Investor Dashboard** | Excel Financial Model | [**Download Financial Model** (`Finsighters_Investor_Dashboard_R5.xlsx`)](./Finsighters_Investor_Dashboard_R5.xlsx) |
-| **📄 Series A Comprehensive Case Report** | PDF Document | [**Download Case Report** (`Finsighters_Report_R5.pdf`)](./Finsighters_Report_R5.pdf) |
+| **📊 Comprehensive Investor Dashboard** | Excel Financial Model | [**Download Financial Model** (`SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx`)](./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx) |
+| **📄 Series A Comprehensive Case Report** | PDF Document | [**Download Case Report** (`SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf`)](./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf) |
 | **📱 Mobile QR Access Code** | PNG Image | [**View Simulator QR Code** (`ClaimPulse_Simulation_QR.png`)](./ClaimPulse_Simulation_QR.png) |
 
 ---
@@ -51,7 +51,7 @@ ClaimPulse introduces **Gate 00 (Capture Integrity Gate)** followed by **5 speci
 
 ## 📈 Key Impact Metrics (Quantified)
 
-All figures are tied to the 16-tab audited financial model (`Finsighters_Investor_Dashboard_R5.xlsx`):
+All figures are tied to the 16-tab audited financial model (`SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx`):
 
 ```
 +----------------------------------------------------------------------------------------------------+
@@ -220,13 +220,13 @@ http://localhost:8080
 
 ```
 ClaimPulse_ATOM_Season_9/
-├── index.html                                 # Standalone 6-Module Interactive Decision Simulator
-├── Finsighters_Investor_Dashboard_R5.xlsx     # Audited 16-Tab Excel Financial & Operating Model
-├── Finsighters_Report_R5.pdf                  # Complete Written Series A Case Report
-├── ClaimPulse_Simulation_QR.png               # Mobile QR Code for Quick Access
+├── index.html                                                      # Standalone 6-Module Interactive Decision Simulator
+├── SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx   # Audited 16-Tab Excel Financial & Operating Model
+├── SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf                # Complete Written Series A Case Report
+├── ClaimPulse_Simulation_QR.png                                    # Mobile QR Code for Quick Access
 ├── assets/
-│   └── Background.png                         # High-Resolution UI Background Asset
-└── README.md                                  # Executive Repository Documentation
+│   └── Background.png                                              # High-Resolution UI Background Asset
+└── README.md                                                       # Executive Repository Documentation
 ```
 
 ---
