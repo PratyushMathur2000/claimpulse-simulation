@@ -235,7 +235,7 @@ ClaimPulse_ATOM_Season_9/
 
 **Team Finsighters**  
 *School of Business Management, NMIMS Mumbai*  
-- **Pratyush Mathur** · [pratyushm27](https://github.com/pratyushm27)  
+- **Pratyush Mathur** · https://github.com/PratyushMathur2000/
 - **Team Finsighters Colleagues** · MBA Class of 2026  
 
 **Competition & Track:**  
