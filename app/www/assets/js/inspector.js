@@ -28,6 +28,10 @@ const CPInspector = (() => {
   function init() { }
   function onData() { if (CPApp.surface === 'inspector') render(); }
 
+  /* The queue is CPOps's, because the filter state and the claim list are one
+     thing. This just asks it to repaint alongside the detail. */
+  function renderAll() { CPOps.render(); render(); }
+
   function load(claimId) {
     if (claimId !== id) { dispatch = null; shadowPick = null; open = { gate: true }; }
     id = claimId;
@@ -37,10 +41,15 @@ const CPInspector = (() => {
 
   /* ================= render ================= */
   function render() {
+    /* The queue on the left is CPOps's — it owns the claim list and the
+       filter state, and those are one thing. Painting it from here keeps a
+       single source of truth for "which claims are we looking at" instead
+       of two modules each holding half the answer. */
+    if (CPApp.surface === 'inspector') CPOps.render();
     const c = claim();
     if (!c) {
       UI.set('inspBody', `<div class="card">${UI.empty('🔍',
-        'No claim selected. Pick one from the Command Center queue.')}</div>`);
+        'Pick a claim from the queue on the left.')}</div>`);
       return;
     }
     const s = CPEngine.stageOf(c);
@@ -60,7 +69,6 @@ const CPInspector = (() => {
     const status = CPEngine.statusOf(c, s);
     const pr = CPEngine.priorityOf(c, s);
     return `<div class="card insp-head">
-      <button class="btn ghost sm back" onclick="CPApp.go('ops')">← Back to the queue</button>
       <div class="ih-main">
         <div>
           <div class="eyebrow">${UI.esc(c.ref || c.id)} · filed ${UI.dt(c.ts)} · ${UI.ago(c.ts)}</div>
@@ -770,6 +778,6 @@ const CPInspector = (() => {
     </div>`;
   }
 
-  return { init, onData, load, render, toggle, pick, setSlot, assign, cancelSurvey,
+  return { init, onData, load, render, renderAll, toggle, pick, setSlot, assign, cancelSurvey,
            pickShadow, recordShadow, undoShadow };
 })();

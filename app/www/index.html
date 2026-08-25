@@ -36,29 +36,40 @@
     <span>CP</span><span>S9</span>
   </a>
   <nav class="navrail-nav" id="surfaceNav"></nav>
-  <div class="navrail-foot">
-    <button class="syncpill" id="syncPill" onclick="CPApp.share()"
-            title="Share this demo / sync status">
-      <span class="dot"></span><span id="syncTxt">connecting</span>
-    </button>
-  </div>
 </aside>
 
 <div class="shell">
 
   <!-- ============================ TOP BAR ============================ -->
-  <header class="topbar">
-    <div class="mark">
-      <div>
-        <div class="crumb"><a href="../">ClaimPulse</a> <span>&rsaquo;</span> Live Operations</div>
-        <h1 id="surfaceTitle">Command Center</h1>
-        <p>Motor OD Intelligence Platform · Bajaj Allianz · Team Finsighters</p>
+  <!-- The simulator's .top-bar, replicated. Same lockup, same card treatment,
+       same actions cluster — so crossing from the case to the floor does not
+       change the furniture, only what is on the desk. -->
+  <header class="top-bar">
+    <div class="brand-group">
+      <div class="brand-logo-wrap">
+      <svg width="110" height="26" viewBox="0 0 170 42" fill="none">
+        <path d="M10 6 C16 2, 30 4, 24 14 C20 20, 10 18, 6 26 C3 32, 13 36, 26 32 C18 35, 2 35, 2 26 C2 18, 14 18, 18 12 C22 6, 12 5, 10 6 Z" fill="#258cfb"/>
+        <path d="M14 10 C20 6, 34 8, 28 18 C24 24, 14 22, 10 30 C7 36, 17 40, 30 36 C22 39, 6 39, 6 30 C6 22, 18 22, 22 16 C26 10, 16 9, 14 10 Z" fill="#005db3"/>
+        <text x="38" y="22" font-family="'Plus Jakarta Sans',sans-serif" font-weight="800" font-size="15" fill="#fff" letter-spacing="1">BAJAJ</text>
+        <text x="38" y="35" font-family="'Plus Jakarta Sans',sans-serif" font-weight="700" font-size="10" fill="#258cfb" letter-spacing="2.5">FINSERV</text>
+      </svg>
+        <div style="width:1px;height:20px;background:var(--line-bright);"></div>
+        <div style="font-family:var(--f-head);font-weight:700;font-size:12px;color:var(--heading);">ATOM <span style="color:var(--brand-blue);">Season 9</span></div>
+      </div>
+      <div class="brand-title-box">
+        <div class="crumb"><a href="../">ClaimPulse Home</a> <span>&rsaquo;</span> Demo</div>
+        <h1>ClaimPulse</h1>
+        <p id="surfaceTitle">Live Operations · Command Center · Team Finsighters · NMIMS Mumbai · PS_BFDL</p>
       </div>
     </div>
-    <div class="topright">
-      <a class="deckback" href="../" title="Executive Decision Simulator — the business case">
-        <span>&#8592;</span> Executive case
+    <div class="header-actions">
+      <a href="../simulator" class="btn-download-pill btn-sim" title="Executive Decision Simulator — the business case">
+        <span class="dl-icon-circle">&#9650;</span>
+        <span>Executive Simulator</span>
       </a>
+      <button class="syncpill" id="syncPill" onclick="CPApp.share()" title="Share this demo / sync status">
+        <span class="dot"></span><span id="syncTxt">connecting</span>
+      </button>
     </div>
   </header>
 
@@ -105,17 +116,22 @@
         <div id="autoPanel"></div>
       </div>
 
-      <div id="filterRail"></div>
-
-      <div class="card flush">
-        <div class="queuehead" id="queueHead"></div>
-        <div id="queueTable"></div>
-      </div>
     </section>
 
     <!-- ============ 2 · CLAIM INSPECTOR ============ -->
+    <!-- The queue lives HERE, not on the Command Center. Picking a claim and
+         reading a claim are the same job; the dashboard's job is the shape of
+         the day, and it was carrying a twelve-column table that belonged to
+         this screen. -->
     <section class="view" id="v-inspector">
-      <div id="inspBody"></div>
+      <div id="filterRail"></div>
+      <div class="inspgrid">
+        <div class="card flush">
+          <div class="queuehead" id="queueHead"></div>
+          <div id="queueTable"></div>
+        </div>
+        <div id="inspBody"></div>
+      </div>
     </section>
 
     <!-- ==================== 3 · GARAGE & SURVEYOR ==================== -->

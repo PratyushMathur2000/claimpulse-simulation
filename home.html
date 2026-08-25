@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ClaimPulse — Motor OD Intelligence Platform | ATOM Season 9</title>
+<meta name="description" content="ClaimPulse — Motor Own Damage claims orchestration for Bajaj Allianz. Executive Decision Simulator and the live Claims Operations workspace. Team Finsighters, NMIMS Mumbai, PS_BFDL.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   ClaimPulse · Home
+   The two halves of one product, and the door to each. Every token below
+   is the simulator's own — this page is the first thing a judge sees, so
+   it has to establish the design language the other two inherit.
+   ===================================================================== */
+:root{
+  --s-xs:11.5px; --s-sm:12.5px; --s-base:13.5px; --s-md:15.5px;
+  --s-lg:18.5px; --s-xl:21px; --s-2xl:25px;
+  --brand-blue:#258cfb; --brand-blue-glow:rgba(37,140,251,0.35); --brand-blue-mid:#005db3;
+  --dark-bg:#040812;
+  --card-bg:rgba(9,19,37,0.78); --card-bg-alt:rgba(13,27,52,0.85);
+  --line:rgba(35,65,110,0.45); --line-bright:rgba(37,140,251,0.25);
+  --heading:#ffffff; --ink:#edf2f7; --mist:#9eb0c6; --mist-dim:#687b94;
+  --green:#10b981; --gold:#f59e0b; --purple:#c084fc; --cyan:#22d3ee;
+  --f-head:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+  --f-body:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+  --f-sub:'JetBrains Mono',monospace,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background-color:var(--dark-bg);
+  background-image:
+    url('assets/Background.png'),
+    radial-gradient(circle at 90% 90%, rgba(245,158,11,0.10) 0%, transparent 40%),
+    radial-gradient(circle at 10% 20%, rgba(37,140,251,0.12) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(6,18,36,0.30) 0%, transparent 60%),
+    linear-gradient(135deg,#03060f 0%,#050d1a 50%,#091426 100%);
+  background-repeat:no-repeat; background-position:center center;
+  background-attachment:fixed; background-size:cover;
+  color:var(--ink); font-family:var(--f-body);
+  font-size:var(--s-base); line-height:1.55; letter-spacing:-0.01em;
+  min-height:100vh; padding:24px; display:flex; flex-direction:column;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:''; position:fixed; inset:0;
+  background:
+    radial-gradient(1.5px 1.5px at 20px 30px, rgba(255,255,255,0.06), rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 40px 70px, rgba(37,140,251,0.10), rgba(0,0,0,0));
+  background-size:80px 80px; pointer-events:none; z-index:0;
+}
+.wrap{max-width:1100px;margin:auto;position:relative;z-index:1;width:100%;}
+
+.top-bar{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+  margin-bottom:32px;background:rgba(5,13,26,0.78);backdrop-filter:blur(14px);
+  padding:12px 18px;border-radius:12px;border:1px solid var(--line-bright);
+}
+.brand-logo-wrap{
+  display:flex;align-items:center;gap:10px;background:rgba(8,20,40,0.85);
+  border:1px solid var(--line-bright);padding:6px 12px;border-radius:8px;
+}
+.tagline{font-family:var(--f-sub);font-size:10px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;color:var(--mist-dim);text-align:right;}
+
+.hero{text-align:center;margin-bottom:32px;}
+.hero .eyebrow{
+  font-family:var(--f-sub);font-size:11px;letter-spacing:1px;color:var(--brand-blue);
+  text-transform:uppercase;font-weight:700;
+}
+.hero h1{
+  font-family:var(--f-head);font-size:40px;font-weight:800;color:var(--heading);
+  letter-spacing:-1.2px;line-height:1.1;margin:6px 0;
+}
+.hero p{color:var(--mist);font-size:var(--s-md);max-width:640px;margin:0 auto;line-height:1.55;}
+
+.doors{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media(max-width:760px){.doors{grid-template-columns:1fr;}.hero h1{font-size:30px;}}
+.door{
+  display:block;text-decoration:none;color:inherit;
+  background:var(--card-bg);backdrop-filter:blur(14px);
+  border:1px solid var(--line-bright);border-radius:12px;
+  padding:24px;box-shadow:0 6px 24px rgba(0,0,0,0.25);
+  transition:border-color .2s, transform .2s;position:relative;overflow:hidden;
+}
+.door:hover{border-color:rgba(37,140,251,0.40);transform:translateY(-2px);}
+.door::after{
+  content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;
+  border-radius:50%;background:radial-gradient(circle,var(--line-bright) 0%,transparent 70%);
+}
+.door .no{font-family:var(--f-sub);font-size:11px;font-weight:700;letter-spacing:1px;
+  color:var(--brand-blue);text-transform:uppercase;}
+.door h2{font-family:var(--f-head);font-size:var(--s-2xl);font-weight:800;
+  color:var(--heading);letter-spacing:-0.5px;margin:6px 0 4px;line-height:1.15;}
+.door .role{font-family:var(--f-sub);font-size:10px;font-weight:700;letter-spacing:0.5px;
+  text-transform:uppercase;color:var(--mist-dim);margin-bottom:12px;}
+.door p{color:var(--mist);font-size:var(--s-sm);line-height:1.6;margin-bottom:14px;}
+.door ul{list-style:none;display:grid;gap:5px;margin-bottom:16px;}
+.door li{font-size:var(--s-xs);color:var(--mist);padding-left:16px;position:relative;}
+.door li::before{content:'▸';position:absolute;left:0;color:var(--brand-blue);}
+.door .go{
+  display:inline-flex;align-items:center;gap:6px;background:var(--brand-blue);color:#fff;
+  font-family:var(--f-head);font-weight:700;font-size:13px;padding:10px 20px;border-radius:8px;
+  box-shadow:0 4px 16px rgba(37,140,251,0.45);transition:all .18s;
+}
+.door:hover .go{background:#419eff;box-shadow:0 6px 20px rgba(37,140,251,0.6);}
+
+.strip{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px;
+}
+@media(max-width:760px){.strip{grid-template-columns:repeat(2,1fr);}}
+.p-stat{background:rgba(6,16,34,0.5);border:1px solid var(--line);border-radius:8px;padding:10px 12px;}
+.p-k{font-size:10.5px;color:var(--mist);text-transform:uppercase;letter-spacing:.4px;font-weight:700;}
+.p-to{font-family:var(--f-sub);font-weight:800;font-size:19px;color:var(--heading);
+  letter-spacing:-0.5px;margin-top:3px;}
+.p-note{font-size:11px;color:var(--mist-dim);margin-top:3px;}
+
+.foot{
+  margin-top:28px;text-align:center;font-family:var(--f-sub);font-size:10px;
+  color:var(--mist-dim);letter-spacing:0.5px;line-height:1.8;
+}
+.foot a{color:var(--mist);text-decoration:none;}
+.foot a:hover{color:var(--brand-blue);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top-bar">
+    <div class="brand-logo-wrap">
+      <svg width="110" height="26" viewBox="0 0 170 42" fill="none">
+        <path d="M10 6 C16 2, 30 4, 24 14 C20 20, 10 18, 6 26 C3 32, 13 36, 26 32 C18 35, 2 35, 2 26 C2 18, 14 18, 18 12 C22 6, 12 5, 10 6 Z" fill="#258cfb"/>
+        <path d="M14 10 C20 6, 34 8, 28 18 C24 24, 14 22, 10 30 C7 36, 17 40, 30 36 C22 39, 6 39, 6 30 C6 22, 18 22, 22 16 C26 10, 16 9, 14 10 Z" fill="#005db3"/>
+        <text x="38" y="22" font-family="'Plus Jakarta Sans',sans-serif" font-weight="800" font-size="15" fill="#fff" letter-spacing="1">BAJAJ</text>
+        <text x="38" y="35" font-family="'Plus Jakarta Sans',sans-serif" font-weight="700" font-size="10" fill="#258cfb" letter-spacing="2.5">FINSERV</text>
+      </svg>
+      <div style="width:1px;height:20px;background:var(--line-bright);"></div>
+      <div style="font-family:var(--f-head);font-weight:700;font-size:12px;color:var(--heading);">ATOM <span style="color:var(--brand-blue);">Season 9</span></div>
+    </div>
+    <div class="tagline">Team Finsighters · NMIMS Mumbai<br>PS_BFDL · Motor Claims TAT</div>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Motor OD Intelligence Platform</div>
+    <h1>ClaimPulse</h1>
+    <p>One product, two rooms. The case for automating Motor Own Damage claims,
+       and that case running on live claims. Start wherever you like — each links
+       to the other.</p>
+  </div>
+
+  <div class="doors">
+    <a class="door" href="/simulator">
+      <div class="no">01 · Decision layer</div>
+      <h2>Executive Decision Simulator</h2>
+      <div class="role">For the investment committee</div>
+      <p>The business case, with the levers exposed. Nine assumptions you can move
+         and watch the whole model recompute, plus the stress cases and the ask.</p>
+      <ul>
+        <li>Six-phase narrative, problem through decision</li>
+        <li>Live scenario levers over the investment model</li>
+        <li>Correlated stress testing and the investor gate</li>
+        <li>Excel workings and the full investor report</li>
+      </ul>
+      <span class="go">Open the simulator &rarr;</span>
+    </a>
+
+    <a class="door" href="/app">
+      <div class="no">02 · Live operations</div>
+      <h2>Claims Operations Workspace</h2>
+      <div class="role">For the claims floor</div>
+      <p>The same product, running. A live claims desk with the routing engine
+         behind it, the customer's app beside it, and a controlled-pilot workspace
+         for validating any of it on real claims.</p>
+      <ul>
+        <li>Command Center and deep Claim Inspector</li>
+        <li>Gate 00 and five engines, every finding explained</li>
+        <li>Surveyor dispatch and the customer journey</li>
+        <li>Shadow-mode pilot with agreement measurement</li>
+      </ul>
+      <span class="go">Open live operations &rarr;</span>
+    </a>
+  </div>
+
+  <div class="strip">
+    <div class="p-stat">
+      <div class="p-k">Turnaround</div>
+      <div class="p-to">9.8 &rarr; 2.71 d</div>
+      <div class="p-note">Blended across the book</div>
+    </div>
+    <div class="p-stat">
+      <div class="p-k">Manual touches</div>
+      <div class="p-to">7.0 &rarr; 1.23</div>
+      <div class="p-note">Per claim</div>
+    </div>
+    <div class="p-stat">
+      <div class="p-k">Net annual benefit</div>
+      <div class="p-to">&#8377;43.31 Cr</div>
+      <div class="p-note">Base plan, 60% rollout</div>
+    </div>
+    <div class="p-stat">
+      <div class="p-k">Payback</div>
+      <div class="p-to">2.7 &ndash; 48 mo</div>
+      <div class="p-note">Six bases; see the case</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <a href="./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx" download>Excel workings (.xlsx)</a> ·
+    <a href="./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf" download>Investor report (.pdf)</a><br>
+    Bajaj Finserv · ATOM Season 9 · Prototype for controlled validation, not production deployment
+  </div>
+
+</div>
+</body>
+</html>

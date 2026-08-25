@@ -175,7 +175,7 @@ function serve() {
   ok('a red claim is high priority', life.prioRed === 'high', life.prioRed);
 
   console.log('\n── the command centre ────────────────────────────');
-  await page.evaluate(() => CPApp.go('ops'));
+  await page.evaluate(() => CPApp.go('inspector'));
   // Seeding 21 claims is 21 round trips. Wait for the desk to actually fill
   // rather than asserting against a queue that is still arriving.
   await page.waitForFunction(() => CPSync.all().length >= 20, null, { timeout: 30000 });
@@ -202,7 +202,7 @@ function serve() {
   ok('the lane distribution renders three segments', board.segs === 3, board.segs);
   ok('the three automation layers render', board.layers === 3, board.layers);
   ok('the filter rail offers the primary filters', board.selects >= 6, board.selects + ' selects');
-  ok('the queue table has the full column set', board.cols === 12, board.cols + ' columns');
+  ok('the queue table carries the columns a picker needs', board.cols === 4, board.cols + ' columns');
   ok('every claim has a row', board.rows === board.total, board.rows + ' / ' + board.total);
 
   // Filters have to actually filter, and the counts have to agree with the
@@ -245,6 +245,7 @@ function serve() {
 
   console.log('\n── the claim inspector ───────────────────────────');
   const insp = await page.evaluate(() => {
+    CPApp.go('inspector');
     const c = CPSync.all().find(x => x.ref === 'CLM-20482');
     CPOps.open(c.id);
     return c.id;
@@ -277,6 +278,7 @@ function serve() {
 
   console.log('\n── surveyor dispatch ─────────────────────────────');
   const red = await page.evaluate(() => {
+    CPApp.go('inspector');
     const c = CPSync.all().find(x => x.ref === 'CLM-20483');
     CPOps.open(c.id);
     return c.id;
@@ -525,6 +527,7 @@ function serve() {
 
   // An override with no reason is refused, because evaluation cannot use it.
   await page.evaluate(() => {
+    CPApp.go('inspector');
     const c = CPSync.all().find(x => x.ref === 'CLM-20483');
     CPOps.open(c.id);
   });
@@ -551,6 +554,7 @@ function serve() {
   // Out-of-cohort claims are visibly excluded rather than silently scored.
   const outside = await page.evaluate(async () => {
     CPPilot.setCohort('city', 'Mumbai');
+    CPApp.go('inspector');
     const c = CPSync.all().find(x => x.ref === 'CLM-20483');   // Noida
     CPOps.open(c.id);
     await new Promise(r => setTimeout(r, 600));

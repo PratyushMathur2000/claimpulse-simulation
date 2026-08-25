@@ -95,7 +95,7 @@ const CPOps = (() => {
   function onData(all) {
     claims = all;
     if (selected && !claims.some(c => c.id === selected)) selected = null;
-    if (CPApp.surface === 'ops') render();
+    if (CPApp.surface === 'ops' || CPApp.surface === 'inspector') render();
   }
 
   /* A claim mid-pipeline moves on its own, so the board repaints without
@@ -105,7 +105,7 @@ const CPOps = (() => {
   function startTick() {
     if (tick) return;
     tick = setInterval(() => {
-      if (CPApp.surface !== 'ops') return;
+      if (CPApp.surface !== 'ops' && CPApp.surface !== 'inspector') return;
       const sig = signature();
       if (sig !== lastSig) { render(); return; }
       paintExec();
@@ -126,8 +126,11 @@ const CPOps = (() => {
     startTick();
     paintExec();
     paintPanels();
-    paintFilters();
-    paintTable();
+    // The filter rail and the queue table render on the CLAIM INSPECTOR now.
+    // They are still driven from here because the filter state and the claim
+    // list are one thing, and splitting them across two modules would mean
+    // two sources of truth for "which claims are we looking at".
+    if (CPApp.surface === 'inspector') { paintFilters(); paintTable(); }
   }
 
   /* ---------------- filtering ---------------- */
@@ -412,10 +415,7 @@ const CPOps = (() => {
       <div class="tblwrap tall">
         <table class="tbl ctbl">
           <thead><tr>
-            <th>Claim ID</th><th>Customer</th><th>Vehicle</th>
-            <th class="num">Amount</th><th>Submitted</th><th>Status</th>
-            <th>Lane</th><th class="num">Trust</th><th>Survey</th>
-            <th>Surveyor</th><th class="num">TAT</th><th>Priority</th>
+            <th>Claim</th><th>Customer</th><th class="num">Amount</th><th>Lane</th>
           </tr></thead>
           <tbody>${rows.map(row).join('')}</tbody>
         </table>
@@ -427,29 +427,20 @@ const CPOps = (() => {
     const status = CPEngine.statusOf(c, s);
     const pr = CPEngine.priorityOf(c, s);
     const needsSurvey = c.surveyor && c.surveyor.required;
-    return `<tr class="crow ${c.primary ? 'primary' : ''}" onclick="CPOps.open('${UI.esc(c.id)}')">
-      <td class="mono"><b>${UI.esc(c.ref || c.id)}</b></td>
-      <td>${UI.esc(c.policy.holder)}</td>
-      <td>${UI.esc(c.policy.vehicle)}<div class="sub2">${UI.esc(c.policy.reg)} · ${UI.esc(c.incident.city)}</div></td>
-      <td class="num"><b>${UI.inr(c.claimAmount)}</b></td>
-      <td>${UI.ago(c.ts)}<div class="sub2">${UI.dt(c.ts)}</div></td>
-      <td><span class="stat-chip s-${status.replace(/\s+/g, '-').toLowerCase()}">${UI.esc(status)}</span>
+    return `<tr class="crow ${c.primary ? 'primary' : ''} ${c.id === selected ? 'on' : ''}"
+                onclick="CPOps.open('${UI.esc(c.id)}')">
+      <td class="mono"><b>${UI.esc(c.ref || c.id)}</b>
+          <div class="sub2">${UI.ago(c.ts)}</div></td>
+      <td>${UI.esc(c.policy.holder)}
+          <div class="sub2">${UI.esc(c.policy.vehicle)}</div></td>
+      <td class="num"><b>${UI.inr(c.claimAmount)}</b>
+          <div class="sub2">${needsSurvey ? 'survey req.' : pr.nm.toLowerCase() + ' priority'}</div></td>
+      <td>${s.decided ? UI.pill(c.lane) : '<span class="pill n">—</span>'}
+          <div class="sub2">${s.decided
+            ? '<b class="tscore ' + c.lane + '">' + c.trust.score + '</b> · ' + UI.esc(status)
+            : UI.esc(status)}</div>
           <div class="stgbar mini"><i id="pb-${UI.esc(c.id)}" class="${s.bucket}"
                style="width:${(s.pct * 100).toFixed(1)}%"></i></div></td>
-      <td>${s.decided ? UI.pill(c.lane) : '<span class="pill n">—</span>'}</td>
-      <td class="num">${s.decided
-        ? `<b class="tscore ${c.lane}">${c.trust.score}</b>`
-        : '<span style="color:var(--dim)">· ·</span>'}</td>
-      <td>${!s.decided ? '<span style="color:var(--dim)">—</span>'
-        : needsSurvey ? '<span style="color:var(--amber);font-weight:700">Required</span>'
-        : c.lane === 'A' ? '<span style="color:var(--mist)">Review rec.</span>'
-        : '<span style="color:var(--green)">Not required</span>'}</td>
-      <td>${c.survey
-        ? `<b>${UI.esc(String(c.survey.name).split(' ')[0])}</b><div class="sub2">${UI.esc(c.survey.date)}</div>`
-        : needsSurvey ? '<span class="needassign">Assign →</span>'
-        : '<span style="color:var(--dim)">—</span>'}</td>
-      <td class="num">${s.decided ? c.laneTat + ' d' : '—'}</td>
-      <td><span class="prio ${pr.k}">${UI.esc(pr.nm)}</span></td>
     </tr>`;
   }
 
@@ -458,7 +449,8 @@ const CPOps = (() => {
   function open(id) {
     selected = id;
     CPInspector.load(id);
-    CPApp.go('inspector');
+    if (CPApp.surface !== 'inspector') CPApp.go('inspector');
+    else { render(); CPInspector.render(); }
   }
   const select = (id) => { selected = id; render(); };
 
