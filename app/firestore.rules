@@ -1,0 +1,25 @@
+rules_version = '2';
+
+// ClaimPulse demo database.
+//
+// This project holds DEMO CLAIMS ONLY — synthetic policyholders, synthetic
+// damage, synthetic payouts. No real policy, customer or claim data ever
+// reaches it. It exists so a judge can file a claim on their own phone and
+// watch it land on the projected Ops Console.
+//
+// Access is deliberately open within one path so no sign-in step stands
+// between a judge and the demo. Everything outside that path is closed,
+// documents are size-capped, and the project is disposable.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /rooms/{room}/claims/{claim} {
+      allow read: if true;
+      allow create: if request.resource.data.createdAt is number
+                    && request.resource.size() < 60;
+      allow update, delete: if true;
+    }
+
+    match /{document=**} { allow read, write: if false; }
+  }
+}

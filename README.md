@@ -1,6 +1,7 @@
 # ClaimPulse · Executive Decision Simulator
 
 [![Live Simulation](https://img.shields.io/badge/Live%20Simulation-claimpulse--simulation.vercel.app-00D084?style=for-the-badge&logo=vercel&logoColor=white)](https://claimpulse-simulation.vercel.app)
+[![Live Product Demo](https://img.shields.io/badge/Live%20Product%20Demo-%2Fapp-7C4DFF?style=for-the-badge&logo=vercel&logoColor=white)](https://claimpulse-simulation.vercel.app/app)
 [![Competition](https://img.shields.io/badge/Bajaj%20Finserv-ATOM%20Season%209%20·%20Series%20A%20Round%205-006699?style=for-the-badge)](https://claimpulse-simulation.vercel.app)
 [![Institution](https://img.shields.io/badge/NMIMS%20Mumbai-Team%20Finsighters-C00000?style=for-the-badge)](https://claimpulse-simulation.vercel.app)
 [![Tech Stack](https://img.shields.io/badge/Stack-Vanilla%20HTML5%20%7C%20CSS3%20%7C%20ES6%20JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://claimpulse-simulation.vercel.app)
@@ -9,6 +10,41 @@
 > **Verified-Evidence Motor Insurance Claim Orchestration Platform**  
 > *Transforming Motor Own Damage (OD) Claims from 9.8 Days & 7 Touches to 2.71 Days & 1.23 Touches with ₹43.31 Cr Annual Net Benefit.*
 
+
+---
+
+## Two surfaces, one repository
+
+This repository holds both halves of ClaimPulse.
+
+| | Path | Lives at | What it is |
+|---|---|---|---|
+| **Executive Decision Simulator** | `/` | [claimpulse-simulation.vercel.app](https://claimpulse-simulation.vercel.app) | The business case. Nine live levers over the investment model, stress cases, the benefit bridge. |
+| **Working Product Demo** | `/app` | [claimpulse-simulation.vercel.app/app](https://claimpulse-simulation.vercel.app/app) | The product itself, running. Claims Command Center, Claim Inspector, customer mobile app, surveyor dispatch and the controlled-pilot workspace. |
+
+The simulator makes the argument; `/app` is that argument running on live claims. Each links
+to the other from its header, so a judge can cross between them without a URL.
+
+Full documentation for the product demo — architecture, the eight surfaces, the claim
+lifecycle, shadow-mode pilot design and how to run it — is in [`app/README.md`](./app/README.md).
+
+### Running the product demo locally
+
+```bash
+cd app
+npm install
+npm start      # http://localhost:5173
+npm run verify # 113 headless checks against a real browser
+npm run phi    # golden-ratio audit of the stylesheet
+```
+
+### How `/app` is served
+
+The demo uses relative asset paths so it can also be wrapped as an Android app, which means it
+must be served from a directory URL. `vercel.json` therefore redirects `/app` to `/app/` and
+then rewrites `/app/*` onto `/app/www/*`. Without the redirect, `assets/js/model.js` would
+resolve against the site root and collide with the simulator's own `assets/` folder.
+
 ---
 
 ## 📌 One-Click Deliverables & Resources
@@ -16,6 +52,7 @@
 | Deliverable | Format | Access Link / Direct Action |
 |---|---|---|
 | **🌐 Interactive Executive Simulator** | Web Application | [**Launch Live Simulator** (claimpulse-simulation.vercel.app)](https://claimpulse-simulation.vercel.app) |
+| **🧭 Working Product Demo** | Web + Android | [**Launch Live Product** (claimpulse-simulation.vercel.app/app)](https://claimpulse-simulation.vercel.app/app) |
 | **📊 Comprehensive Investor Dashboard** | Excel Financial Model | [**Download Financial Model** (`SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx`)](./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx) |
 | **📄 Series A Comprehensive Investors Report** | PDF Document | [**Download Investors Report** (`SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf`)](./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf) |
 | **📱 Mobile QR Access Code** | PNG Image | [**View Simulator QR Code** (`ClaimPulse_Simulation_QR.png`)](./ClaimPulse_Simulation_QR.png) |

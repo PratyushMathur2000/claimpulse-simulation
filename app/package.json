@@ -1,0 +1,28 @@
+{
+  "name": "claimpulse",
+  "version": "1.0.0",
+  "description": "ClaimPulse \u2014 Motor Insurance Claims TAT Reduction. Working demo. Team Finsighters, NMIMS Mumbai, ATOM Season 9, PS_BFDL.",
+  "private": true,
+  "scripts": {
+    "start": "npx --yes serve www -l 5173",
+    "verify": "node verify.js",
+    "deploy": "npx --yes firebase-tools@latest deploy --only hosting",
+    "android:add": "npx cap add android",
+    "android:sync": "npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:apk": "node build-apk.js",
+    "qr": "node make-qr.js",
+    "phi": "python phi-audit.py www/assets/css/app.css"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.0",
+    "@capacitor/core": "^7.4.0",
+    "@capacitor/geolocation": "^7.1.0",
+    "@capacitor/camera": "^7.0.1",
+    "@capacitor/splash-screen": "^7.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.0",
+    "playwright": "^1.49.0"
+  }
+}

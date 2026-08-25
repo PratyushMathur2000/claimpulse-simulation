@@ -1,0 +1,13 @@
+# Build output and dependencies
+node_modules/
+android/
+.firebase/
+.vercel/
+
+# Local scratch
+*.log
+local.properties
+
+# The APK lives at www/ClaimPulse-demo.apk so the static host serves it
+ClaimPulse-demo.apk
+!www/ClaimPulse-demo.apk

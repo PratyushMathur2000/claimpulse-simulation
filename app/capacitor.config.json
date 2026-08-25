@@ -1,0 +1,15 @@
+{
+  "appId": "in.nmims.finsighters.claimpulse",
+  "appName": "ClaimPulse",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#F1F5F9"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "backgroundColor": "#0071BB",
+      "launchShowDuration": 800
+    }
+  }
+}

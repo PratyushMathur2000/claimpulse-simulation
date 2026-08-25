@@ -463,6 +463,18 @@ b.hl-purple, span.hl-purple { color:#c084fc; font-weight:700; text-shadow:0 0 12
   body{margin-left:calc(var(--sidebar-w) + 8px);padding:10px;}
 }
 </style>
+<style>
+/* Live-product pill in the header. Same shape as the download pills; a
+   different accent because it is a destination, not a download. */
+.btn-download-pill.btn-live{
+  background:linear-gradient(135deg,#7C4DFF 0%,#5B2EE0 100%);
+  border-color:rgba(146,109,255,.55);
+  color:#fff;
+}
+.btn-download-pill.btn-live:hover{filter:brightness(1.12);}
+.btn-download-pill.btn-live .dl-icon-circle{background:rgba(255,255,255,.22);}
+.btn-download-pill.btn-live .dl-badge{background:rgba(255,255,255,.20);color:#fff;}
+</style>
 </head>
 <body>
 <div class="app-container">
@@ -526,6 +538,17 @@ b.hl-purple, span.hl-purple { color:#c084fc; font-weight:700; text-shadow:0 0 12
     </div>
   </div>
   <div class="header-actions">
+    <!-- The simulator makes the case; /app is the case running. One link so a
+         judge can cross from the projection to the product without a URL. -->
+    <a href="/app/" class="btn-download-pill btn-live" title="Open the working ClaimPulse product demo">
+      <span class="dl-icon-circle">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+      </span>
+      <span>Open Live Product Demo</span>
+      <span class="dl-badge">APP</span>
+    </a>
     <a href="./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx" download="SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx" class="btn-download-pill btn-excel" title="Click to Download Financial Model &amp; Workings (SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx)">
       <span class="dl-icon-circle">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">

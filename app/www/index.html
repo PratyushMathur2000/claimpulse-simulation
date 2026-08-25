@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0071BB">
+<title>ClaimPulse — Working Demo | Team Finsighters · ATOM Season 9</title>
+<meta name="description" content="ClaimPulse — Motor OD claims orchestration. Capture Integrity Gate, five engines, Trust Score routing. Team Finsighters, NMIMS Mumbai, PS_BFDL.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+
+<!-- Add to Home Screen on iOS: without these the page opens in Safari
+     chrome rather than full screen, which reads as a website, not an app. -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ClaimPulse">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Same two families, and the same weight set, as the ClaimPulse
+     executive simulator, so the two surfaces read as one product. -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ============================ TOP BAR ============================ -->
+  <header class="topbar">
+    <div class="mark">
+      <div class="mark-dot">CP</div>
+      <div>
+        <h1>ClaimPulse</h1>
+        <p>Bajaj Finserv · ATOM S9 · Finsighters</p>
+      </div>
+    </div>
+
+    <nav class="surfaces" id="surfaceNav"></nav>
+
+    <div class="topright">
+      <!-- Back to the executive simulator. Relative so it works at /app/ on
+           the combined host and still resolves if this is served alone. -->
+      <a class="deckback" href="../" title="Executive Decision Simulator — the business case">
+        <span>&#8592;</span> Executive case
+      </a>
+      <button class="syncpill" id="syncPill" onclick="CPApp.share()">
+        <span class="dot"></span><span id="syncTxt">connecting</span>
+      </button>
+    </div>
+  </header>
+
+  <div id="pilotBar"></div>
+
+  <main class="stage">
+
+    <!-- ============ 3 · CUSTOMER MOBILE APP ============ -->
+    <section class="view on" id="v-claimant">
+      <div class="phonewrap">
+        <div class="phone">
+          <div class="phone-status">
+            <span id="phClock">09:41</span>
+            <span>ClaimPulse · Bajaj Allianz</span>
+            <span>▮▮▮</span>
+          </div>
+          <div class="steps" id="phSteps"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+          <div class="phone-head">
+            <div class="t" id="phTitle">Report a claim</div>
+            <div class="s" id="phSub">Motor Own Damage · FNOL</div>
+          </div>
+          <div class="phone-body" id="phBody"></div>
+          <div class="phone-foot" id="phFoot"></div>
+        </div>
+
+        <div class="sidenote" id="sideNote"></div>
+      </div>
+    </section>
+
+    <!-- ============ 1 · CLAIMS COMMAND CENTER ============ -->
+    <section class="view" id="v-ops">
+      <div class="pagehead">
+        <div>
+          <h2>Claims Command Center</h2>
+          <p>Motor Own Damage · Bajaj Allianz General Insurance · live desk</p>
+        </div>
+        <div class="deskclock" id="deskClock"></div>
+      </div>
+
+      <div class="execband" id="execBand"></div>
+
+      <div class="split">
+        <div id="lanePanel"></div>
+        <div id="autoPanel"></div>
+      </div>
+
+      <div id="filterRail"></div>
+
+      <div class="card flush">
+        <div class="queuehead" id="queueHead"></div>
+        <div id="queueTable"></div>
+      </div>
+    </section>
+
+    <!-- ============ 2 · CLAIM INSPECTOR ============ -->
+    <section class="view" id="v-inspector">
+      <div id="inspBody"></div>
+    </section>
+
+    <!-- ==================== 3 · GARAGE & SURVEYOR ==================== -->
+    <section class="view" id="v-network">
+      <div class="kpirow k4" id="netKpis"></div>
+      <div class="split">
+        <div id="netMain"></div>
+        <div id="netSide"></div>
+      </div>
+    </section>
+
+    <!-- ==================== 4 · AUDIT / REGULATOR ==================== -->
+    <section class="view" id="v-audit">
+      <div class="kpirow k4" id="auditKpis"></div>
+      <div class="split-r">
+        <div id="auditSide"></div>
+        <div id="auditMain"></div>
+      </div>
+    </section>
+
+    <!-- ==================== 5 · IMPACT BOARD ==================== -->
+    <section class="view" id="v-impact">
+      <div id="impactBody"></div>
+    </section>
+
+    <!-- ============ PILOT WORKSPACE ============ -->
+    <section class="view" id="v-pilot">
+      <div id="pilotBody"></div>
+    </section>
+
+    <!-- ==================== 6 · INVESTOR SIMULATOR ==================== -->
+    <section class="view" id="v-sim">
+      <div class="split-r">
+        <div id="simLevers"></div>
+        <div id="simBody"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="sheetHost"></div>
+
+<script src="assets/js/model.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/engine.js"></script>
+<script src="assets/js/sync.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/claimant.js"></script>
+<script src="assets/js/ops.js"></script>
+<script src="assets/js/inspector.js"></script>
+<script src="assets/js/network.js"></script>
+<script src="assets/js/audit.js"></script>
+<script src="assets/js/impact.js"></script>
+<script src="assets/js/sim.js"></script>
+<script src="assets/js/pilot.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
