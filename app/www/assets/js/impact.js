@@ -21,8 +21,80 @@ const CPImpact = (() => {
   function render() {
     if (!claims.length) claims = CPSync.all();
     UI.set('impactBody',
-      hero() + pilotCta() + session() + bridgeCard() + ratioCard()
+      hero() + paybackCard() + pilotCta() + session() + bridgeCard() + ratioCard()
       + stakeholderCard() + footnote());
+  }
+
+  /* ---------------- payback, on every basis ----------------
+     A single payback number is the fastest way to lose a CFO. The report
+     carries six, and they disagree by an order of magnitude — not because
+     any is wrong, but because they answer different questions: does the
+     ten-month build window count? Whose labour rate? Does fraud benefit
+     land at all?
+
+     So the board shows the span and names the basis on every row. The two
+     the investment ask leads with are marked; the rest are the honest
+     bracket around them. Every figure is computed from the model here, not
+     transcribed from the PDF, so it cannot drift out of agreement with it. */
+  const PAYBACKS = () => {
+    const base = CPModel.run('base');
+    const cons = CPModel.run('conservative');
+    const aggr = CPModel.run('aggressive');
+    return [
+      { k: 'Steady state',            v: base.paybackSteady,
+        lead: true,
+        d: 'Build cost over net monthly benefit — the standard convention. Excludes the ten-month build window.',
+        ref: 'W-38 · Note 18' },
+      { k: 'From project kickoff',    v: base.paybackKickoff,
+        lead: true,
+        d: 'Carries the ten-month build window in which no benefit accrues. The figure the proposal headlines.',
+        ref: 'Note 27' },
+      { k: 'Realistic downside',      v: CPModel.stress('downside').paybackSteady,
+        d: 'In-house handling, fraud detection at 82%, and no synthetic-media or renewal benefit at all.',
+        ref: 'W-54 · Note 20' },
+      { k: 'Absolute floor',          v: CPModel.stress('floor').paybackSteady,
+        d: 'Labour savings only. Every rupee of fraud, gate, synthetic-media and renewal value set to zero.',
+        ref: 'W-55 · Note 20' },
+      { k: 'Correlated stress',       v: CPModel.stress('D').paybackKickoff,
+        d: 'Operating reality, fraud and adoption all missing at once, on the kickoff basis. Still NPV-positive.',
+        ref: 'Case D · Note 20' },
+      { k: 'Conservative plan',       v: cons.paybackKickoff,
+        d: 'Kickoff basis at 35% rollout instead of 60%. Aggressive at 85% repays in '
+           + aggr.paybackKickoff.toFixed(1) + ' months.',
+        ref: 'Note 27' }
+    ];
+  };
+
+  const paybackSpan = () => {
+    const v = PAYBACKS().map(x => x.v).filter(isFinite);
+    return Math.min(...v).toFixed(1) + '<small> – </small>' + Math.max(...v).toFixed(0)
+         + '<small> mo</small>';
+  };
+
+  function paybackCard() {
+    const rows = PAYBACKS();
+    const max = Math.max(...rows.map(r => r.v).filter(isFinite));
+    return `<div class="card" style="margin-bottom:var(--s3);">
+      <h3>Payback, on every basis the model carries</h3>
+      <div class="sub">These disagree by an order of magnitude and all six are correct. What
+        separates them is what each one counts — so each row says.</div>
+      <div class="hr"></div>
+      <div class="pbrows">
+        ${rows.map(r => `
+          <div class="pb ${r.lead ? 'lead' : ''}">
+            <div class="pb-k">${UI.esc(r.k)}${r.lead ? '<span class="pb-tag">HEADLINE</span>' : ''}</div>
+            <div class="pb-v">${r.v.toFixed(r.v < 10 ? 2 : 1)}<small> mo</small></div>
+            <div class="pb-bar"><i style="width:${(r.v / max) * 100}%"></i></div>
+            <div class="pb-d">${UI.esc(r.d)}</div>
+            <div class="pb-ref">${UI.esc(r.ref)}</div>
+          </div>`).join('')}
+      </div>
+      <div class="reason cap" style="margin-top:var(--s3);">
+        The spread is the point. Quoting only the shortest row hides the build window; quoting
+        only the longest prices a case in which nothing works. The investment ask is made on
+        the two marked rows, and the rest are the bracket around them.
+      </div>
+    </div>`;
   }
 
   /* ---------------- the ask ----------------
@@ -62,16 +134,15 @@ const CPImpact = (() => {
         <div class="k">Net annual benefit · Base plan, 60% rollout</div>
         <div class="v">${UI.cr(b.net)}</div>
         <div class="d">
-          Gross benefit of ${UI.cr(b.gross)} less ${UI.cr(b.run)} of annual run cost.
-          Against a one-off build of ${UI.cr(b.build)}, repaid ${b.paybackKickoff.toFixed(1)} months
-          from project kickoff — a figure that carries the ten-month build window in which no
-          benefit accrues.
+          Gross benefit of ${UI.cr(b.gross)} less ${UI.cr(b.run)} of annual run cost,
+          against a one-off build of ${UI.cr(b.build)}. Payback depends entirely on which
+          basis you ask for — the panel below carries all of them.
         </div>
       </div>
       <div>
         <div class="kpirow k2" style="grid-template-columns:1fr 1fr;">
           ${UI.kpi('5-year NPV at 12%', UI.cr(b.npv5, 1), '3-year ' + UI.cr(b.npv3, 1))}
-          ${UI.kpi('Payback from kickoff', b.paybackKickoff.toFixed(1) + '<small> mo</small>', 'includes the 10-month build')}
+          ${UI.kpi('Payback range', paybackSpan(), 'six bases · see below')}
           ${UI.kpi('Motor OD combined ratio', UI.pp(b.combinedPP), UI.pp(b.combinedGroupPP) + ' on the group book')}
           ${UI.kpi('Whole-book TAT', UI.days(b.tatBook), 'from ' + CP_CONST.TAT_TODAY + ' days')}
         </div>
@@ -158,8 +229,8 @@ const CPImpact = (() => {
       <div class="hr"></div>
       <div style="font-size:var(--t-sm);color:var(--body);line-height:1.65;">
         Both halves of the combined ratio move and neither carries the case alone. Strip out
-        <b>every rupee</b> of fraud benefit and the labour engine alone still repays the build
-        in ${CPModel.stress('floor').paybackSteady.toFixed(0)} months.
+        <b>every rupee</b> of fraud benefit and the labour engine alone still repays the build —
+        the floor case in the payback panel above.
       </div>
     </div>`;
   }

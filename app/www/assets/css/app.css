@@ -88,6 +88,14 @@
   --amber:#f59e0b;  --amber-bg:rgba(245,158,11,.15);   --amber-line:rgba(245,158,11,.35);
   --red:#ef4444;    --red-bg:rgba(239,68,68,.15);      --red-line:rgba(239,68,68,.35);
 
+  /* ---- solid fills ----
+     Named for what they DO, not what colour they are. --bajaj-navy and
+     --bajaj-deep were dark in the light theme and are light in this one,
+     so anything that needs a dark chip under white text has to say so
+     explicitly rather than borrowing a text colour. */
+  --fill-brand:#005db3;      /* badges, avatars, numbered chips */
+  --fill-deep:#061223;       /* phone chrome, camera stage */
+
   /* ---- left rail ---- */
   --rail-w:89px;
 
@@ -389,7 +397,7 @@ table.tbl tbody tr:hover{background:var(--bajaj-tint-2);}
 }
 .phone-status{
   display:flex;justify-content:space-between;align-items:center;
-  padding:var(--s2) var(--s3);background:var(--bajaj-navy);color:#fff;
+  padding:var(--s2) var(--s3);background:var(--fill-deep);color:#fff;
   font-family:var(--m);font-size:var(--t-micro);letter-spacing:.4px;flex-shrink:0;
 }
 .steps{display:flex;gap:3px;padding:var(--s2) var(--s3) 0;flex-shrink:0;}
@@ -418,7 +426,7 @@ table.tbl tbody tr:hover{background:var(--bajaj-tint-2);}
 /* ---- capture ---- */
 .capstage{
   position:relative;width:100%;aspect-ratio:1.618;      /* φ */
-  border-radius:var(--r);overflow:hidden;background:var(--bajaj-navy);
+  border-radius:var(--r);overflow:hidden;background:var(--fill-deep);
   display:grid;place-items:center;margin-bottom:var(--s2);
 }
 .capstage video{width:100%;height:100%;object-fit:cover;}
@@ -590,7 +598,7 @@ table.tbl tbody tr:hover{background:var(--bajaj-tint-2);}
 }
 .outcome.G .oico{background:var(--green);}
 .outcome.A .oico{background:var(--amber);}
-.outcome.R .oico{background:var(--bajaj-deep);}
+.outcome.R .oico{background:var(--fill-brand);}
 .otitle{font-size:var(--t-base);font-weight:800;color:var(--bajaj-navy);line-height:1.3;letter-spacing:-.4px;}
 .olead{font-size:var(--t-xs);color:var(--body);line-height:1.65;margin-top:var(--s2);}
 .ostatus{
@@ -599,7 +607,7 @@ table.tbl tbody tr:hover{background:var(--bajaj-tint-2);}
 }
 .ostatus.G{background:var(--green);color:#fff;}
 .ostatus.A{background:var(--amber);color:#fff;}
-.ostatus.R{background:var(--bajaj-deep);color:#fff;}
+.ostatus.R{background:var(--fill-brand);color:#fff;}
 
 .tcard{
   padding:var(--s3);border-radius:13px;background:var(--bajaj-tint);
@@ -952,10 +960,10 @@ table.ctbl thead th{
 .enghead:hover{background:var(--bajaj-tint-2);}
 .eno{
   display:grid;place-items:center;height:34px;border-radius:8px;
-  background:var(--bajaj-navy);color:#fff;font-family:var(--m);
+  background:var(--fill-brand);color:#fff;font-family:var(--m);
   font-size:var(--t-xs);font-weight:800;
 }
-.eno.gate{background:var(--bajaj-deep);}
+.eno.gate{background:var(--bajaj-dark);}
 .einfo{min-width:0;}
 .enm{font-size:var(--t-base);font-weight:800;color:var(--bajaj-navy);line-height:1.2;}
 .elayer{
@@ -1003,7 +1011,7 @@ table.ctbl thead th{
 .sv.full{opacity:.5;cursor:not-allowed;}
 .sv-av,.bk-av{
   display:grid;place-items:center;width:34px;height:34px;border-radius:50%;
-  background:var(--bajaj-deep);color:#fff;font-family:var(--m);
+  background:var(--fill-brand);color:#fff;font-family:var(--m);
   font-size:var(--t-xs);font-weight:800;
 }
 .sv-main{min-width:0;}
@@ -1181,7 +1189,8 @@ table.ctbl thead th{
    SURFACE · IMPACT BOARD
    ===================================================================== */
 .bigfig{
-  background:linear-gradient(150deg,var(--bajaj-deep) 0%,var(--bajaj-navy) 100%);
+  background:linear-gradient(150deg,rgba(0,93,179,.60) 0%,rgba(4,10,22,.96) 100%);
+  border:1px solid var(--line-bright);
   border-radius:var(--r-lg);padding:var(--s5) var(--s4);color:#fff;
   box-shadow:var(--sh-2);position:relative;overflow:hidden;
 }
@@ -1522,6 +1531,39 @@ table.gatetbl td{vertical-align:top;}
 }
 .deckback:hover{border-color:var(--bajaj-sky);color:var(--bajaj-deep);background:var(--bajaj-tint-2);}
 @media(max-width:860px){.deckback{display:none;}}
+
+/* ---- payback, on every basis ----
+   A bar per row so the order-of-magnitude spread is visible before anyone
+   reads a single number. The bar is scaled to the WORST case on purpose:
+   the honest shape of this panel is a short headline bar beside a long
+   stress bar, not six bars of similar length. */
+.pbrows{display:grid;gap:8px;}
+.pb{
+  display:grid;grid-template-columns:1fr auto;gap:2px 13px;
+  padding:8px 13px;border:1px solid var(--line);border-radius:8px;background:var(--ground);
+}
+.pb.lead{border-color:var(--bajaj);background:var(--bajaj-tint);}
+.pb-k{font-size:13.3px;font-weight:800;color:var(--ink);}
+.pb-tag{
+  display:inline-block;margin-left:5px;padding:2px 5px;border-radius:5px;
+  background:var(--bajaj);color:#fff;font-family:var(--f-sub);
+  font-size:8.2px;font-weight:800;letter-spacing:.5px;vertical-align:middle;
+}
+.pb-v{
+  font-family:var(--f-sub);font-size:19.1px;font-weight:800;color:var(--bajaj-navy);
+  letter-spacing:-.8px;font-variant-numeric:tabular-nums;text-align:right;
+}
+.pb-v small{font-size:9.3px;color:var(--dim);font-weight:700;letter-spacing:0;}
+.pb-bar{
+  grid-column:1 / -1;height:3px;border-radius:2px;background:var(--line-2);overflow:hidden;
+}
+.pb-bar i{display:block;height:100%;background:var(--bajaj);border-radius:2px;}
+.pb.lead .pb-bar i{background:var(--bajaj-sky);}
+.pb-d{grid-column:1 / -1;font-size:10.5px;color:var(--mist);line-height:1.6;}
+.pb-ref{
+  grid-column:1 / -1;font-family:var(--f-sub);font-size:8.2px;color:var(--dim);
+  letter-spacing:.4px;
+}
 
 
 /* ---------------------------------------------------------------------

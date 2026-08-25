@@ -373,6 +373,12 @@ const CPModel = (() => {
            B14_fraudTarget: 0.82, B17_leakage: 0.015, B18_synthetic: 0.0025,
            rollout: 0.35, B03_greenShare: 0.50, B04_amberShare: 0.40, B20_friction: 0.15 }
     },
+    downside: {
+      label: 'Realistic downside',
+      note: 'In-house handling, fraud detection at 82%, and no synthetic-media or renewal benefit at all.',
+      o: { B28_baselineTouchCost: 83, costPerTouch: 83,
+           B14_fraudTarget: 0.82, B18_synthetic: 0, B22_renewalUplift: 0 }
+    },
     floor: {
       label: 'Floor · labour only, zero fraud',
       note: 'No fraud, gate, synthetic or renewal value at all.',
@@ -483,6 +489,11 @@ const CPModel = (() => {
     near('L-21 stress D net',   stress('D').net, 4.207358498485244,  1e-6);
     near('L-28 stress D 5y NPV',stress('D').npv5, 3.761099759560103, 1e-5);
     near('W-52 floor net',      stress('floor').net, 3.784795267248766, 1e-6);
+    // Notes 20 / 27 · the realistic-downside composite the investor report
+    // carries as W-51 and W-54. Reproduced here so the payback RANGE the
+    // Impact board shows is computed, not transcribed from the PDF.
+    near('W-51 downside net',     stress('downside').net, 16.06, 5e-3);
+    near('W-54 downside payback', stress('downside').paybackSteady, 7.39, 5e-3);
 
     const result = { pass: fails.length === 0, failures: fails, checks: ran };
     if (fails.length) console.error('CPModel self-check FAILED:\n' + fails.join('\n'));
