@@ -123,13 +123,36 @@ body::before{
 }
 .foot a{color:var(--mist);text-decoration:none;}
 .foot a:hover{color:var(--brand-blue);}
+a.brand-logo-wrap{text-decoration:none;transition:.18s;}
+a.brand-logo-wrap:hover{border-color:rgba(37,140,251,0.40);background:rgba(37,140,251,0.12);}
+
+/* The evidence pack. Explicit download actions, in the existing bottom
+   area rather than as a new section of their own. */
+.evidence{margin-top:24px;}
+.ev-k{font-family:var(--f-sub);font-size:10px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;color:var(--mist-dim);margin-bottom:10px;text-align:center;}
+.ev-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:760px){.ev-row{grid-template-columns:1fr;}}
+.ev{
+  display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;
+  background:rgba(6,16,34,0.5);border:1px solid var(--line);border-radius:8px;
+  padding:12px 14px;transition:.18s;
+}
+.ev:hover{border-color:rgba(37,140,251,0.40);background:rgba(37,140,251,0.10);}
+.ev-ico{display:grid;place-items:center;width:28px;height:28px;border-radius:999px;
+  background:rgba(37,140,251,0.22);color:var(--brand-blue);font-size:13px;flex-shrink:0;}
+.ev b{display:block;font-family:var(--f-head);font-size:12.5px;font-weight:700;color:var(--heading);}
+.ev em{display:block;font-style:normal;font-size:11px;color:var(--mist-dim);margin-top:1px;}
+.ev-tag{margin-left:auto;font-family:var(--f-sub);font-size:9px;font-weight:700;
+  letter-spacing:0.5px;color:var(--mist-dim);border:1px solid var(--line);
+  border-radius:4px;padding:2px 6px;flex-shrink:0;}
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <header class="top-bar">
-    <div class="brand-logo-wrap">
+    <a class="brand-logo-wrap" href="/" title="ClaimPulse home">
       <svg width="110" height="26" viewBox="0 0 170 42" fill="none">
         <path d="M10 6 C16 2, 30 4, 24 14 C20 20, 10 18, 6 26 C3 32, 13 36, 26 32 C18 35, 2 35, 2 26 C2 18, 14 18, 18 12 C22 6, 12 5, 10 6 Z" fill="#258cfb"/>
         <path d="M14 10 C20 6, 34 8, 28 18 C24 24, 14 22, 10 30 C7 36, 17 40, 30 36 C22 39, 6 39, 6 30 C6 22, 18 22, 22 16 C26 10, 16 9, 14 10 Z" fill="#005db3"/>
@@ -138,7 +161,7 @@ body::before{
       </svg>
       <div style="width:1px;height:20px;background:var(--line-bright);"></div>
       <div style="font-family:var(--f-head);font-weight:700;font-size:12px;color:var(--heading);">ATOM <span style="color:var(--brand-blue);">Season 9</span></div>
-    </div>
+    </a>
     <div class="tagline">Team Finsighters · NMIMS Mumbai<br>PS_BFDL · Motor Claims TAT</div>
   </header>
 
@@ -206,9 +229,31 @@ body::before{
     </div>
   </div>
 
+  <div class="evidence">
+    <div class="ev-k">The evidence pack</div>
+    <div class="ev-row">
+      <a class="ev" href="./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx"
+         download="ClaimPulse_Investor_Dashboard.xlsx">
+        <span class="ev-ico">&#8681;</span>
+        <span><b>Download Excel Workings</b><em>The model every figure is computed from</em></span>
+        <span class="ev-tag">XLSX</span>
+      </a>
+      <a class="ev" href="./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf"
+         download="ClaimPulse_Investor_Report.pdf">
+        <span class="ev-ico">&#8681;</span>
+        <span><b>Download Investor Report</b><em>33 notes, assumptions and stress cases</em></span>
+        <span class="ev-tag">PDF</span>
+      </a>
+      <a class="ev" href="./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL.pptx"
+         download="ClaimPulse_Presentation.pptx">
+        <span class="ev-ico">&#8681;</span>
+        <span><b>Download Presentation Deck</b><em>The submitted deck</em></span>
+        <span class="ev-tag">PPTX</span>
+      </a>
+    </div>
+  </div>
+
   <div class="foot">
-    <a href="./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx" download>Excel workings (.xlsx)</a> ·
-    <a href="./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf" download>Investor report (.pdf)</a><br>
     Bajaj Finserv · ATOM Season 9 · Prototype for controlled validation, not production deployment
   </div>
 

@@ -109,6 +109,7 @@
         <div class="deskclock" id="deskClock"></div>
       </div>
 
+      <div class="execlead" id="execLead"></div>
       <div class="execband" id="execBand"></div>
 
       <div class="split">
@@ -125,51 +126,67 @@
          this screen. -->
     <section class="view" id="v-inspector">
       <div id="filterRail"></div>
-      <div class="inspgrid">
-        <div class="card flush">
-          <div class="queuehead" id="queueHead"></div>
-          <div id="queueTable"></div>
-        </div>
-        <div id="inspBody"></div>
+      <!-- Full width, both of them. The queue is a scanning surface and the
+           inspector is a deep-dive; neither reads well in 30% of a page, and
+           they are never used at the same instant. -->
+      <div class="card flush">
+        <div class="queuehead" id="queueHead"></div>
+        <div id="queueTable"></div>
       </div>
+      <div id="inspBody"></div>
     </section>
 
     <!-- ==================== 3 · GARAGE & SURVEYOR ==================== -->
-    <section class="view" id="v-network">
-      <div class="kpirow k4" id="netKpis"></div>
-      <div class="split">
-        <div id="netMain"></div>
-        <div id="netSide"></div>
-      </div>
-    </section>
+    
 
     <!-- ==================== 4 · AUDIT / REGULATOR ==================== -->
-    <section class="view" id="v-audit">
+    
+
+    <!-- ==================== 5 · IMPACT BOARD ==================== -->
+    
+
+    <!-- ============ PILOT WORKSPACE ============ -->
+    
+
+    <!-- ==================== 6 · INVESTOR SIMULATOR ==================== -->
+    
+
+    <!-- ============ 3 · GARAGES · who repairs the vehicle ============ -->
+    <section class="view" id="v-garages">
+      <div class="kpirow k4" id="garKpis"></div>
+      <div id="garMain"></div>
+    </section>
+    <!-- ============ 4 · SURVEYORS · who verifies the damage ============ -->
+    <section class="view" id="v-surveyors">
+      <div class="kpirow k4" id="svKpis"></div>
+      <div class="split"><div id="svMain"></div><div id="svSide"></div></div>
+    </section>
+    <!-- ============ 6 · DECISION · the case, the levers, the pilot ============
+         Four things that all answer "should we do this and how do we know",
+         behind one tab with internal sections. They were four top-level tabs,
+         which made the product look like it had four business cases. -->
+    <section class="view" id="v-decision">
+      <div class="subtabs" id="decisionTabs"></div>
+<div class="subview" id="d-impact">
+      <div id="impactBody"></div>
+    </div>
+<div class="subview" id="d-sim">
+      <div class="split-r">
+        <div id="simLevers"></div>
+        <div id="simBody"></div>
+      </div>
+    </div>
+<div class="subview" id="d-pilot">
+      <div id="pilotBody"></div>
+    </div>
+<div class="subview" id="d-audit">
       <div class="kpirow k4" id="auditKpis"></div>
       <div class="split-r">
         <div id="auditSide"></div>
         <div id="auditMain"></div>
       </div>
+    </div>
     </section>
-
-    <!-- ==================== 5 · IMPACT BOARD ==================== -->
-    <section class="view" id="v-impact">
-      <div id="impactBody"></div>
-    </section>
-
-    <!-- ============ PILOT WORKSPACE ============ -->
-    <section class="view" id="v-pilot">
-      <div id="pilotBody"></div>
-    </section>
-
-    <!-- ==================== 6 · INVESTOR SIMULATOR ==================== -->
-    <section class="view" id="v-sim">
-      <div class="split-r">
-        <div id="simLevers"></div>
-        <div id="simBody"></div>
-      </div>
-    </section>
-
   </main>
 </div>
 
@@ -188,6 +205,7 @@
 <script src="assets/js/impact.js"></script>
 <script src="assets/js/sim.js"></script>
 <script src="assets/js/pilot.js"></script>
+<script src="assets/js/decision.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>

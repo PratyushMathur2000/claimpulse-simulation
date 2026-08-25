@@ -466,14 +466,6 @@ b.hl-purple, span.hl-purple { color:#c084fc; font-weight:700; text-shadow:0 0 12
 <style>
 /* Live-product pill in the header. Same shape as the download pills; a
    different accent because it is a destination, not a download. */
-.btn-download-pill.btn-live{
-  background:linear-gradient(135deg,#7C4DFF 0%,#5B2EE0 100%);
-  border-color:rgba(146,109,255,.55);
-  color:#fff;
-}
-.btn-download-pill.btn-live:hover{filter:brightness(1.12);}
-.btn-download-pill.btn-live .dl-icon-circle{background:rgba(255,255,255,.22);}
-.btn-download-pill.btn-live .dl-badge{background:rgba(255,255,255,.20);color:#fff;}
 </style>
 <style>
 /* Breadcrumb back to the ClaimPulse home page. */
@@ -482,6 +474,9 @@ b.hl-purple, span.hl-purple { color:#c084fc; font-weight:700; text-shadow:0 0 12
 .crumb a{color:var(--brand-blue);text-decoration:none;}
 .crumb a:hover{text-decoration:underline;}
 .crumb span{opacity:.5;margin:0 3px;}
+a.brand-logo-wrap,a.sidebar-logo{text-decoration:none;transition:.18s;}
+a.brand-logo-wrap:hover{border-color:rgba(37,140,251,0.40);background:rgba(37,140,251,0.12);}
+a.sidebar-logo:hover{border-color:var(--brand-blue);box-shadow:0 0 0 3px rgba(37,140,251,0.16);}
 </style>
 </head>
 <body>
@@ -489,10 +484,10 @@ b.hl-purple, span.hl-purple { color:#c084fc; font-weight:700; text-shadow:0 0 12
 
 <!-- SIDEBAR NAVIGATION (6 PROGRESSIVE MANAGEMENT QUESTIONS) -->
 <aside class="sidebar">
-  <div class="sidebar-logo">
+  <a class="sidebar-logo" href="/" title="ClaimPulse home">
     <span>ATOM</span>
     <span>S9</span>
-  </div>
+  </a>
   <nav class="sidebar-nav">
     <button class="page-tab-btn active" id="tab-btn-1" onclick="switchPage(1)" data-tooltip="01. THE PROBLEM: Why does Bajaj need to act? (Combined ratio squeeze &amp; manual claims friction)">
       <span class="tab-num">01</span>
@@ -530,7 +525,7 @@ b.hl-purple, span.hl-purple { color:#c084fc; font-weight:700; text-shadow:0 0 12
 <!-- TOP BRAND BAR (CLEAN HEADER) -->
 <header class="top-bar">
   <div class="brand-group">
-    <div class="brand-logo-wrap">
+    <a class="brand-logo-wrap" href="/" title="ClaimPulse home">
       <svg width="110" height="26" viewBox="0 0 170 42" fill="none">
         <path d="M10 6 C16 2, 30 4, 24 14 C20 20, 10 18, 6 26 C3 32, 13 36, 26 32 C18 35, 2 35, 2 26 C2 18, 14 18, 18 12 C22 6, 12 5, 10 6 Z" fill="#258cfb"/>
         <path d="M14 10 C20 6, 34 8, 28 18 C24 24, 14 22, 10 30 C7 36, 17 40, 30 36 C22 39, 6 39, 6 30 C6 22, 18 22, 22 16 C26 10, 16 9, 14 10 Z" fill="#005db3"/>
@@ -539,7 +534,7 @@ b.hl-purple, span.hl-purple { color:#c084fc; font-weight:700; text-shadow:0 0 12
       </svg>
       <div style="width:1px;height:20px;background:var(--line-bright);"></div>
       <div style="font-family:var(--f-head);font-weight:700;font-size:12px;color:var(--heading);">ATOM <span style="color:var(--brand-blue);">Season 9</span></div>
-    </div>
+    </a>
     <div class="brand-title-box">
       <div class="crumb"><a href="/">ClaimPulse Home</a> <span>&rsaquo;</span> Simulator</div>
       <h1>ClaimPulse</h1>
@@ -547,17 +542,7 @@ b.hl-purple, span.hl-purple { color:#c084fc; font-weight:700; text-shadow:0 0 12
     </div>
   </div>
   <div class="header-actions">
-    <!-- The simulator makes the case; /app is the case running. One link so a
-         judge can cross from the projection to the product without a URL. -->
-    <a href="/app/" class="btn-download-pill btn-live" title="Open the working ClaimPulse product demo">
-      <span class="dl-icon-circle">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="5 3 19 12 5 21 5 3"></polygon>
-        </svg>
-      </span>
-      <span>Open Live Product Demo</span>
-      <span class="dl-badge">APP</span>
-    </a>
+    
     <a href="./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx" download="SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx" class="btn-download-pill btn-excel" title="Click to Download Financial Model &amp; Workings (SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx)">
       <span class="dl-icon-circle">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">

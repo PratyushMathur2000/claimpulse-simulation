@@ -15,15 +15,17 @@ const CPApp = (() => {
      Grouping matters more than it looks. Eight flat items read as another
      application's menu; two named groups read as one workspace inside a
      larger product, which is what this is. */
+  /* Six tabs, one word each. The rule is not cosmetic: a tab whose label
+     needs two words is usually two ideas, and this product had eight of
+     them competing for the same rail. Decision now holds everything that
+     answers "should we do this", which is one question, not four. */
   const SURFACES = [
-    { k: 'impact',    ico: '📈', nm: 'Executive Case',     grp: 'Decision layer',   mod: () => CPImpact },
-    { k: 'sim',       ico: '🎛️', nm: 'Scenario Simulator', grp: 'Decision layer',   mod: () => CPSim },
-    { k: 'ops',       ico: '🖥️', nm: 'Command Center',     grp: 'Live operations',  mod: () => CPOps },
-    { k: 'inspector', ico: '🔍', nm: 'Claim Inspector',    grp: 'Live operations',  mod: () => CPInspector },
-    { k: 'network',   ico: '🔧', nm: 'Garage Network',     grp: 'Live operations',  mod: () => CPNetwork },
-    { k: 'claimant',  ico: '📱', nm: 'Customer Journey',   grp: 'Live operations',  mod: () => CPClaimant },
-    { k: 'audit',     ico: '⚖️', nm: 'Audit Trail',        grp: 'Live operations',  mod: () => CPAudit },
-    { k: 'pilot',     ico: '🧪', nm: 'Controlled Pilot',   grp: 'Live operations',  mod: () => CPPilot }
+    { k: 'ops',       ico: '🖥️', nm: 'Command',   sub: 'One-glance claims operations',      mod: () => CPOps },
+    { k: 'inspector', ico: '🔍', nm: 'Claims',    sub: 'Queue and full investigation',      mod: () => CPInspector },
+    { k: 'garages',   ico: '🔧', nm: 'Garages',   sub: 'Who repairs the vehicle',           mod: () => CPGarages },
+    { k: 'surveyors', ico: '📋', nm: 'Surveyors', sub: 'Who verifies the damage',           mod: () => CPSurveyors },
+    { k: 'claimant',  ico: '📱', nm: 'Customer',  sub: 'The claimant journey, end to end',  mod: () => CPClaimant },
+    { k: 'decision',  ico: '📈', nm: 'Decision',  sub: 'Case, scenarios, pilot and audit',  mod: () => CPDecision }
   ];
 
   let surface = 'ops';
@@ -42,29 +44,21 @@ const CPApp = (() => {
     history.replaceState(null, '', '#' + k + location.search.replace(/^\?/, '&').replace(/^&$/, ''));
     const meta = SURFACES.find(s => s.k === k);
     const t = UI.$('surfaceTitle');
-    if (t) t.textContent = meta.nm;
+    if (t) t.textContent = 'Live Operations \u00b7 ' + meta.nm + ' \u00b7 ' + meta.sub;
     const c = document.querySelector('.crumb');
-    if (c) c.innerHTML = '<a href="../">ClaimPulse</a> <span>›</span> ' + UI.esc(meta.grp);
+    if (c) c.innerHTML = '<a href="/">ClaimPulse Home</a> <span>›</span> Demo';
     const m = meta.mod();
     if (m && m.render) m.render();
   }
 
   function paintNav() {
-    let html = '', grp = null, n = 0;
-    SURFACES.forEach(s => {
-      if (s.grp !== grp) {
-        grp = s.grp;
-        html += `<div class="navgrp">${UI.esc(grp)}</div>`;
-      }
-      n++;
-      html += `<button id="nav-${s.k}" class="${s.k === surface ? 'on' : ''}"
-                 onclick="CPApp.go('${s.k}')" title="${UI.esc(s.nm)}">
-         <span class="no">${String(n).padStart(2, '0')}</span>
+    UI.set('surfaceNav', SURFACES.map((s, i) =>
+      `<button id="nav-${s.k}" class="${s.k === surface ? 'on' : ''}"
+               onclick="CPApp.go('${s.k}')" title="${UI.esc(s.sub)}">
+         <span class="no">${String(i + 1).padStart(2, '0')}</span>
          <span class="ico">${s.ico}</span>
          <span class="nm">${UI.esc(s.nm)}</span>
-       </button>`;
-    });
-    UI.set('surfaceNav', html);
+       </button>`).join(''));
   }
 
   /* ---------------- scenario (drives the claimant flow) ---------------- */

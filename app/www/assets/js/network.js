@@ -1,5 +1,5 @@
 /* =====================================================================
-   ClaimPulse · Garage and Surveyor surface
+   ClaimPulse · Garage and Surveyor boards
    ---------------------------------------------------------------------
    Two stakeholders the deck claims and nothing else in the demo showed.
 
@@ -18,13 +18,99 @@ const CPNetwork = (() => {
   const B = () => CP_CONST.BOOK;
 
   function init() { }
-  function onData(all) { claims = all; if (CPApp.surface === 'network') render(); }
+  function onData(all) {
+    claims = all;
+    if (CPApp.surface === 'garages') renderGarages();
+    if (CPApp.surface === 'surveyors') renderSurveyors();
+  }
 
-  function render() {
+  /* Two boards, two tabs. A surveyor VERIFIES the damage; a garage REPAIRS
+     the vehicle. They were on one screen because they share the corridor
+     arithmetic, which is a reason to share code and not a reason to share a
+     tab — a claims floor staffs them separately and manages them separately. */
+  function renderGarages() {
     if (!claims.length) claims = CPSync.all();
-    paintKpis();
-    UI.set('netMain', garageBoard());
-    UI.set('netSide', surveyorBoard() + bookBoard());
+    const overBand = claims.filter(c => c.repair.overBand).length;
+    const disallowed = claims.reduce((s, c) => s + c.money.disallowed, 0);
+    const jobs = claims.length;
+    const network = claims.filter(c => (CP_GARAGES[c.repair.code] || {}).network).length;
+
+    UI.set('garKpis',
+      UI.kpi('Live repair jobs', jobs, network + ' at network garages') +
+      UI.kpi('Estimate to approval', CPModel.INPUTS.J07_garageAfter + ' day',
+             `from ${CPModel.INPUTS.J06_garageToday} days · W-73`, 'g') +
+      UI.kpi('Estimates above band', overBand,
+             overBand ? UI.inr(disallowed) + ' held back from settlement'
+                      : 'every estimate inside the catalogue band',
+             overBand ? 'a' : 'g') +
+      UI.kpi('Garage days saved', B().garageDaysSaved + ' d',
+             'per claim, at 60% rollout · W-73'));
+    UI.set('garMain', garageBoard());
+  }
+
+  function renderSurveyors() {
+    if (!claims.length) claims = CPSync.all();
+    const need = claims.filter(c => c.surveyor && c.surveyor.required).length;
+    const booked = claims.filter(c => c.survey).length;
+    const free = CP_SURVEYORS.filter(x => x.available === 'today' && x.workload < x.capacity).length;
+    const n = claims.length || 1;
+
+    UI.set('svKpis',
+      UI.kpi('Inspections required', need,
+             UI.pct(need / n, 0) + ' of the queue · against 55% surveyed today',
+             need / n > 0.3 ? 'a' : 'g') +
+      UI.kpi('Already scheduled', booked,
+             (need - booked) + ' still to dispatch', booked < need ? 'a' : 'g') +
+      UI.kpi('Surveyors free today', free,
+             'of ' + CP_SURVEYORS.length + ' on the panel', 'g') +
+      UI.kpi('Visits avoided', UI.compact(B().surveyAvoided),
+             'a year at 60% rollout · W-72', 'g'));
+    UI.set('svMain', rosterBoard() + surveyorBoard());
+    UI.set('svSide', bookBoard());
+  }
+
+  /* ---------------- the panel itself ----------------
+     Who is on it, where they are, how loaded they are, and what they are
+     currently holding. Dispatch happens in the Claim Inspector, because
+     that is where the decision to send someone is actually made. */
+  function rosterBoard() {
+    const assigned = {};
+    claims.forEach(c => {
+      if (c.survey) (assigned[c.survey.surveyorId] = assigned[c.survey.surveyorId] || []).push(c);
+    });
+    const init = (nm) => String(nm).split(' ').map(x => x[0]).slice(0, 2).join('');
+
+    return `<div class="card">
+      <h3>The surveyor panel</h3>
+      <div class="sub">IRDAI-licensed surveyors, their load and what each is holding.
+        Dispatch happens on the claim itself, in Claims.</div>
+      <div class="hr"></div>
+      <div class="svlist">
+        ${CP_SURVEYORS.map(sv => {
+          const mine = assigned[sv.id] || [];
+          const full = sv.workload >= sv.capacity;
+          return `<div class="sv ${full ? 'full' : ''}" style="cursor:default;">
+            <div class="sv-av">${UI.esc(init(sv.name))}</div>
+            <div class="sv-main">
+              <div class="sv-nm">${UI.esc(sv.name)}
+                <span class="sv-rating">★ ${sv.rating}</span></div>
+              <div class="sv-meta">${UI.esc(sv.city)} · ${UI.esc(sv.licence)} · ${UI.esc(sv.speciality)}</div>
+              <div class="sv-load">
+                <div class="lbar"><i style="width:${(sv.workload / sv.capacity) * 100}%"
+                     class="${full ? 'r' : sv.workload / sv.capacity > 0.6 ? 'a' : 'g'}"></i></div>
+                <span>${sv.workload}/${sv.capacity} jobs · avg ${sv.avgHours} h · ${sv.jobs} completed</span>
+              </div>
+              ${mine.length ? `<div class="sv-holding">${mine.map(c =>
+                `<span>${UI.esc(c.ref || c.id)} · ${UI.esc(c.survey.date)}</span>`).join('')}</div>` : ''}
+            </div>
+            <div class="sv-av2">
+              <span class="avail ${sv.available}">${full ? 'At capacity'
+                : sv.available === 'today' ? 'Available today' : 'Tomorrow'}</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
   }
 
   /* ---------------- KPIs ---------------- */
@@ -173,5 +259,18 @@ const CPNetwork = (() => {
     </div>`;
   }
 
-  return { init, onData, render };
+  return { init, onData, renderGarages, renderSurveyors };
 })();
+
+/* Two thin surfaces over the one module, so the rail can address them
+   separately without the corridor arithmetic being written twice. */
+const CPGarages = {
+  init() { CPNetwork.init(); },
+  onData(all) { CPNetwork.onData(all); },
+  render() { CPNetwork.renderGarages(); }
+};
+const CPSurveyors = {
+  init() { },
+  onData(all) { CPNetwork.onData(all); },
+  render() { CPNetwork.renderSurveyors(); }
+};

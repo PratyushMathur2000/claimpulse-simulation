@@ -209,6 +209,16 @@ const CPOps = (() => {
     const avgAmt = claims.reduce((s, c) => s + c.claimAmount, 0) / n;
     const free = CP_SURVEYORS.filter(s => s.available === 'today' && s.workload < s.capacity).length;
 
+    /* Thirteen equal tiles is thirteen things shouting at the same volume.
+       Three lead figures answer "is today under control"; the rest are the
+       detail you look at once one of the three is wrong. Same information,
+       one level of hierarchy added. */
+    const lead = (k, v, d, tone) => `
+      <div class="lead ${tone || ''}">
+        <div class="k">${UI.esc(k)}</div>
+        <div class="v">${v}</div>
+        <div class="d">${d || ''}</div>
+      </div>`;
     const tile = (k, v, d, tone) => `
       <div class="stat ${tone || ''}">
         <div class="k">${UI.esc(k)}</div>
@@ -216,23 +226,24 @@ const CPOps = (() => {
         <div class="d">${d || ''}</div>
       </div>`;
 
+    UI.set('execLead',
+      lead('Active claims', active,
+           claims.length + ' on the desk · ' + newToday + ' filed in the last 24 h') +
+      lead('Attention required', awaiting,
+           awaiting ? 'waiting on a person right now' : 'nothing is waiting on a person',
+           awaiting ? 'a' : 'g') +
+      lead('Average TAT', (tat / n).toFixed(2) + ' d',
+           'against ' + CP_CONST.TAT_TODAY + ' d before ClaimPulse', 'g'));
+
     UI.set('execBand',
-      tile('Total active claims', active, claims.length + ' on the desk') +
-      tile('New in last 24 h', newToday, 'filed today') +
       tile('Green · auto-settle', lanes.G, UI.pct(lanes.G / n, 0) + ' of the desk', 'g') +
       tile('Amber · assisted', lanes.A, UI.pct(lanes.A / n, 0) + ' of the desk', 'a') +
       tile('Red · investigate', lanes.R, UI.pct(lanes.R / n, 0) + ' of the desk', 'r') +
-      tile('Awaiting review', awaiting, awaiting ? 'needs a person now' : 'nothing waiting',
-           awaiting ? 'a' : '') +
       tile('Surveys required', surveysNeeded, surveysBooked + ' already scheduled') +
-      tile('Surveyors available', free, 'of ' + CP_SURVEYORS.length + ' on the panel', 'g') +
+      tile('Surveyors free', free, 'of ' + CP_SURVEYORS.length + ' on the panel') +
       tile('Average claim', UI.inr(avgAmt), 'across the desk') +
       tile('Value at risk', '₹' + UI.compact(exposure), 'open claims, gross') +
-      tile('Average TAT', (tat / n).toFixed(2) + ' d',
-           'against ' + CP_CONST.TAT_TODAY + ' d today', 'g') +
-      tile('Auto-settled', autoSettled, 'no human touched them', 'g') +
-      tile('Manual touches saved', touches.toFixed(0),
-           'of ' + (n * CP_CONST.TOUCHES_TODAY) + ' the old process needs', 'g'));
+      tile('Auto-settled', autoSettled, touches.toFixed(0) + ' manual touches saved', 'g'));
   }
 
   /* ---------------- distribution + automation ---------------- */
@@ -415,7 +426,9 @@ const CPOps = (() => {
       <div class="tblwrap tall">
         <table class="tbl ctbl">
           <thead><tr>
-            <th>Claim</th><th>Customer</th><th class="num">Amount</th><th>Lane</th>
+            <th>Claim</th><th>Customer</th><th>Vehicle</th>
+            <th class="num">Amount</th><th>Submitted</th><th>Stage</th>
+            <th>Lane</th><th class="num">Trust</th><th>Survey</th><th>Priority</th>
           </tr></thead>
           <tbody>${rows.map(row).join('')}</tbody>
         </table>
@@ -429,18 +442,23 @@ const CPOps = (() => {
     const needsSurvey = c.surveyor && c.surveyor.required;
     return `<tr class="crow ${c.primary ? 'primary' : ''} ${c.id === selected ? 'on' : ''}"
                 onclick="CPOps.open('${UI.esc(c.id)}')">
-      <td class="mono"><b>${UI.esc(c.ref || c.id)}</b>
-          <div class="sub2">${UI.ago(c.ts)}</div></td>
-      <td>${UI.esc(c.policy.holder)}
-          <div class="sub2">${UI.esc(c.policy.vehicle)}</div></td>
-      <td class="num"><b>${UI.inr(c.claimAmount)}</b>
-          <div class="sub2">${needsSurvey ? 'survey req.' : pr.nm.toLowerCase() + ' priority'}</div></td>
-      <td>${s.decided ? UI.pill(c.lane) : '<span class="pill n">—</span>'}
-          <div class="sub2">${s.decided
-            ? '<b class="tscore ' + c.lane + '">' + c.trust.score + '</b> · ' + UI.esc(status)
-            : UI.esc(status)}</div>
+      <td class="mono"><b>${UI.esc(c.ref || c.id)}</b></td>
+      <td>${UI.esc(c.policy.holder)}</td>
+      <td>${UI.esc(c.policy.vehicle)}<div class="sub2">${UI.esc(c.policy.reg)} · ${UI.esc(c.incident.city)}</div></td>
+      <td class="num"><b>${UI.inr(c.claimAmount)}</b></td>
+      <td>${UI.ago(c.ts)}<div class="sub2">${UI.dt(c.ts)}</div></td>
+      <td><span class="stat-chip s-${status.replace(/\s+/g, '-').toLowerCase()}">${UI.esc(status)}</span>
           <div class="stgbar mini"><i id="pb-${UI.esc(c.id)}" class="${s.bucket}"
                style="width:${(s.pct * 100).toFixed(1)}%"></i></div></td>
+      <td>${s.decided ? UI.pill(c.lane) : '<span class="pill n">—</span>'}</td>
+      <td class="num">${s.decided
+        ? `<b class="tscore ${c.lane}">${c.trust.score}</b>`
+        : '<span style="color:var(--mist-dim)">· ·</span>'}</td>
+      <td>${!s.decided ? '<span style="color:var(--mist-dim)">—</span>'
+        : needsSurvey ? '<span style="color:var(--gold);font-weight:700">Required</span>'
+        : c.lane === 'A' ? '<span style="color:var(--mist)">Review rec.</span>'
+        : '<span style="color:var(--green)">Not required</span>'}</td>
+      <td><span class="prio ${pr.k}">${UI.esc(pr.nm)}</span></td>
     </tr>`;
   }
 

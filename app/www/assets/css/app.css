@@ -187,8 +187,14 @@ input,select,textarea{font-family:inherit;font-size:inherit;color:inherit;}
 /* =====================================================================
    SHELL
    ===================================================================== */
-.shell{display:flex;flex-direction:column;min-height:100vh;
-  max-width:1560px;margin:0 auto 0 calc(var(--sidebar-w) + 16px);position:relative;z-index:1;}
+.shell{
+  /* The simulator's body box, reproduced: same max-width, same rail offset,
+     same 20/24 gutters. The demo used to start hard against the top of the
+     viewport, which is the whole "feels compressed" difference. */
+  display:flex;flex-direction:column;min-height:100vh;
+  max-width:1560px;margin:0 auto 0 calc(var(--sidebar-w) + 16px);
+  padding:20px 24px;position:relative;z-index:1;
+}
 
 /* =====================================================================
    LEFT NAV RAIL
@@ -278,7 +284,7 @@ input,select,textarea{font-family:inherit;font-size:inherit;color:inherit;}
 .btn-download-pill:hover{border-color:rgba(37,140,251,0.40);background:rgba(37,140,251,0.12);}
 .btn-download-pill .dl-icon-circle{
   display:grid;place-items:center;width:20px;height:20px;border-radius:var(--r-pill);
-  background:rgba(37,140,251,0.22);color:var(--brand-blue);font-size:9px;
+  background:rgba(37,140,251,0.22);color:var(--brand-blue);font-size:9.5px;
 }
 
 .mark{display:flex;align-items:center;gap:var(--s2);flex-shrink:0;}
@@ -304,7 +310,7 @@ input,select,textarea{font-family:inherit;font-size:inherit;color:inherit;}
 /* =====================================================================
    STAGE + PRIMITIVES
    ===================================================================== */
-.stage{flex:1;width:100%;padding:0 24px 40px;}
+.stage{flex:1;width:100%;padding:0;}
 .view{display:none;}
 .view.on{display:block;animation:rise .3s cubic-bezier(.16,1,.3,1);}
 @keyframes rise{from{opacity:0;transform:translateY(var(--s2));}to{opacity:1;transform:none;}}
@@ -803,10 +809,31 @@ table.tbl tbody tr:hover{background:var(--bajaj-tint-2);}
 }
 
 /* ---- the executive band ---- */
+/* Three lead figures, then eight supporting ones. The lead row borrows the
+   simulator's .kpi treatment, left accent bar included; the band below is
+   deliberately quieter so the eye lands on the three first. Thirteen equal
+   tiles was thirteen things shouting at the same volume. */
+.execlead{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+.lead{
+  background:var(--card-bg);backdrop-filter:blur(14px);
+  border:1px solid var(--line-bright);border-left:4px solid var(--brand-blue);
+  border-radius:12px;padding:14px 18px;box-shadow:0 6px 24px rgba(0,0,0,0.25);
+}
+.lead.g{border-left-color:var(--green);}
+.lead.a{border-left-color:var(--gold);}
+.lead.r{border-left-color:var(--red);}
+.lead .k{font-size:11px;color:var(--mist);text-transform:uppercase;letter-spacing:.4px;font-weight:700;}
+.lead .v{font-family:var(--f-sub);font-weight:800;font-size:25px;color:var(--heading);
+  letter-spacing:-0.5px;margin-top:4px;line-height:1.1;}
+.lead.g .v{color:var(--green);text-shadow:0 0 10px var(--green-glow);}
+.lead.a .v{color:var(--gold);text-shadow:0 0 10px var(--gold-glow);}
+.lead .d{font-size:11.5px;color:var(--mist-dim);margin-top:3px;line-height:1.35;}
+@media(max-width:900px){.execlead{grid-template-columns:1fr;}}
+
 .execband{
-  display:grid;grid-template-columns:repeat(13,minmax(0,1fr));
+  display:grid;grid-template-columns:repeat(8,minmax(0,1fr));
   gap:1px;background:var(--line);border:1px solid var(--line);
-  border-radius:12px;overflow:hidden;margin-bottom:var(--s3);
+  border-radius:12px;overflow:hidden;margin-bottom:12px;
 }
 .stat{background:var(--surface);padding:var(--s3) var(--s2);min-width:0;}
 .stat .k{
@@ -1124,7 +1151,7 @@ table.ctbl thead th{
 }
 
 @media(max-width:1500px){
-  .execband{grid-template-columns:repeat(7,minmax(0,1fr));}
+  .execband{grid-template-columns:repeat(4,minmax(0,1fr));}
   .ih-facts{grid-template-columns:repeat(3,minmax(0,1fr));}
 }
 @media(max-width:1200px){
@@ -1134,7 +1161,7 @@ table.ctbl thead th{
   .jst:nth-child(5)::before{display:none;}
 }
 @media(max-width:860px){
-  .execband{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .execband{grid-template-columns:repeat(2,minmax(0,1fr));}
   .fgrid,.fgrid.more{grid-template-columns:repeat(2,minmax(0,1fr));}
   .ih-facts{grid-template-columns:repeat(2,minmax(0,1fr));}
   .journey{grid-template-columns:repeat(2,1fr);}
@@ -1719,7 +1746,6 @@ table.gatetbl td{vertical-align:top;}
    Picking a claim and reading a claim are the same job, so they share a
    screen. The queue is a fixed 380px rail; the detail takes the rest.
    --------------------------------------------------------------------- */
-.inspgrid{display:grid;grid-template-columns:380px minmax(0,1fr);gap:18px;align-items:start;}
 .inspgrid table.ctbl{font-size:11px;}
 .inspgrid table.ctbl th,.inspgrid table.ctbl td{padding:7px 8px;}
 .inspgrid .sub2{white-space:normal;}
@@ -1735,3 +1761,35 @@ table.gatetbl td{vertical-align:top;}
 /* An empty detail pane on a page this wide leaves a large area of bare
    ground, which reads as a broken layout rather than a waiting state. */
 .inspgrid > div:last-child .card .empty{min-height:380px;}
+
+/* ---------------------------------------------------------------------
+   DECISION · sub-tabs
+   Four sections behind one tab. Styled as a segmented control rather than
+   a second nav rail, so it reads as "inside this tab" and never competes
+   with the rail on the left.
+   --------------------------------------------------------------------- */
+.subtabs{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:18px;
+  background:rgba(6,16,34,0.5);border:1px solid var(--line);border-radius:12px;padding:6px;
+}
+.subtab{
+  text-align:left;padding:10px 14px;border-radius:8px;background:transparent;border:none;
+  cursor:pointer;transition:.18s;color:var(--mist);
+}
+.subtab:hover{background:rgba(255,255,255,0.06);color:var(--heading);}
+.subtab.on{background:rgba(37,140,251,0.16);box-shadow:inset 3px 0 0 var(--brand-blue);}
+.st-nm{display:block;font-family:var(--f-head);font-size:12.5px;font-weight:700;color:inherit;}
+.subtab.on .st-nm{color:var(--brand-blue);}
+.st-d{display:block;font-size:11px;color:var(--mist-dim);margin-top:2px;}
+.subview{display:none;}
+.subview.on{display:block;animation:fadeIn .25s cubic-bezier(0.16, 1, 0.3, 1);}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+@media(max-width:900px){.subtabs{grid-template-columns:repeat(2,1fr);}.st-d{display:none;}}
+
+/* what a surveyor is currently holding */
+.sv-holding{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.sv-holding span{
+  font-family:var(--f-sub);font-size:10px;font-weight:700;color:var(--brand-blue);
+  background:rgba(37,140,251,0.16);border:1px solid rgba(37,140,251,0.35);
+  border-radius:4px;padding:2px 6px;
+}

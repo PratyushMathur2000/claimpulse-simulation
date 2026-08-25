@@ -76,7 +76,7 @@ function serve() {
   ok('sync came up', mode === 'live' || mode === 'local', 'mode=' + mode);
 
   console.log('\n── surfaces render ───────────────────────────────────');
-  for (const s of ['ops', 'inspector', 'claimant', 'network', 'audit', 'impact', 'sim', 'pilot']) {
+  for (const s of ['ops', 'inspector', 'garages', 'surveyors', 'claimant', 'decision']) {
     const before = errors.length;
     await page.evaluate(k => CPApp.go(k), s);
     await page.waitForTimeout(450);
@@ -187,6 +187,7 @@ function serve() {
       b, buckets: Object.values(b).filter(n => n > 0).length,
       total: CPSync.all().length,
       tiles: document.querySelectorAll('#execBand .stat').length,
+      leads: document.querySelectorAll('#execLead .lead').length,
       segs: document.querySelectorAll('#lanePanel .dseg').length,
       layers: document.querySelectorAll('#autoPanel .ly').length,
       selects: document.querySelectorAll('#filterRail select').length,
@@ -198,11 +199,12 @@ function serve() {
   ok('the desk is seeded with a real workload', board.total >= 20, board.total + ' claims');
   ok('the three primary claims are on the board', board.primary === 3, board.primary + ' found');
   ok('work is spread across the lifecycle', board.buckets >= 2, JSON.stringify(board.b));
-  ok('the executive band carries 13 metrics', board.tiles === 13, board.tiles + ' tiles');
+  ok('three lead figures sit above the band', board.leads === 3, board.leads + ' leads');
+  ok('eight supporting metrics below them', board.tiles === 8, board.tiles + ' tiles');
   ok('the lane distribution renders three segments', board.segs === 3, board.segs);
   ok('the three automation layers render', board.layers === 3, board.layers);
   ok('the filter rail offers the primary filters', board.selects >= 6, board.selects + ' selects');
-  ok('the queue table carries the columns a picker needs', board.cols === 4, board.cols + ' columns');
+  ok('the queue table carries the columns a picker needs', board.cols === 10, board.cols + ' columns');
   ok('every claim has a row', board.rows === board.total, board.rows + ' / ' + board.total);
 
   // Filters have to actually filter, and the counts have to agree with the
@@ -382,7 +384,7 @@ function serve() {
   ok('override pushed to the tracker', /reviewer|Updated by/i.test(tracker));
 
   console.log('\n── simulator ─────────────────────────────────────────');
-  await page.evaluate(() => CPApp.go('sim'));
+  await page.evaluate(() => { CPApp.go('decision'); CPDecision.show('sim'); });
   await page.waitForTimeout(400);
   const sim = await page.evaluate(() => {
     const before = CPModel.run('base').net;
@@ -434,7 +436,7 @@ function serve() {
   }
 
   console.log('\n── controlled pilot ──────────────────────────────');
-  await page.evaluate(() => { CPApp.go('pilot'); CPPilot.resetCohort(); });
+  await page.evaluate(() => { CPApp.go('decision'); CPDecision.show('pilot'); CPPilot.resetCohort(); });
   await page.waitForTimeout(600);
   const p0 = await page.evaluate(() => ({
     phases: document.querySelectorAll('#pilotBody .phase').length,
@@ -565,7 +567,7 @@ function serve() {
   ok('a claim outside the cohort says so', /Not part of this pilot/i.test(outside));
 
   const cta = await page.evaluate(async () => {
-    CPApp.go('impact');
+    CPApp.go('decision'); CPDecision.show('impact');
     await new Promise(r => setTimeout(r, 600));
     return (document.querySelector('#impactBody') || {}).textContent || '';
   });
