@@ -38,9 +38,12 @@ const CPApp = (() => {
   }
 
   function paintNav() {
-    UI.set('surfaceNav', SURFACES.map(s =>
-      `<button id="nav-${s.k}" class="${s.k === surface ? 'on' : ''}" onclick="CPApp.go('${s.k}')">
-         <span class="ico">${s.ico}</span><span class="nm">${s.nm}</span>
+    UI.set('surfaceNav', SURFACES.map((s, i) =>
+      `<button id="nav-${s.k}" class="${s.k === surface ? 'on' : ''}"
+               onclick="CPApp.go('${s.k}')" title="${UI.esc(s.nm)}">
+         <span class="no">${String(i + 1).padStart(2, '0')}</span>
+         <span class="ico">${s.ico}</span>
+         <span class="nm">${UI.esc(s.nm)}</span>
        </button>`).join(''));
   }
 
@@ -60,11 +63,14 @@ const CPApp = (() => {
     const p = UI.$('syncPill'), t = UI.$('syncTxt');
     if (!p) return;
     p.className = 'syncpill ' + (CPSync.mode === 'live' ? 'live' : CPSync.mode === 'local' ? 'local' : '');
-    t.textContent = CPSync.mode === 'live' ? 'live · ' + CPSync.room
-                  : CPSync.mode === 'local' ? 'local only'
-                  : 'connecting';
+    // The room used to ride along here. In an 89px rail it wrapped into an
+    // unreadable stack of digits, and it is already on the share sheet and
+    // in this pill's tooltip, so the rail shows the state word only.
+    t.textContent = CPSync.mode === 'live' ? 'live'
+                  : CPSync.mode === 'local' ? 'local'
+                  : '···';
     p.title = CPSync.mode === 'live'
-      ? 'Claims sync across every device on this room. Click to share.'
+      ? 'Live · room ' + CPSync.room + '. Claims sync across every device on this room. Click to share.'
       : CPSync.mode === 'local'
         ? 'No network — claims stay on this device. The demo still runs end to end.'
         : 'Connecting…';

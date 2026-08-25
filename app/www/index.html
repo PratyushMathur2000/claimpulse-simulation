@@ -25,29 +25,39 @@
 </head>
 <body>
 
+<!-- ============================ LEFT RAIL ============================
+     Numbered, iconed and fixed, exactly as on the executive simulator, so
+     moving between the two halves of ClaimPulse does not feel like moving
+     between two products. Eight surfaces do not fit across a topbar at a
+     readable size anyway; a rail scales where a topbar would have had to
+     start truncating.                                                    -->
+<aside class="navrail">
+  <a class="navrail-logo" href="../" title="Executive Decision Simulator — the business case">
+    <span>CP</span><span>S9</span>
+  </a>
+  <nav class="navrail-nav" id="surfaceNav"></nav>
+  <div class="navrail-foot">
+    <button class="syncpill" id="syncPill" onclick="CPApp.share()"
+            title="Share this demo / sync status">
+      <span class="dot"></span><span id="syncTxt">connecting</span>
+    </button>
+  </div>
+</aside>
+
 <div class="shell">
 
   <!-- ============================ TOP BAR ============================ -->
   <header class="topbar">
     <div class="mark">
-      <div class="mark-dot">CP</div>
       <div>
         <h1>ClaimPulse</h1>
-        <p>Bajaj Finserv · ATOM S9 · Finsighters</p>
+        <p>Motor Own Damage · Bajaj Allianz · Team Finsighters</p>
       </div>
     </div>
-
-    <nav class="surfaces" id="surfaceNav"></nav>
-
     <div class="topright">
-      <!-- Back to the executive simulator. Relative so it works at /app/ on
-           the combined host and still resolves if this is served alone. -->
       <a class="deckback" href="../" title="Executive Decision Simulator — the business case">
         <span>&#8592;</span> Executive case
       </a>
-      <button class="syncpill" id="syncPill" onclick="CPApp.share()">
-        <span class="dot"></span><span id="syncTxt">connecting</span>
-      </button>
     </div>
   </header>
 

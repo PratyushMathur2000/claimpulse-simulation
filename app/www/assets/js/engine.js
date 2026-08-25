@@ -526,10 +526,18 @@ const CPEngine = (() => {
     const key = forceKey || (r < CP_CONST.LANE.G.share ? 'clean'
               : r < CP_CONST.LANE.G.share + CP_CONST.LANE.A.share ? 'ambiguous'
               : (Math.random() < 0.5 ? 'synthetic' : 'ring'));
-    // Scale the exposure. Without this every clean claim in the queue is the
-    // same rupee figure, and a dashboard whose average claim amount never
-    // moves is a dashboard nobody believes.
-    const f = 0.45 + Math.random() * 2.6;
+    /* Scale the exposure. Without this every clean claim in the queue is the
+       same rupee figure, and a dashboard whose average claim amount never
+       moves is a dashboard nobody believes.
+
+       LOG-NORMAL, not uniform. Motor OD severity is right-skewed: a great
+       many small claims and a thin tail of large ones, so the median sits
+       well below the mean. A uniform draw produces a flat distribution that
+       over-represents large claims, and large claims breach the IRDAI
+       Rs 50,000 corridor and get capped out of the green lane. The result
+       was a demo desk routing 50/38/13 while the model on the same screen
+       assumed 65/25/10 — the app contradicting its own case. */
+    const f = lognormal(-0.105, 0.55);      // median 0.90, thin tail past 2.5x
     const base = CP_SCENARIOS[key];
     // Jitter the sub-scores too. Twenty claims all reading exactly 94 is the
     // tell that a queue is four records copied five times. The jitter is
@@ -568,6 +576,15 @@ const CPEngine = (() => {
     // the lifecycle rather than seven of them starting the pipeline at once.
     if (ageMs) c.ts = new Date(Date.now() - ageMs).toISOString();
     return c;
+  }
+
+  /* Box-Muller, so the tail is a real tail and not a clipped uniform. */
+  function lognormal(mu, sigma) {
+    let u = 0, v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    const z = Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+    return Math.exp(mu + sigma * z);
   }
 
   const pad = (n) => String(n).padStart(2, '0');

@@ -270,7 +270,8 @@ const CPOps = (() => {
             </div>`).join('')}
         </div>
         ${assessing ? `<div class="reason" style="margin-top:var(--s3);">
-          ${assessing} claim${assessing > 1 ? 's are' : ' is'} still on the engines and carries no lane yet.
+          ${assessing} claim${assessing > 1 ? 's are' : ' is'} still on the engines and
+          ${assessing > 1 ? 'carry' : 'carries'} no lane yet.
         </div>` : ''}
       </div>`);
 
