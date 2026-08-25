@@ -219,6 +219,20 @@ const CPSync = (() => {
       c.ref = c.ref || c.id;    // the CLM-xxxxx a human reads
       c.id = id;                // the store's key, used for updates
       c.createdAt = d.createdAt;
+
+      /* A shared room outlives any one version of this app. Claims written
+         by an earlier build can be missing a field a later build does
+         arithmetic on — `claimAmount` arrived after the first release, and
+         ONE legacy claim without it turned the dashboard's average claim
+         and value-at-risk into NaN. Backfill here, once, rather than
+         guarding at twenty call sites. */
+      if (typeof c.claimAmount !== 'number' || !isFinite(c.claimAmount)) {
+        c.claimAmount = (c.repair && c.repair.garageEstimate)
+                     || (c.money && c.money.assessedBase) || 0;
+      }
+      // A record with no Trust Score cannot be routed, ranked or explained.
+      // Dropping it beats rendering a row of blanks next to real claims.
+      if (!c.trust || typeof c.trust.score !== 'number') return null;
       return c;
     } catch (e) {
       console.warn('ClaimPulse: skipping an unreadable claim record.', id);

@@ -5,18 +5,25 @@
 
 const CPApp = (() => {
 
-  /* Control tower first, because that is what this app is for: watching
-     claims move. The handset flow is where a claim is created, but it is
-     one input to the board, not the headline. */
+  /* The rail mirrors the parent product's information architecture, not
+     this workspace's file layout:
+
+       CLAIMPULSE
+       ├── Decision layer   — the case and the levers behind it
+       └── Live operations  — the claims floor, which is what this is
+
+     Grouping matters more than it looks. Eight flat items read as another
+     application's menu; two named groups read as one workspace inside a
+     larger product, which is what this is. */
   const SURFACES = [
-    { k: 'ops',       ico: '🖥️', nm: 'Command Center',  mod: () => CPOps },
-    { k: 'inspector', ico: '🔍', nm: 'Claim Inspector', mod: () => CPInspector },
-    { k: 'claimant',  ico: '📱', nm: 'Customer App',    mod: () => CPClaimant },
-    { k: 'network',   ico: '🔧', nm: 'Garage & Surveyor', mod: () => CPNetwork },
-    { k: 'audit',     ico: '⚖️', nm: 'Audit',     mod: () => CPAudit },
-    { k: 'impact',    ico: '📈', nm: 'Impact',    mod: () => CPImpact },
-    { k: 'sim',       ico: '🎛️', nm: 'Simulator', mod: () => CPSim },
-    { k: 'pilot',     ico: '🧪', nm: 'Pilot',     mod: () => CPPilot }
+    { k: 'impact',    ico: '📈', nm: 'Executive Case',     grp: 'Decision layer',   mod: () => CPImpact },
+    { k: 'sim',       ico: '🎛️', nm: 'Scenario Simulator', grp: 'Decision layer',   mod: () => CPSim },
+    { k: 'ops',       ico: '🖥️', nm: 'Command Center',     grp: 'Live operations',  mod: () => CPOps },
+    { k: 'inspector', ico: '🔍', nm: 'Claim Inspector',    grp: 'Live operations',  mod: () => CPInspector },
+    { k: 'network',   ico: '🔧', nm: 'Garage Network',     grp: 'Live operations',  mod: () => CPNetwork },
+    { k: 'claimant',  ico: '📱', nm: 'Customer Journey',   grp: 'Live operations',  mod: () => CPClaimant },
+    { k: 'audit',     ico: '⚖️', nm: 'Audit Trail',        grp: 'Live operations',  mod: () => CPAudit },
+    { k: 'pilot',     ico: '🧪', nm: 'Controlled Pilot',   grp: 'Live operations',  mod: () => CPPilot }
   ];
 
   let surface = 'ops';
@@ -33,18 +40,31 @@ const CPApp = (() => {
       if (b) b.classList.toggle('on', s.k === k);
     });
     history.replaceState(null, '', '#' + k + location.search.replace(/^\?/, '&').replace(/^&$/, ''));
-    const m = SURFACES.find(s => s.k === k).mod();
+    const meta = SURFACES.find(s => s.k === k);
+    const t = UI.$('surfaceTitle');
+    if (t) t.textContent = meta.nm;
+    const c = document.querySelector('.crumb');
+    if (c) c.innerHTML = '<a href="../">ClaimPulse</a> <span>›</span> ' + UI.esc(meta.grp);
+    const m = meta.mod();
     if (m && m.render) m.render();
   }
 
   function paintNav() {
-    UI.set('surfaceNav', SURFACES.map((s, i) =>
-      `<button id="nav-${s.k}" class="${s.k === surface ? 'on' : ''}"
-               onclick="CPApp.go('${s.k}')" title="${UI.esc(s.nm)}">
-         <span class="no">${String(i + 1).padStart(2, '0')}</span>
+    let html = '', grp = null, n = 0;
+    SURFACES.forEach(s => {
+      if (s.grp !== grp) {
+        grp = s.grp;
+        html += `<div class="navgrp">${UI.esc(grp)}</div>`;
+      }
+      n++;
+      html += `<button id="nav-${s.k}" class="${s.k === surface ? 'on' : ''}"
+                 onclick="CPApp.go('${s.k}')" title="${UI.esc(s.nm)}">
+         <span class="no">${String(n).padStart(2, '0')}</span>
          <span class="ico">${s.ico}</span>
          <span class="nm">${UI.esc(s.nm)}</span>
-       </button>`).join(''));
+       </button>`;
+    });
+    UI.set('surfaceNav', html);
   }
 
   /* ---------------- scenario (drives the claimant flow) ---------------- */
