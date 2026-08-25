@@ -1,7 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-
   "redirects": [
     {
       "source": "/app",
@@ -9,26 +8,41 @@
       "permanent": false
     }
   ],
-
   "rewrites": [
-    { "source": "/", "destination": "/home.html" },
-    { "source": "/simulator", "destination": "/index.html" },
-    { "source": "/app/", "destination": "/app/www/index.html" },
-    { "source": "/app/:path*", "destination": "/app/www/:path*" }
+    {
+      "source": "/simulator",
+      "destination": "/simulator.html"
+    },
+    {
+      "source": "/app/",
+      "destination": "/app/www/index.html"
+    },
+    {
+      "source": "/app/:path*",
+      "destination": "/app/www/:path*"
+    }
   ],
-
   "headers": [
     {
       "source": "/app/assets/(js|css)/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
       ]
     },
     {
       "source": "/app/ClaimPulse-demo.apk",
       "headers": [
-        { "key": "Content-Type", "value": "application/vnd.android.package-archive" },
-        { "key": "Content-Disposition", "value": "attachment; filename=\"ClaimPulse-demo.apk\"" }
+        {
+          "key": "Content-Type",
+          "value": "application/vnd.android.package-archive"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "attachment; filename=\"ClaimPulse-demo.apk\""
+        }
       ]
     }
   ]
