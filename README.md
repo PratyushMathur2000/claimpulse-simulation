@@ -1,286 +1,277 @@
-# ClaimPulse · Executive Decision Simulator
+# ClaimPulse
 
-[![Live Simulation](https://img.shields.io/badge/Live%20Simulation-claimpulse--simulation.vercel.app-00D084?style=for-the-badge&logo=vercel&logoColor=white)](https://claimpulse-simulation.vercel.app)
-[![Live Product Demo](https://img.shields.io/badge/Live%20Product%20Demo-%2Fapp-7C4DFF?style=for-the-badge&logo=vercel&logoColor=white)](https://claimpulse-simulation.vercel.app/app)
-[![Competition](https://img.shields.io/badge/Bajaj%20Finserv-ATOM%20Season%209%20·%20Series%20A%20Round%205-006699?style=for-the-badge)](https://claimpulse-simulation.vercel.app)
+[![Live](https://img.shields.io/badge/Live-claimpulse--simulation.vercel.app-00D084?style=for-the-badge&logo=vercel&logoColor=white)](https://claimpulse-simulation.vercel.app)
+[![Simulator](https://img.shields.io/badge/Executive%20Simulator-%2Fsimulator-258CFB?style=for-the-badge)](https://claimpulse-simulation.vercel.app/simulator)
+[![Product](https://img.shields.io/badge/Live%20Product-%2Fapp-7C4DFF?style=for-the-badge)](https://claimpulse-simulation.vercel.app/app/)
+[![Competition](https://img.shields.io/badge/Bajaj%20Finserv-ATOM%20Season%209%20%C2%B7%20Semi--Finals-006699?style=for-the-badge)](https://claimpulse-simulation.vercel.app)
 [![Institution](https://img.shields.io/badge/NMIMS%20Mumbai-Team%20Finsighters-C00000?style=for-the-badge)](https://claimpulse-simulation.vercel.app)
-[![Tech Stack](https://img.shields.io/badge/Stack-Vanilla%20HTML5%20%7C%20CSS3%20%7C%20ES6%20JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://claimpulse-simulation.vercel.app)
-[![Offline Capable](https://img.shields.io/badge/Offline-Zero%20Dependency%20Single%20File-4A90E2?style=for-the-badge)](https://claimpulse-simulation.vercel.app)
+[![Stack](https://img.shields.io/badge/Stack-Vanilla%20HTML5%20%7C%20CSS3%20%7C%20ES6-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://claimpulse-simulation.vercel.app)
 
-> **Verified-Evidence Motor Insurance Claim Orchestration Platform**  
-> *Transforming Motor Own Damage (OD) Claims from 9.8 Days & 7 Touches to 2.71 Days & 1.23 Touches with ₹43.31 Cr Annual Net Benefit.*
-
+> **Verified-Evidence Motor Insurance Claim Orchestration**
+> *Motor Own Damage claims from 9.8 days and 7.0 touches to 2.71 days and 1.23 touches, for ₹43.31 Cr annual net benefit.*
 
 ---
 
-## Two surfaces, one repository
+## Three surfaces, one repository
 
-This repository holds both halves of ClaimPulse.
+| | Path | What it is |
+|---|---|---|
+| **Home** | [`/`](https://claimpulse-simulation.vercel.app) | The landing page. Pick a surface, or download the workbook, report and deck. |
+| **Executive Decision Simulator** | [`/simulator`](https://claimpulse-simulation.vercel.app/simulator) | The business case. Live levers over the investment model, stress cases, the benefit bridge. |
+| **Live Operations** | [`/app/`](https://claimpulse-simulation.vercel.app/app/) | The product itself, running. Command Center, Claims, Garages, Surveyors, the customer mobile app, and the controlled-pilot workspace. |
 
-| | Path | Lives at | What it is |
+The simulator makes the argument; `/app/` is that argument running on live claims. Both carry
+the same top bar, the same design tokens and a breadcrumb back to home, so crossing between
+them does not feel like crossing between two products.
+
+Full product documentation — architecture, the six tabs, the claim lifecycle, shadow-mode
+pilot design — is in [`app/README.md`](./app/README.md).
+
+---
+
+## 📌 Deliverables
+
+| Deliverable | Format | Link |
+|---|---|---|
+| **🌐 Executive Decision Simulator** | Web app | [Launch](https://claimpulse-simulation.vercel.app/simulator) |
+| **🧭 Live Product Demo** | Web + Android | [Launch](https://claimpulse-simulation.vercel.app/app/) |
+| **📊 Investor Dashboard** | Excel model, 16 tabs | [Download](./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx) |
+| **📄 Series A Investors Report** | PDF | [Download](./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf) |
+| **📽️ Presentation Deck** | PPTX | [Download](./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL.pptx) |
+| **📱 QR Access Code** | PNG | [View](./ClaimPulse_Simulation_QR.png) |
+
+---
+
+## 🎯 The thesis
+
+Indian General Insurance operates under intense underwriting pressure. In Motor Own Damage,
+Bajaj General faces a **combined ratio of 104.7%**, with Q1 FY27 annualised underwriting
+losses above ₹520 Cr. TAT is not a satisfaction metric — every unnecessary day inflates the
+expense ratio, and every unflagged leak degrades the loss ratio.
+
+```
+CURRENT STATE (manual, fragmented)
+Accident -> FNOL -> FIR / Police -> Garage estimate -> Manual verification -> Physical survey (55%) -> Settlement
+           [3 of 7 steps outside insurer control | 9.8 days | 7.0 touches | Rs 1,750 servicing cost]
+
+CLAIMPULSE STATE (verified orchestration)
+Accident -> Guided capture [Gate 00] -> 5 engines -> Trust Score -> 3-lane routing
+                                                                   |- GREEN (65%) auto-settled, 1.5d
+                                                                   |- AMBER (25%) one reviewer, 3.5d
+                                                                   |- RED   (10%) forensic investigation, 7.0d
+```
+
+**The root cause is decision absence.** The 9.8-day delay is 7 manual handoffs and a 55%
+physical survey rate, even though ~65% of Motor OD claims are structurally deterministic.
+Legacy systems cannot tell a deterministic claim from a complex one, so all claims endure
+identical friction.
+
+---
+
+## 📈 Key impact metrics
+
+All figures tie to the 16-tab audited model (`...InvestorDashboard.xlsx`). The app
+re-implements Sheets 1, 3 and 4 in JavaScript and asserts itself against the workbook's own
+computed values on **60 checks** — if a formula drifts, the check fails.
+
+| Metric | Baseline (legacy) | ClaimPulse target | Delta |
 |---|---|---|---|
-| **Executive Decision Simulator** | `/` | [claimpulse-simulation.vercel.app](https://claimpulse-simulation.vercel.app) | The business case. Nine live levers over the investment model, stress cases, the benefit bridge. |
-| **Working Product Demo** | `/app` | [claimpulse-simulation.vercel.app/app](https://claimpulse-simulation.vercel.app/app) | The product itself, running. Claims Command Center, Claim Inspector, customer mobile app, surveyor dispatch and the controlled-pilot workspace. |
+| Manual adjuster touches | 7.0 / claim | 1.23 / claim | −82.4% |
+| Platform claim TAT | 9.8 days | 2.71 days | −72.3% |
+| Blended book TAT (60% rollout) | 9.8 days | 5.55 days | −43.4% |
+| Physical survey rate | 55.0% | 12.5% | −42.5 pp |
+| Annual net financial benefit | — | ₹43.31 Cr / year | +₹43.31 Cr |
+| Total build capex | — | ₹9.89 Cr | 10-month modular build |
+| 5-year net present value | — | ₹145.94 Cr | discounted @ 12.0% WACC |
+| Combined ratio | 104.70% | 102.12% | −2.58 pp |
 
-The simulator makes the argument; `/app` is that argument running on live claims. Each links
-to the other from its header, so a judge can cross between them without a URL.
+### Payback is a range, not a number
 
-Full documentation for the product demo — architecture, the eight surfaces, the claim
-lifecycle, shadow-mode pilot design and how to run it — is in [`app/README.md`](./app/README.md).
+A single payback figure is the fastest way to lose a CFO. The model carries **six bases**, and
+the Decision tab shows all six side by side with what each one assumes:
 
-### Running the product demo locally
+| Basis | Payback | What it assumes |
+|---|---|---|
+| Steady state, base plan | **2.7 months** | The run-rate year, build already sunk |
+| From project kickoff, base plan | **16.8 months** | Ramp-up included — the honest headline |
+| Aggressive plan, from kickoff | **13.8 months** | Faster adoption |
+| Conservative plan, from kickoff | **27.2 months** | 40% adoption |
+| Realistic downside, steady state | **7.4 months** | Higher touch cost, no synthetic-data or renewal upside |
+| Correlated triple shock, from kickoff | **52.1 months** | Adoption, fraud and labour all move against us at once |
+
+**Every basis repays the build.** That is the claim — not that payback is fast.
+
+---
+
+## 🏗️ Architecture
+
+```
+                          [ CLAIM INGESTION (FNOL) ]
+                                      |
+                    +-----------------v-----------------+
+                    |   GATE 00 - CAPTURE INTEGRITY     |
+                    |   - Direct-from-camera only       |
+                    |   - EXIF / timestamp / GPS lock   |
+                    |   - Diffusion / re-capture screen |
+                    +-----------------+-----------------+
+                                      | pass  (a hard fail routes RED with zero model calls)
+                    +-----------------v-----------------+
+                    |        5 SPECIALISED ENGINES      |
+                    |   01 OCR First    deterministic   |
+                    |   02 CV Depth     specialised ML  |
+                    |   03 Fraud Graph  specialised ML  |
+                    |   04 Parts Bench  deterministic   |
+                    |   05 Policy RAG   targeted GenAI  |
+                    +-----------------+-----------------+
+                    +-----------------v-----------------+
+                    |     TRUST SCORE FUSION (0-100)    |
+                    +--+--------------+--------------+--+
+            score >= 82 |    55 <= score < 82        | score < 55
+                        v              v             v
+                 +------------+ +------------+ +------------+
+                 | GREEN  65% | | AMBER  25% | |  RED   10% |
+                 | 0 touches  | | 1 reviewer | | full SIU   |
+                 |  1.5 days  | |  3.5 days  | |  7.0 days  |
+                 +------------+ +------------+ +------------+
+```
+
+**Two hard overrides sit above the score.** A Gate 00 hard fail or a fraud-ring score ≥ 0.35
+routes RED regardless. And a green claim payable above **₹50,000** is capped to AMBER — the
+IRDAI surveyor-exemption corridor (Master Circular on Protection of Policyholders' Interests,
+2024). The corridor is a legal cap, not a tuning parameter.
+
+### The five engines
+
+| # | Engine | Layer | What it does | Trust weight |
+|---|---|---|---|---|
+| 01 | **OCR First** | 1 · deterministic | Reads RC, chassis plate, licence, odometer; cross-checks policy and VAHAN | 20% |
+| 02 | **CV Depth** | 2 · specialised ML | Segments damaged panels, grades severity, prices against the catalogue | 15% |
+| 03 | **Fraud Graph** | 2 · specialised ML | Scores the *network* — shared garages, payout accounts, vehicles, people | 25% |
+| 04 | **Parts Bench** | 1 · deterministic | Benchmarks the garage estimate against settled claims, same model and city | — |
+| 05 | **Policy RAG** | 3 · targeted GenAI | Retrieves governing clauses, reasons about coverage and exclusions | 10% |
+
+Gate 00 itself carries the remaining **30%**. Engine 04 carries no weight — it *sizes* the
+claim, which is what triggers the corridor test.
+
+**GenAI is Layer 3 only**, and only on what Layers 1 and 2 could not resolve. A green claim
+makes **zero** GenAI calls.
+
+---
+
+## 🔬 Stress testing
+
+| Scenario | Net benefit | Payback |
+|---|---|---|
+| Base case, 60% rollout | ₹43.31 Cr | 16.8 mo from kickoff |
+| A · AI governance overlay, +20% opex | ₹42.53 Cr | 14.4 mo |
+| B · Faster garage network, 50% TAT cut | ₹43.31 Cr | 14.0 mo (benefit deliberately unclaimed) |
+| C · Conservative rollout, 40% adoption | ₹28.87 Cr | 27.2 mo |
+| D · Triple shock — adoption + fraud + labour | ₹4.21 Cr | 52.1 mo (NPV +₹3.76 Cr) |
+| FLOOR · zero fraud benefit | ₹3.78 Cr | 31.4 mo — build still repaid |
+
+- **The case does not rely on fraud.** With zero fraud improvement, labour and survey
+  efficiencies alone deliver ₹3.78 Cr a year and repay the build in 31.4 months.
+- **It survives a correlated shock.** Under D — adoption to 30%, fraud back to legacy 62%,
+  labour savings halved — it stays net cash positive with a positive 5-year NPV.
+
+---
+
+## 🚦 Pilot gates
+
+Capital is released against telemetry, not projections:
+
+| Gate | Focus | Threshold | Kill criterion |
+|---|---|---|---|
+| **1** | Latency and compute economics | GPU < 45s / claim | > 77s breakeven → buy the model layer |
+| **2** | Fraud precision and recall | Shadow-mode detection ≥ 82% on holdout | Precision < 70% or recall < 75% → halt automated red-routing |
+| **3** | Green-lane STP integrity | ≥ 50% STP with < 0.5% leakage | STP < 40% → recalibrate Trust Score thresholds |
+| **4** | Exception queue capacity | Blended P90 TAT < 4.0 days | P90 > 6.0 days → freeze rollout |
+
+The **Decision → Pilot** tab in `/app/` is this made operable: cohort scope, data-source
+contracts, the 15–20 day journey, and shadow-mode measurement. Shadow mode means ClaimPulse
+scores and recommends but settles nothing — and recording a human decision **never** changes
+the claim's lane, or the pilot would be measuring ClaimPulse against itself.
+
+---
+
+## 💻 Running it locally
+
+No build tools, no bundler, no internet needed.
+
+```bash
+git clone https://github.com/PratyushMathur2000/claimpulse-simulation.git
+cd claimpulse-simulation
+python -m http.server 8080     # then open http://localhost:8080
+```
+
+Serve it rather than double-clicking `index.html`: the home page links to `/simulator` and
+`/app/`, which need a server to resolve.
+
+### The product demo
 
 ```bash
 cd app
 npm install
-npm start      # http://localhost:5173
-npm run verify # 113 headless checks against a real browser
-npm run phi    # golden-ratio audit of the stylesheet
+npm start          # http://localhost:5173
+npm run verify     # 112 headless checks driving the real app in a browser
+npm run tokens     # design-token audit of the stylesheet, exits non-zero on drift
 ```
 
-### How `/app` is served
+### How the routes work
 
-The demo uses relative asset paths so it can also be wrapped as an Android app, which means it
-must be served from a directory URL. `vercel.json` therefore redirects `/app` to `/app/` and
-then rewrites `/app/*` onto `/app/www/*`. Without the redirect, `assets/js/model.js` would
-resolve against the site root and collide with the simulator's own `assets/` folder.
+`vercel.json` does three things. `/simulator` rewrites to `simulator.html` **without** a
+trailing slash, so the simulator's relative `assets/` still resolve against the site root.
+`/app` redirects to `/app/`, then `/app/*` rewrites onto `/app/www/*` — the demo uses relative
+asset paths so it can also be wrapped as an Android app, which means it must be served from a
+directory URL.
+
+> Vercel serves a real file before it consults a rewrite. That is why the home page is
+> `index.html` and the simulator is `simulator.html`, rather than a rewrite from `/`.
+
+### A note on the Firebase config
+
+`app/www/assets/js/sync.js` contains a Firebase **web** config, including an `apiKey`. This is
+public by design — it is a project identifier, not a credential, and Google documents it as
+safe to ship in client code. Security is enforced by `app/firestore.rules`, which confine all
+access to `rooms/{room}/claims`, cap document size, and close everything else. The project
+holds **synthetic demo claims only** and is disposable. GitHub's secret scanner flags any
+`AIza…` string generically, which is why this repository is private.
 
 ---
 
-## 📌 One-Click Deliverables & Resources
-
-| Deliverable | Format | Access Link / Direct Action |
-|---|---|---|
-| **🌐 Interactive Executive Simulator** | Web Application | [**Launch Live Simulator** (claimpulse-simulation.vercel.app)](https://claimpulse-simulation.vercel.app) |
-| **🧭 Working Product Demo** | Web + Android | [**Launch Live Product** (claimpulse-simulation.vercel.app/app)](https://claimpulse-simulation.vercel.app/app) |
-| **📊 Comprehensive Investor Dashboard** | Excel Financial Model | [**Download Financial Model** (`SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx`)](./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx) |
-| **📄 Series A Comprehensive Investors Report** | PDF Document | [**Download Investors Report** (`SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf`)](./SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf) |
-| **📱 Mobile QR Access Code** | PNG Image | [**View Simulator QR Code** (`ClaimPulse_Simulation_QR.png`)](./ClaimPulse_Simulation_QR.png) |
-
----
-
-## 🎯 Executive Summary & Strategic Thesis
-
-Indian General Insurance operates under intense underwriting pressure. In Motor Own Damage (OD), the industry and Bajaj General face a **Combined Ratio of 104.7%**, with Q1 FY27 annualized underwriting losses exceeding ₹520 Cr. Turnaround Time (TAT) is not merely a customer satisfaction metric—**every unnecessary day of delay inflates operational expense ratios, and every unflagged leak degrades loss ratios**.
+## 📁 Repository structure
 
 ```
-CURRENT STATE (Manual & Fragmented)
-Accident ──► FNOL ──► FIR / Police ──► Garage Estimate ──► Manual Verification ──► Physical Survey (55%) ──► Settlement
-                     [3 of 7 steps outside insurer control | 9.8 Days Avg TAT | 7.0 Manual Touches | ₹1,750 Servicing Cost]
-
-CLAIMPULSE STATE (Verified Orchestration)
-Accident ──► Guided Capture [Gate 00] ──► 5 Specialised Engines ──► Trust Score ──► 3-Lane Dynamic Routing
-                                                                                   ├── Green Lane (65%): Auto-settled in 1.5d
-                                                                                   ├── Amber Lane (25%): 1 Human Reviewer (3.0d)
-                                                                                   └── Red Lane   (10%): Forensic Investigation
-```
-
-### The Root Cause: Decision Absence
-The 9.8-day delay is not caused by a single broken department. It is driven by **7 manual handoffs** and an archaic **55% physical survey rate**—even though **65% of Motor OD claims are structurally deterministic** (clear damage, verifiable documents, valid policy coverage). Because legacy systems lack the intelligence to distinguish deterministic claims from complex fraud, all claims endure identical friction.
-
-### The Solution: ClaimPulse Orchestration
-ClaimPulse introduces **Gate 00 (Capture Integrity Gate)** followed by **5 specialized deterministic engines** that compute an objective **Trust Score (0–100)**. This feeds a **3-Lane Triage Architecture**:
-1. 🟢 **Green Lane (65% STP):** Fast-tracked straight-through processing. Zero human touches, zero expensive GenAI calls, auto-settled in ~1.5 days (seconds on-platform).
-2. 🟡 **Amber Lane (25% Assisted):** GenAI synthesis generates structured discrepancy briefs for a single human adjuster. Settled in ~3.0 days.
-3. 🔴 **Red Lane (10% Forensic):** Immediate escalation to the Fraud Investigation Unit (FIU) with pre-compiled evidentiary anomaly packs.
-
----
-
-## 📈 Key Impact Metrics (Quantified)
-
-All figures are tied to the 16-tab audited financial model (`SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx`):
-
-```
-+----------------------------------------------------------------------------------------------------+
-|                                    CLAIMPULSE VALUE SCORECARD                                      |
-+------------------------------+--------------------+---------------------+--------------------------+
-| Metric                       | Baseline (Legacy)  | ClaimPulse Target   | Quantified Delta         |
-+------------------------------+--------------------+---------------------+--------------------------+
-| Manual Adjuster Touches      | 7.0 touches/claim  | 1.23 touches/claim  | -82.4% touch reduction   |
-| Platform Claim TAT           | 9.8 days           | 2.71 days           | -72.3% platform TAT      |
-| Blended Book TAT (60% roll)  | 9.8 days           | 5.55 days           | -43.4% total book TAT    |
-| Physical Survey Rate         | 55.0% of claims    | 12.5% of claims     | -42.5 pp physical survey |
-| Annual Net Financial Benefit | ₹0.00 Cr           | ₹43.31 Cr / year    | +₹43.31 Cr annual cash   |
-| Total Build Capex            | —                  | ₹9.89 Cr            | 10-Month Modular Build   |
-| Operational Payback Period   | —                  | 14.0 Months         | 16.8 Mo from Kickoff     |
-| 5-Year Net Present Value     | —                  | ₹145.94 Cr          | Discounted @ 12.0% WACC  |
-| Combined Ratio Improvement   | 104.70%            | 102.12%             | -2.58 pp Underwriting Δ  |
-+------------------------------+--------------------+---------------------+--------------------------+
+claimpulse-simulation/
+├── index.html                                    Home - pick a surface, download the deliverables
+├── simulator.html                                Executive Decision Simulator, single file
+├── vercel.json                                   Routing: /simulator, /app/ -> app/www/
+├── assets/Background.png
+├── ClaimPulse_Simulation_QR.png
+├── SaiMahimaK_..._InvestorDashboard.xlsx         16-tab audited financial model
+├── SaiMahimaK_..._Report.pdf                     Series A investors report
+├── SaiMahimaK_Finsighters_NMIMS_PS6_BFDL.pptx    Presentation deck
+└── app/                                          The live product demo - see app/README.md
+    ├── www/                                      The whole site: HTML, CSS, ES6. No build step.
+    ├── verify.js                                 112 headless checks in a real browser
+    ├── token-audit.py                            Design-token audit against the simulator
+    └── firestore.rules  vercel.json  package.json
 ```
 
 ---
 
-## 🏗️ Technical Architecture & Engine Pipeline
+## 👥 Team
 
-```
-                                  [ CLAIM INGESTION (FNOL) ]
-                                               │
-                                               ▼
-                     ┌──────────────────────────────────────────────────┐
-                     │          GATE 00: CAPTURE INTEGRITY GATE         │
-                     │  • Direct-from-camera only (Gallery Disabled)     │
-                     │  • EXIF / Timestamp / GPS Geolocation Lock       │
-                     │  • AI-Diffusion / Deepfake / Re-capture Screen   │
-                     └─────────────────────────┬────────────────────────┘
-                                               │ [Pass]
-                                               ▼
-                     ┌──────────────────────────────────────────────────┐
-                     │          5 MULTI-MODAL SPECIALISED ENGINES       │
-                     │                                                  │
-                     │  1. Document Engine   : OCR & Cross-KYC Match    │
-                     │  2. Damage Engine     : CV Part & Severity Score │
-                     │  3. Network Graph     : Fraud & Ring Detection   │
-                     │  4. Repair Cost Engine: OEM Parts & Labour Benches│
-                     │  5. Policy Engine     : Coverage & NCB Validation │
-                     └─────────────────────────┬────────────────────────┘
-                                               │
-                                               ▼
-                     ┌──────────────────────────────────────────────────┐
-                     │           TRUST SCORE COMPOSER (0 - 100)         │
-                     │             Fused Multi-Engine Confidence         │
-                     └───────┬─────────────────┼─────────────────┬──────┘
-                             │                 │                 │
-             Score ≥ 85      │    60 ≤ Score < 85    │      Score < 60 │
-             [Gate 00 Clear] │                 │                 │ [Gate 00 Fail]
-                             ▼                 ▼                 ▼
-                     ┌───────────────┐ ┌───────────────┐ ┌───────────────┐
-                     │  GREEN LANE   │ │  AMBER LANE   │ │   RED LANE    │
-                     │   (65% STP)   │ │ (25% Assist)  │ │ (10% Forensic)│
-                     │  Zero Touches │ │ 1 Reviewer    │ │ Full FIU Gate │
-                     │   1.5 Days    │ │   3.0 Days    │ │  Investigation│
-                     └───────────────┘ └───────────────┘ └───────────────┘
-```
+**Team Finsighters** · School of Business Management, NMIMS Mumbai
 
-### The 5 Modular Engines
-1. **Document Engine:** Real-time OCR, tamper detection, and instant database cross-matching against Vahan (RC), Sarathi (DL), and internal policy records.
-2. **Damage Engine:** Computer vision segmentation classifying damaged components, dent/scratch depth, and replacement vs. repair necessity against OEM metadata.
-3. **Network Graph Engine:** High-velocity fraud detection tracking recurrent phone numbers, garage collusion patterns, overlapping timestamps, and staged incident rings.
-4. **Repair Cost & Labour Engine:** Standardized regional garage labor rates, OEM spare parts catalog pricing, and automated estimate scrubbing to eliminate garage overcharging.
-5. **Policy & Coverage Engine:** Zero-latency validation of own-damage coverage clauses, active add-ons (zero-dep, engine protector), and No-Claim Bonus (NCB) entitlement.
-
----
-
-## 🎮 Simulator Walkthrough: 6 Interactive Modules
-
-The repository hosts an interactive executive simulator (`index.html`) engineered to provide live walkthroughs, stress testing, and instant financial validation.
-
-```
-+------------------------------------------------------------------------------------------------+
-|                                6-MODULE SIMULATOR OVERVIEW                                     |
-+-------------------+----------------------------------------------------------------------------+
-| Module            | Executive Scope & Functionality                                            |
-+-------------------+----------------------------------------------------------------------------+
-| 01 The Problem    | Live breakdown of the 7-stage legacy claims journey, showing where 9.8    |
-|                   | days accumulate across customer, garage, police, and insurer touchpoints.  |
-+-------------------+----------------------------------------------------------------------------+
-| 02 Orchestration  | Interactive claim execution engine. Fire 3 sample claims (Clean, Ambiguous,|
-|    Engine         | Suspicious) and observe Gate 00, 5-engine telemetry, and lane routing live.|
-+-------------------+----------------------------------------------------------------------------+
-| 03 Value Engine   | Full 3-year cash flow forecasting model, ramp-up schedules (45% -> 92% ->  |
-|                   | 100%), cost-to-serve economics, and combined ratio sensitivity curves.     |
-+-------------------+----------------------------------------------------------------------------+
-| 04 Stress Test &  | 13 pre-modeled scenarios + 12-stage live parameter shock cascade. Real-time|
-|    Cascades       | recalculation of net benefit, payback months, and breakeven floors.        |
-+-------------------+----------------------------------------------------------------------------+
-| 05 90-Day Phased  | Governance framework: 4 pilot gates with hard quantitative kill criteria   |
-|    Pilot Gates    | governing capital release (GPU latency, fraud precision, STP share).       |
-+-------------------+----------------------------------------------------------------------------+
-| 06 Investment     | Final capital allocation thesis: build vs. buy teardown, defensible data   |
-|    Decision       | moat evaluation, and executive sign-off dashboard.                         |
-+-------------------+----------------------------------------------------------------------------+
-```
-
----
-
-## 🔬 Stress Testing, Sensitivities & Breakeven Floors
-
-To ensure complete institutional rigor, ClaimPulse was subjected to extensive multi-variable stress testing:
-
-```
-                                 TORNADO SENSITIVITY SUMMARY
-  Scenario                                          Net Benefit (₹ Cr)     Payback Status
-  ───────────────────────────────────────────────────────────────────────────────────────
-  Base Case (60% Rollout)                           [ ₹43.31 Cr ]          14.0 Mo (16.8 Mo Kickoff)
-  A. AI Governance Overlay (+20% Opex)              [ ₹42.53 Cr ]          14.4 Mo (Pass)
-  B. Faster Garage Network (50% TAT Cut)            [ ₹43.31 Cr ]          14.0 Mo (Pass - Unclaimed)
-  C. Conservative Rollout (40% Adoption)            [ ₹28.87 Cr ]          21.0 Mo (Pass)
-  D. Triple Shock (Adoption + Fraud + Labour)       [  ₹4.21 Cr ]          52.1 Mo (NPV +₹3.76 Cr)
-  FLOOR: Zero Fraud Benefit (100% Leakage Unchecked)[  ₹3.78 Cr ]          31.4 Mo (Build Repaid)
-  ───────────────────────────────────────────────────────────────────────────────────────
-```
-
-### Key Takeaways from Stress Testing
-- **The Case Does Not Rely on Fraud:** Even if fraud detection does not improve by a single percentage point (0% fraud savings), operational labor and survey efficiencies alone deliver **₹3.78 Cr annual net benefit**, repaying the entire build within 31.4 months.
-- **Resilience to Triple Shock:** Under Scenario D—where adoption slows to 30%, fraud detection reverts to legacy 62%, and labor rate savings are halved—ClaimPulse remains net cash positive (**₹4.21 Cr/yr**) with a positive 5-year NPV.
-
----
-
-## 🚦 90-Day Phased Pilot Gates & Governance Kill Criteria
-
-Capital is not released against projections; it is gated against empirical pilot telemetry across 4 milestones:
-
-| Pilot Gate | Milestone Focus | Quantitative Threshold | Explicit Kill Criterion |
-|---|---|---|---|
-| **Gate 1** | Latency & Compute Economics | GPU processing time < 45s / claim | GPU latency > 77s breakeven → Buy external model layer |
-| **Gate 2** | Fraud Precision & Recall | Shadow-mode detection ≥ 82% on holdout set | Precision < 70% or Recall < 75% → Halt automated red-routing |
-| **Gate 3** | Green-Lane STP Integrity | Minimum 50% STP rate with < 0.5% leakage | STP volume < 40% → Recalibrate Trust Score thresholds |
-| **Gate 4** | Exception Queue Capacity | Blended P90 TAT < 4.0 days on platform | P90 TAT > 6.0 days → Freeze rollout to avoid backlog spike |
-
----
-
-## 💻 Zero-Dependency Offline Execution Guide
-
-The entire ClaimPulse interactive simulator is engineered as a self-contained, standalone web application. It requires **no build tools, no Node.js/npm dependencies, and no active internet connection** to run locally.
-
-### Option 1: Direct Browser Launch (Easiest)
-1. Clone or download this repository to your local machine:
-   ```bash
-   git clone https://github.com/pratyushm27/ClaimPulse_ATOM_Season_9.git
-   ```
-2. Navigate into the repository folder.
-3. Double-click `index.html` (or right-click → **Open With** → Chrome / Firefox / Edge / Safari).
-4. The full 6-module simulation will run locally with all interactive charts, sliders, and audio-visual cues active.
-
-### Option 2: Local Python Server (Optional)
-If you prefer running through a local HTTP server:
-```bash
-# Python 3
-python -m http.server 8080
-
-# Open in browser:
-http://localhost:8080
-```
-
----
-
-## 📁 Repository Directory Structure
-
-```
-ClaimPulse_ATOM_Season_9/
-├── index.html                                                      # Standalone 6-Module Interactive Decision Simulator
-├── SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx   # Audited 16-Tab Excel Financial & Operating Model
-├── SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_Report.pdf                # Complete Written Series A Investors Report
-├── ClaimPulse_Simulation_QR.png                                    # Mobile QR Code for Quick Access
-├── assets/
-│   └── Background.png                                              # High-Resolution UI Background Asset
-└── README.md                                                       # Executive Repository Documentation
-```
-
----
-
-## 👥 Authors & Team Credits
-
-**Team Finsighters**  
-*School of Business Management, NMIMS Mumbai*  
 - **Pratyush Mathur** · https://github.com/PratyushMathur2000/
-- **Team Finsighters Colleagues** · MBA Class of 2026  
+- Team Finsighters colleagues · MBA Class of 2026
 
-**Competition & Track:**  
-- **Bajaj Finserv ATOM Season 9 (Series A — Round 5 Submission)**  
-- **Problem Statement:** PS6_BFDL — *Motor Insurance Claims Turnaround Time (TAT) Reduction through AI/ML Orchestration*  
+**Bajaj Finserv ATOM Season 9 — Semi-Finals**
+**PS6_BFDL** — *Motor Insurance Claims Turnaround Time reduction through AI/ML orchestration*
 
 ---
 
 <div align="center">
-  <sub>Built with precision by Team Finsighters for Bajaj Finserv ATOM Season 9 · August 2026</sub>
+  <sub>Built by Team Finsighters for Bajaj Finserv ATOM Season 9 · 2026</sub>
 </div>

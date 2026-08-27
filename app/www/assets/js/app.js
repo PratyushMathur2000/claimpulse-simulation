@@ -212,7 +212,7 @@ const CPApp = (() => {
     go(SURFACES.some(s => s.k === hash) ? hash : isHandset ? 'claimant' : 'ops');
 
     // Stage shortcuts: 1-4 pick a demo claim, Q-Y switch surface.
-    const keys = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i'];
+    const keys = ['q', 'w', 'e', 'r', 't', 'y'];   // one per surface
     document.addEventListener('keydown', e => {
       if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.metaKey || e.ctrlKey) return;
       const sc = Object.keys(CP_SCENARIOS);

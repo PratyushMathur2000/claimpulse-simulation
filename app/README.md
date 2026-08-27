@@ -2,11 +2,16 @@
 
 **Team Finsighters · NMIMS Mumbai · ATOM Season 9 · PS_BFDL — Motor Insurance Claims TAT Reduction**
 
-Round 5 modelled the economics. This is the thing itself: a working claims-orchestration
-platform, running against the same model, that a judge can open on their own phone.
+The investor model set out the economics. This is the thing itself: a working
+claims-orchestration platform, running against that same model, that a judge can open on
+their own phone.
 
-**Live:** https://claimpulse-demo-atom9.web.app
-**Android:** `www/ClaimPulse-demo.apk` — served at `/ClaimPulse-demo.apk` on any Vercel deployment
+**Live:** https://claimpulse-simulation.vercel.app/app/
+**Executive simulator:** https://claimpulse-simulation.vercel.app/simulator
+**Android:** `www/ClaimPulse-demo.apk` — served at `/app/ClaimPulse-demo.apk`
+
+This demo is one half of the [ClaimPulse repository](../README.md). The simulator makes the
+business case; this makes it run.
 
 ---
 
@@ -26,20 +31,21 @@ works end to end. The demo cannot hard-fail on stage.
 
 ---
 
-## Eight surfaces
+## Six tabs
 
-| Surface | What it shows | Stakeholder |
+One word each. A tab whose label needs two words is usually two ideas, and this product had
+eight of them competing for the same rail.
+
+| Tab | What it shows | Stakeholder |
 |---|---|---|
-| **Customer App** | Login → vehicle → what happened → where and when → guided live capture → live analysis → lane-specific outcome → tracker. FNOL → guided live capture (gallery disabled) → Gate 00 and five engines running → lane verdict → proactive tracker | Policyholder |
-| **Command Center** | The morning screen. Thirteen executive metrics, the live lane distribution against the modelled 65/25/10, the three-layer automation panel, eleven filters plus free-text search, and a twelve-column claim queue that updates as claims move | Claims manager |
-| **Claim Inspector** | One claim in full: overview, the eight-step journey, **why this claim went where it went in plain English**, Gate 00, all five engines with expandable evidence, Trust Score fusion, settlement working, surveyor dispatch and the human override | Claims officer |
-| **Garage & Surveyor** | The indicative repair band arriving at FNOL (4 days → 1), and the IRDAI ₹50,000 corridor deciding who needs a physical survey | Garages, surveyors |
-| **Audit** | Every decision replayed in order, a plain-language explanation per claim, the override log, CSV export | Regulator, IRDAI |
-| **Impact** | What the claims filed in this room did, then the same arithmetic at book scale — the benefit bridge, combined ratio and stakeholder scorecard | Investment committee |
-| **Pilot** | The controlled-pilot workspace: cohort scope, data-source contracts, the 15–20 day journey, shadow-mode KPIs, measurement criteria and the recommendation-vs-decision table | Programme owner |
-| **Simulator** | Nine live challenge levers over the real model, the break-even panel, and the correlated stress cases | A hostile judge |
+| **Command** | The morning screen. Three lead figures over eight supporting tiles: what is in flight, what is waiting on a person, the live lane split against the modelled 65/25/10, and the three-layer automation panel | Claims manager |
+| **Claims** | The full-width claim queue with eleven filters and free-text search, and — opening below it, also full width — the Claim Inspector: one claim in full, its eight-step journey, **why it went where it went in plain English**, Gate 00, all five engines with expandable evidence, Trust Score fusion, the settlement working, surveyor dispatch and the human override | Claims officer |
+| **Garages** | Who repairs the vehicle. The indicative repair band arriving at FNOL (4 days down to 1) and the partner network behind it | Garage network |
+| **Surveyors** | Who verifies the damage. The IRDAI ₹50,000 corridor deciding who needs a physical survey, and the dispatchable panel ranked by availability and distance | Survey operations |
+| **Customer** | The claimant journey end to end: login → vehicle → what happened → where and when → guided live capture (gallery disabled) → Gate 00 and five engines running → lane-specific outcome → proactive tracker | Policyholder |
+| **Decision** | Four sections behind one tab, because they answer one question — *should we do this, and how would we know*. **Business case** (benefit bridge, combined ratio, payback on all six bases), **Scenarios** (live levers over the real model), **Pilot** (the controlled-pilot workspace), **Audit** (every decision replayed in order, with CSV export) | Investment committee, programme owner, IRDAI |
 
-Keyboard on stage: `1`–`4` pick a demo claim, `Q W E R T Y` switch surface.
+Keyboard on stage: `1`–`4` pick a demo claim, `Q W E R T Y` switch tab, `Esc` closes a sheet.
 
 ---
 
@@ -49,9 +55,9 @@ Keyboard on stage: `1`–`4` pick a demo claim, `Q W E R T Y` switch surface.
 of `SaiMahimaK_Finsighters_NMIMS_PS6_BFDL_InvestorDashboard.xlsx`, carrying the `W-nn`
 reference on every line.
 
-It asserts itself against the workbook's own computed values on **58 checks** — Parts A, B,
-C, E, F, G, I, J and L, plus the Sheet 4 forecast, NPV and payback-from-kickoff. If a
-formula here ever drifts from the Excel, the check fails:
+It asserts itself against the workbook's own computed values on **60 checks** — Parts A, B,
+C, E, F, G, I, J and L, plus the Sheet 4 forecast, NPV, payback-from-kickoff and the
+realistic-downside case. If a formula here ever drifts from the Excel, the check fails:
 
 ```bash
 node www/assets/js/model.js -v      # headless
@@ -64,8 +70,14 @@ The same discipline as the workbook holds in the code: `INPUTS` is the only plac
 is typed. `data.js` reads its lane shares, lane TAT and corridor from it, and every surface
 derives from `CPModel.run()`.
 
-Base plan, 60% rollout: **₹43.31 Cr** net a year · **16.8 months** payback from kickoff ·
-**₹145.94 Cr** five-year NPV · **2.58 pp** Motor OD combined ratio · **5.55-day** whole-book TAT.
+Base plan, 60% rollout: **₹43.31 Cr** net a year · **₹145.94 Cr** five-year NPV ·
+**2.58 pp** Motor OD combined ratio · **5.55-day** whole-book TAT.
+
+Payback is reported as a **range, not a number** — the model carries six bases and the
+Business case section shows all six with what each assumes: 2.7 months steady state,
+16.8 from kickoff on the base plan, 13.8 aggressive, 27.2 conservative, 7.4 on the realistic
+downside, and 52.1 under the correlated triple shock. Every basis repays the build; that is
+the claim, not that payback is fast.
 
 ---
 
@@ -284,44 +296,47 @@ reachable. It is disposable.
 
 ```bash
 npm start                 # http://localhost:5173
-npm run verify            # headless: 29 checks, drives the real app in a browser
-npm run deploy            # Firebase Hosting
+npm run verify            # headless: 112 checks, drives the real app in a browser
+npm run tokens            # design-token audit against the simulator, exits non-zero on drift
 ```
 
 There is no build step. `www/` is the whole site — plain HTML, CSS and JavaScript, no
 bundler, no dependencies on the web path. Any static host serves it as-is.
 
-## Deploying to Vercel
+## Deploying
 
-Import this repo at [vercel.com/new](https://vercel.com/new). `vercel.json` already sets
-the output directory to `www` and the framework to none, so **accept the defaults and hit
-Deploy** — there is nothing to configure.
+This is **not its own deployment**. It ships as `/app/` inside the parent ClaimPulse repo, and
+the routing lives in the repo root's `vercel.json`:
 
-Two things the config handles for you:
-
-- `assets/js` and `assets/css` are sent with `must-revalidate`, so a redeploy is picked up
-  immediately rather than served stale from a judge's phone cache.
-- `ClaimPulse-demo.apk` is served with the Android package content type, so opening
-  `your-app.vercel.app/ClaimPulse-demo.apk` on a phone downloads and installs it. The
-  in-app share sheet detects this and offers an install button when it is reachable.
-
-Firestore keeps working unchanged from any origin — sync is not tied to the host, so the
-Vercel deployment and the Firebase one share the same live claim queue.
-
-**After the first Vercel deploy, repoint the QR.** The QR in the share sheet is a static
-PNG, so it still encodes whatever host it was built for:
-
-```bash
-npm run qr                              # shows what it currently points at
-node make-qr.js https://your-app.vercel.app
+```
+/app      -> redirect to /app/          (relative asset paths need a directory URL)
+/app/     -> /app/www/index.html
+/app/*    -> /app/www/*
 ```
 
-Commit `www/assets/qr.png` and `www/assets/qr.url.txt` and redeploy. Use the bare origin —
-the script rejects a trailing slash or a `?room=`, because either would send judges to a
-different queue from the one on the projector.
+Push to `main` and Vercel redeploys the whole site. Two things that config handles:
 
-> The APK is deliberately excluded from the **Firebase** deploy only (`hosting.ignore`).
-> Firebase's free Spark plan refuses to host executable files; Vercel has no such limit.
+- `/app/assets/js` and `/app/assets/css` are sent with `must-revalidate`, so a redeploy is
+  picked up immediately rather than served stale from a judge's phone cache.
+- `ClaimPulse-demo.apk` is served with the Android package content type, so opening
+  `/app/ClaimPulse-demo.apk` on a phone downloads and installs it. The in-app share sheet
+  detects this and offers an install button when it is reachable.
+
+Firestore is not tied to the host — sync works unchanged from any origin, so a local server
+and the deployed site share the same live claim queue.
+
+**If the host ever changes, repoint the QR.** The QR in the share sheet is a static PNG, so it
+still encodes whatever host it was built for:
+
+```bash
+npm run qr                                          # shows what it currently points at
+node make-qr.js https://claimpulse-simulation.vercel.app/app
+```
+
+The script decodes its own output before writing it, so it cannot silently leave the old host
+in place — which it did once. Commit `www/assets/qr.png` and `www/assets/qr.url.txt`. Use the
+bare origin: the script rejects a trailing slash or a `?room=`, because either would send
+judges to a different queue from the one on the projector.
 
 `npm run verify` asserts the things that would embarrass us on stage: the model still ties to
 the workbook, every surface renders with no console error, all four demo claims land in their
@@ -376,7 +391,8 @@ the deck and the product read as one thing.
   per-cell alignment. Mono sets optically larger than the sans at the same pixel size, so the
   figure sizes are corrected at the foot of `app.css`, after the component rules they adjust.
 
-**Colour** — Bajaj Finserv. Primary `#0071BB` on a light ground. Green, amber and red are never
+**Colour** — the simulator's palette, token for token. Brand `#258cfb` on the `#040812`
+ground, cards at `rgba(9,19,37,0.78)`. Green, amber and red are never
 decorative: they mean GREEN / AMBER / RED lane. The lifecycle buckets deliberately use a
 *different* palette (blue = the machine has it, amber = a person must act, green = money moving,
 grey = finished) so "waiting on you" is distinguishable from "amber lane" at three metres.
@@ -391,20 +407,28 @@ grey = finished) so "waiting on you" is distinguishable from "amber lane" at thr
 - **Layout** splits 61.8 / 38.2, and the phone is a 382 × 618 rectangle.
 
 ```
-npm run phi
+npm run tokens
 ```
 
 reads every `font-size`, `padding`, `margin`, `gap`, `width`, `height` and `border-radius` in
-`app.css`, checks it against both ladders, prints anything off with the step it should snap to,
-and **exits non-zero**. Hairlines, letter-spacing and shadows are exempt — they are optical
-corrections, not scale decisions. The suite currently reports **0 off-ladder of 287 values**.
+`app.css` and checks it against the **simulator's own scale**, not an abstract ladder — the
+simulator is the source of truth, so drift from it is the thing worth catching. It prints
+anything off with the step it should snap to and **exits non-zero**. Border radii get their own
+four-step scale (4 · 8 · 10 · 12 px, plus the pill), because collapsing a radius onto a spacing
+step is what made the card corners visibly wrong. Hairlines, letter-spacing and shadows are
+exempt — optical corrections, not scale decisions.
+
+The suite currently reports **0 off-scale of 556 values**.
 
 This exists because the claim had stopped being true. The Command Center rebuild put 118
 off-ladder values into the file while the docblock still promised there were none. A design
 system nobody can check is a comment, not a system.
 
 The Command Center runs tighter than the rest of the app on purpose. A claims manager reads it
-for eight hours, and whitespace they have to scroll past is whitespace that costs them.
+for eight hours, and whitespace they have to scroll past is whitespace that costs them. It is
+also where the queue *used* to live: picking a claim and reading a claim are the same job, so
+the queue and the inspector now sit together on **Claims**, and the dashboard is left to do the
+one thing a dashboard is for — the shape of the day.
 
 
 ## Files
@@ -415,17 +439,22 @@ www/
   manifest.webmanifest        installable as a PWA
   assets/css/app.css          the design system
   assets/js/
-    model.js                  the workbook, in JS, with its 45 self-checks
+    model.js                  the workbook, in JS, with its 60 self-checks
     data.js                   the four demo claims, policy master, network partners
     engine.js                 Gate 00, engines 01-05, fusion, routing, settlement, audit
     sync.js                   Firestore live sync with local fallback
     ui.js                     formatting and shared render primitives
-    claimant.js  ops.js  network.js  audit.js  impact.js  sim.js
+    ops.js                    Command Center, the filter rail and the claim queue
+    inspector.js              the Claim Inspector and surveyor dispatch
+    claimant.js               the customer mobile app
+    network.js                garages and surveyors
+    decision.js               the Decision tab shell over the four sections below
+    impact.js  sim.js  pilot.js  audit.js
     app.js                    routing, sync boot, share sheet, stage shortcuts
 www/ClaimPulse-demo.apk       the built Android app, served as a download
-verify.js                     headless verification, 29 checks
+verify.js                     headless verification, 112 checks
+token-audit.py                design-token audit against the simulator
 build-apk.js                  APK build with JDK discovery
-make-qr.js                    repoint the share QR after a host change
-vercel.json                   static deploy config — output dir, APK content type
-firebase.json  firestore.rules
+make-qr.js                    repoint the share QR after a host change, decodes it back to prove it
+firestore.rules               demo claims only, one path open, everything else closed
 ```
