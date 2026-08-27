@@ -346,7 +346,22 @@ const CPImpact = (() => {
     </div>`;
   }
 
-  async function reset() { await CPSync.clear(); }
+  async function reset() {
+    /* This deletes every claim in the shared room - the projector's queue and
+       every phone on it, not just this browser. It is one click inside a tab
+       a judge is meant to explore, so it asks first. */
+    const n = CPSync.all().length;
+    const s_ = n === 1 ? '' : 's';
+    const msg = CPSync.mode === 'live'
+      ? `Clear the shared queue?
+
+${n} claim${s_} will be deleted for everyone on room "${CPSync.room}" — including the projected screen.`
+      : `Clear the queue?
+
+${n} claim${s_} will be removed from this browser.`;
+    if (!window.confirm(msg)) return;
+    await CPSync.clear();
+  }
 
   return { init, onData, render, reset };
 })();

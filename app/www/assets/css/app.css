@@ -858,6 +858,11 @@ table.tbl tbody tr:hover{background:var(--bajaj-tint-2);}
 .stat.g{background:var(--green-bg);} .stat.g .v{color:var(--green);}
 .stat.a{background:var(--amber-bg);} .stat.a .v{color:var(--amber);}
 .stat.r{background:var(--red-bg);}   .stat.r .v{color:var(--red);}
+/* Secondary text on a lane-tinted tile. --dim and --mist are calibrated
+   against the plain surface; on a green/amber/red wash they measured
+   3.79-4.10:1. The tinted tiles get the body ink instead. */
+.stat.g .k,.stat.a .k,.stat.r .k,
+.stat.g .d,.stat.a .d,.stat.r .d{color:var(--ink);}
 /* value-only: a good-news number that is not a lane */
 .stat.gv .v{color:var(--green);}
 

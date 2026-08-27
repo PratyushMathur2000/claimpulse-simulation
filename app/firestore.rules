@@ -17,7 +17,19 @@ service cloud.firestore {
       allow read: if true;
       allow create: if request.resource.data.createdAt is number
                     && request.resource.size() < 60;
-      allow update, delete: if true;
+
+      // An update may move a claim along; it may not rewrite when the claim
+      // was filed, and it may not grow the document past the cap. That stops
+      // a passer-by corrupting a claim into something the UI cannot render.
+      allow update: if request.resource.data.createdAt == resource.data.createdAt
+                    && request.resource.size() < 60;
+
+      // Delete stays open because the presenter's "Clear the queue" needs it.
+      // It is the one genuinely destructive path, so the UI confirms first
+      // and names the room and the count. Without sign-in there is no way to
+      // tell the presenter from a visitor; the mitigation is the confirm, a
+      // disposable project, and synthetic data.
+      allow delete: if true;
     }
 
     match /{document=**} { allow read, write: if false; }
