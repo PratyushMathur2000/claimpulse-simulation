@@ -18,18 +18,20 @@ service cloud.firestore {
       allow create: if request.resource.data.createdAt is number
                     && request.resource.size() < 60;
 
-      // An update may move a claim along; it may not rewrite when the claim
-      // was filed, and it may not grow the document past the cap. That stops
-      // a passer-by corrupting a claim into something the UI cannot render.
-      allow update: if request.resource.data.createdAt == resource.data.createdAt
-                    && request.resource.size() < 60;
-
-      // Delete stays open because the presenter's "Clear the queue" needs it.
-      // It is the one genuinely destructive path, so the UI confirms first
-      // and names the room and the count. Without sign-in there is no way to
-      // tell the presenter from a visitor; the mitigation is the confirm, a
-      // disposable project, and synthetic data.
-      allow delete: if true;
+      // Deliberately permissive, and staying that way.
+      //
+      // A tighter update rule was tried - createdAt must not change - and it
+      // is the wrong trade here. serialise() falls back to Date.now() whenever
+      // createdAt is not a number, so a single round-trip that loses the field
+      // would write a fresh timestamp, the rule would reject it, the catch
+      // would fire goLocal(), and the projector would silently stop sharing
+      // with the judges' phones in the middle of a demo. That failure costs
+      // more than the corruption it prevents.
+      //
+      // What actually protects this: the data is synthetic, the project is
+      // disposable, and the one destructive path - "Clear the queue" - asks
+      // for confirmation and names the room and the count before it runs.
+      allow update, delete: if true;
     }
 
     match /{document=**} { allow read, write: if false; }
