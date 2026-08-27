@@ -243,7 +243,10 @@ const CPOps = (() => {
       tile('Surveyors free', free, 'of ' + CP_SURVEYORS.length + ' on the panel') +
       tile('Average claim', UI.inr(avgAmt), 'across the desk') +
       tile('Value at risk', '₹' + UI.compact(exposure), 'open claims, gross') +
-      tile('Auto-settled', autoSettled, touches.toFixed(0) + ' manual touches saved', 'g'));
+      /* 'gv' colours the figure without tinting the tile. The first three
+         tiles are the lane split and read as a group; a fourth tinted tile
+         stranded at the far end read as a mistake. */
+      tile('Auto-settled', autoSettled, touches.toFixed(0) + ' manual touches saved', 'gv'));
   }
 
   /* ---------------- distribution + automation ---------------- */

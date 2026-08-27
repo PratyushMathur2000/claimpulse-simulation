@@ -65,8 +65,11 @@ const CPNetwork = (() => {
              'of ' + CP_SURVEYORS.length + ' on the panel', 'g') +
       UI.kpi('Visits avoided', UI.compact(B().surveyAvoided),
              'a year at 60% rollout · W-72', 'g'));
-    UI.set('svMain', rosterBoard() + surveyorBoard());
-    UI.set('svSide', bookBoard());
+    /* The roster is long and the summary was short, which left the right
+       column empty for most of the page. The deployment board reads as
+       reference beside the roster, not as a footnote under it. */
+    UI.set('svMain', rosterBoard());
+    UI.set('svSide', bookBoard() + surveyorBoard());
   }
 
   /* ---------------- the panel itself ----------------

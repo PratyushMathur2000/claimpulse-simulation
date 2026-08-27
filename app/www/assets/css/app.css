@@ -291,8 +291,32 @@ input,select,textarea{font-family:inherit;font-size:inherit;color:inherit;}
 @keyframes rise{from{opacity:0;transform:translateY(var(--s2));}to{opacity:1;transform:none;}}
 
 /* the φ split — 61.8 / 38.2 */
-.split{display:grid;grid-template-columns:61.8fr 38.2fr;gap:var(--s4);align-items:start;}
-.split-r{display:grid;grid-template-columns:38.2fr 61.8fr;gap:var(--s4);align-items:start;}
+/* align-items:start let each column find its own height, so a short card
+   beside a long one left a visible void. Stretch makes the row read as one
+   band. Where the gap is extreme the side column sticks instead - see
+   #svSide below. */
+.split{display:grid;grid-template-columns:61.8fr 38.2fr;gap:var(--s4);align-items:stretch;}
+.split > *{min-width:0;}
+/* Only when the column IS one card. A column that stacks several must
+   not give each of them the full column height - that made every card in
+   the Scenarios body 2210px tall. */
+.split > * > .card:only-child{height:100%;}
+
+/* Surveyors: a ten-person panel runs ~1300px against a ~340px summary.
+   Nothing stretches gracefully across that, so the summary follows the
+   scroll and the dead space becomes a persistent reference instead. */
+#svSide{position:sticky;top:var(--s3);align-self:start;}
+
+/* The queue and its filters. A filter is a control you hold while reading
+   the result; stacked above, it pushed the result under the fold on every
+   change. */
+.queuelayout{display:grid;grid-template-columns:264px minmax(0,1fr);gap:var(--s3);align-items:start;}
+.queuelayout #filterRail{position:sticky;top:var(--s3);}
+@media(max-width:1100px){.queuelayout{grid-template-columns:1fr;}
+  .queuelayout #filterRail{position:static;}}
+.split-r{display:grid;grid-template-columns:38.2fr 61.8fr;gap:var(--s4);align-items:stretch;}
+.split-r > *{min-width:0;}
+.split-r > * > .card:only-child{height:100%;}
 
 .card{
   background:var(--card-bg);backdrop-filter:blur(14px);
@@ -440,8 +464,12 @@ table.tbl tbody tr:hover{background:var(--bajaj-tint-2);}
    ===================================================================== */
 /* 382 : 618 — the φ pair. Fixed tracks so the whole thing centres in the
    stage rather than the explainer stretching to fill a wide screen. */
-.phonewrap{display:grid;grid-template-columns:382px minmax(0,618px);gap:var(--s5);
-  align-items:start;justify-content:center;}
+/* The phone is a fixed 382px device; the column beside it took only 618px
+   and the pair was then centred, leaving ~215px of dead margin each side
+   that no other tab has. The explanation column now takes the remaining
+   width, so this tab is as wide as its neighbours. */
+.phonewrap{display:grid;grid-template-columns:382px minmax(0,1fr);gap:var(--s5);
+  align-items:start;}
 
 .phone{
   width:382px;                       /* 618 / φ */
@@ -724,7 +752,12 @@ table.tbl tbody tr:hover{background:var(--bajaj-tint-2);}
 .dsw-chip.RED{background:var(--red-bg);color:var(--red);}
 
 /* the explainer column beside the phone */
-.sidenote{max-width:618px;}
+/* 618px was a reading measure applied to the whole card, which left this
+   tab visibly narrower than every other one. The card now fills its column
+   like the cards on the other tabs; the measure moves to the prose inside,
+   which is what a measure is actually for. */
+.sidenote{max-width:none;}
+.sidenote p, .sidenote .d, .sidenote .note{max-width:72ch;}
 
 /* =====================================================================
    SURFACE · OPS CONSOLE
@@ -825,6 +858,8 @@ table.tbl tbody tr:hover{background:var(--bajaj-tint-2);}
 .stat.g{background:var(--green-bg);} .stat.g .v{color:var(--green);}
 .stat.a{background:var(--amber-bg);} .stat.a .v{color:var(--amber);}
 .stat.r{background:var(--red-bg);}   .stat.r .v{color:var(--red);}
+/* value-only: a good-news number that is not a lane */
+.stat.gv .v{color:var(--green);}
 
 /* ---- lane distribution ---- */
 .dbar{display:flex;height:32px;border-radius:8px;overflow:hidden;gap:2px;}
@@ -883,6 +918,9 @@ table.tbl tbody tr:hover{background:var(--bajaj-tint-2);}
   font-family:var(--f);font-size:var(--t-sm);color:var(--ink);
 }
 .fgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--s2);}
+/* inside the queue's left rail the filters stack one per row */
+.queuelayout .fgrid,
+.queuelayout .fgrid.more{grid-template-columns:minmax(0,1fr);}
 .fgrid.more{margin-top:var(--s2);grid-template-columns:repeat(5,minmax(0,1fr));}
 .fl{display:block;min-width:0;}
 .fl > span{
@@ -1273,7 +1311,12 @@ table.ctbl thead th{
   content:'';position:absolute;right:-55px;top:-55px;width:233px;height:233px;border-radius:50%;
   background:radial-gradient(circle,var(--line-bright) 0%,transparent 70%);
 }
-.bigfig .k{font-size:var(--t-micro);font-weight:800;letter-spacing:1.3px;text-transform:uppercase;font-family:var(--m);color:var(--bajaj-sky);}
+/* This label sits on the saturated blue card, not on the page. It used
+   --bajaj-sky, which is tuned to be read on the PAGE ground - in the light
+   theme that is #0E6E86 on #0060A9, i.e. 1.11:1, invisible. On a brand fill
+   the ink is --on-accent, and hierarchy comes from size, not from colour. */
+.bigfig .k{font-size:var(--t-micro);font-weight:800;letter-spacing:1.3px;
+  text-transform:uppercase;font-family:var(--m);color:var(--on-accent);opacity:.9;}
 .bigfig .v{font-size:var(--t-2xl);font-weight:800;letter-spacing:-3px;line-height:1;margin:var(--s2) 0 var(--s1);font-variant-numeric:tabular-nums;}
 .bigfig .d{font-size:var(--t-sm);color:var(--on-accent);line-height:1.55;max-width:38ch;}
 
@@ -1292,7 +1335,23 @@ table.ctbl thead th{
 .lever .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
 .lever .nm{font-size:var(--t-sm);font-weight:700;color:var(--ink);}
 .lever .vv{font-family:var(--m);font-size:var(--t-sm);font-weight:800;color:var(--bajaj);font-variant-numeric:tabular-nums;}
-.lever .src{font-size:var(--t-micro);color:var(--dim);font-family:var(--m);margin-top:3px;line-height:1.4;}
+/* Renamed off .src, which is the pilot's data-source CARD - a two-column
+   grid. This note never set display, so it inherited that grid and wrapped
+   every word into a 32px column, one word per line. */
+.lever-src{
+  display:none;
+  font-size:var(--t-micro);color:var(--dim);font-family:var(--m);
+  margin-top:4px;line-height:1.5;
+  padding-left:var(--s2);border-left:2px solid var(--line-2);
+}
+.lever.src-open .lever-src{display:block;}
+.src-toggle{
+  font-family:var(--m);font-size:var(--t-micro);font-weight:700;
+  color:var(--bajaj);background:none;border:none;padding:0;cursor:pointer;
+  letter-spacing:0.4px;text-transform:uppercase;
+}
+.src-toggle:hover{text-decoration:underline;}
+.src-toggle:focus-visible{outline:2px solid var(--bajaj);outline-offset:2px;border-radius:3px;}
 .lever input[type=range]{width:100%;accent-color:var(--bajaj);height:21px;cursor:pointer;}
 .lever.moved .nm::after{content:' ● changed';color:var(--amber);font-size:var(--t-micro);font-family:var(--m);font-weight:800;}
 
@@ -1746,13 +1805,28 @@ table.gatetbl td{vertical-align:top;}
 .subtabs{
   display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:18px;
   background:var(--well);border:1px solid var(--line);border-radius:12px;padding:6px;
+  position:relative;
 }
+/* Name the group, so it is obvious these four switch the view below. */
+.subtabs::before{
+  content:'Sections';position:absolute;top:-7px;left:12px;padding:0 6px;
+  background:var(--bg);font-family:var(--m);font-size:9.5px;font-weight:800;
+  letter-spacing:1px;text-transform:uppercase;color:var(--dim);
+}
+/* These read as four headings rather than four controls. A resting border
+   and a hover underline say "button" before anyone has to click one. */
 .subtab{
-  text-align:left;padding:10px 14px;border-radius:8px;background:transparent;border:none;
-  cursor:pointer;transition:.18s;color:var(--mist);
+  text-align:left;padding:10px 14px;border-radius:8px;cursor:pointer;
+  transition:.18s;color:var(--mist);
+  background:var(--surface);border:1px solid var(--line);
 }
+.subtab:not(.on)::after{
+  content:'';display:block;height:2px;width:0;background:var(--bajaj);
+  border-radius:2px;margin-top:6px;transition:width .18s;
+}
+.subtab:not(.on):hover::after{width:28px;}
 .subtab:hover{background:rgba(255,255,255,0.06);color:var(--heading);}
-.subtab.on{background:rgba(37,140,251,0.16);box-shadow:inset 3px 0 0 var(--brand-blue);}
+.subtab.on{background:var(--bajaj-tint);border-color:var(--bajaj);box-shadow:inset 3px 0 0 var(--brand-blue);}
 .st-nm{display:block;font-family:var(--f-head);font-size:12.5px;font-weight:700;color:inherit;}
 .subtab.on .st-nm{color:var(--brand-blue);}
 .st-d{display:block;font-size:11px;color:var(--mist-dim);margin-top:2px;}

@@ -123,13 +123,15 @@
          the day, and it was carrying a twelve-column table that belonged to
          this screen. -->
     <section class="view" id="v-inspector">
-      <div id="filterRail"></div>
-      <!-- Full width, both of them. The queue is a scanning surface and the
-           inspector is a deep-dive; neither reads well in 30% of a page, and
-           they are never used at the same instant. -->
-      <div class="card flush">
-        <div class="queuehead" id="queueHead"></div>
-        <div id="queueTable"></div>
+      <!-- Filters sit beside the queue, not above it. A filter is a control
+           you hold while reading the result; stacking it on top pushes the
+           result under the fold every time you change your mind. -->
+      <div class="queuelayout">
+        <div id="filterRail"></div>
+        <div class="card flush">
+          <div class="queuehead" id="queueHead"></div>
+          <div id="queueTable"></div>
+        </div>
       </div>
       <div id="inspBody"></div>
     </section>

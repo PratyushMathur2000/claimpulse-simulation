@@ -47,6 +47,10 @@ const CPSim = (() => {
 
   let planKey = 'base';
   let over = {};
+  /* The workbook reference under each lever is provenance, not a control.
+     It is there when a judge asks "where does 7.0 come from"; it is noise
+     for the other ninety per cent of the time. Collapsed by default. */
+  let srcOpen = false;
 
   function init() { }
   function onData() { }
@@ -112,17 +116,22 @@ const CPSim = (() => {
           const dflt = L.plan ? CPModel.PLANS[planKey][L.k] : CPModel.INPUTS[L.k];
           const v = over[L.k] !== undefined ? over[L.k] : dflt;
           const moved = over[L.k] !== undefined;
-          return `<div class="lever ${moved ? 'moved' : ''}">
+          return `<div class="lever ${moved ? 'moved' : ''} ${srcOpen ? 'src-open' : ''}">
             <div class="top">
               <span class="nm">${UI.esc(L.nm)}</span>
               <span class="vv">${L.fmt(v)}</span>
             </div>
             <input type="range" min="${L.min}" max="${L.max}" step="${L.step}" value="${v}"
                    oninput="CPSim.set('${L.k}', +this.value)">
-            <div class="src">${UI.esc(L.src)}${moved ? ` · published ${L.fmt(dflt)}` : ''}</div>
+            <div class="lever-src">${UI.esc(L.src)}${moved ? ` · published ${L.fmt(dflt)}` : ''}</div>
           </div>`;
         }).join('')}
       </div>
+      <div class="hr"></div>
+      <button class="src-toggle" onclick="CPSim.toggleSources()"
+              aria-expanded="${srcOpen}" title="Show or hide the workbook reference behind each lever">
+        ${srcOpen ? '▾ Hide workbook sources' : '▸ Show workbook sources'}
+      </button>
       <div class="hr"></div>
       <div style="font-size:var(--t-xs);color:${dirty() ? 'var(--amber)' : 'var(--mist)'};font-weight:700;line-height:1.5;">
         ${dirty()
@@ -298,5 +307,7 @@ const CPSim = (() => {
     </div>`;
   }
 
-  return { init, onData, render, set, setPlan, reset };
+  function toggleSources() { srcOpen = !srcOpen; render(); }
+
+  return { init, onData, render, set, setPlan, reset, toggleSources };
 })();
