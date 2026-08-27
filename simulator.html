@@ -1825,7 +1825,7 @@ let GRID={color:'rgba(255,255,255,0.05)'};
 const NOGRID={display:false};
 let DLC='#e2e8f0';
 const DL=(fmtFn,opts={})=>Object.assign({
-  display:true,color:DLC,font:{family:'Plus Jakarta Sans, sans-serif',size:10*CFS,weight:'600'},
+  display:true,color:DLC,font:{family:cssVar('--f-head'),size:10*CFS,weight:'600'},
   formatter:fmtFn||(v=>v===null||v===undefined?'':(typeof v==='number'?v.toFixed(2):v))
 },opts);
 
@@ -1834,7 +1834,7 @@ function initCharts(){
   DLC=cssVar('--chart-label');
   Chart.defaults.color=cssVar('--mist');
   Chart.defaults.font.size=Math.round(11*CFS);
-  Chart.defaults.font.family='Plus Jakarta Sans, sans-serif';
+  Chart.defaults.font.family=cssVar('--f-head');
   if(window.ChartDataLabels){Chart.register(window.ChartDataLabels);}
   Chart.defaults.set('plugins.datalabels',{display:false});
 
@@ -1846,8 +1846,8 @@ function initCharts(){
     borderWidth:1,
     padding:8,
     cornerRadius:6,
-    titleFont:{family:'Plus Jakarta Sans',size:11.5,weight:'700'},
-    bodyFont:{family:'Plus Jakarta Sans',size:11,weight:'500'},
+    titleFont:{family:cssVar('--f-head'),size:11.5,weight:'700'},
+    bodyFont:{family:cssVar('--f-head'),size:11,weight:'500'},
     usePointStyle:true
   };
 
