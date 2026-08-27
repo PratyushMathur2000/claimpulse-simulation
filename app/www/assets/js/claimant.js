@@ -345,7 +345,7 @@ const CPClaimant = (() => {
     $('phBody').innerHTML = `
       <div class="capstage" id="capStage"></div>
       <div class="shots" id="shotStrip"></div>
-      <div style="background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:var(--r);padding:var(--s2) var(--s3);font-size:var(--t-xs);color:#8A5800;line-height:1.5;">
+      <div style="background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:var(--r);padding:var(--s2) var(--s3);font-size:var(--t-xs);color:var(--amber-ink);line-height:1.5;">
         <b>Gallery upload is disabled.</b> Photos picked from a gallery lose the camera
         metadata Gate 00 checks, so ClaimPulse will not accept them.
       </div>`;

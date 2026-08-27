@@ -29,47 +29,7 @@
    ===================================================================== */
 
 :root{
-  /* =====================================================================
-     TOKENS COPIED VERBATIM FROM THE CLAIMPULSE EXECUTIVE SIMULATOR
-     ---------------------------------------------------------------------
-     Every value below is lifted from index.html at the repository root.
-     This workspace is a module inside that product, not a sibling of it,
-     so the simulator is the source of truth and nothing here is an
-     approximation of it.
-
-     NOTE ON THE GOLDEN RATIO. Earlier versions of this file ran a phi type
-     ladder and a Fibonacci spacing ladder of their own. They were internally
-     consistent and they did not match the parent. A design system the parent
-     product does not share is not a design system, it is a second product,
-     so the ladders are gone and the simulator's scale is used instead.
-     `npm run tokens` now audits against THIS scale.
-     ===================================================================== */
-
-  /* ---- the simulator's own variables, same names ---- */
-  --fs:1;
-  --s-xs:calc(11.5px * var(--fs));
-  --s-sm:calc(12.5px * var(--fs));
-  --s-base:calc(13.5px * var(--fs));
-  --s-md:calc(15.5px * var(--fs));
-  --s-lg:calc(18.5px * var(--fs));
-  --s-xl:calc(21px * var(--fs));
-  --s-2xl:calc(25px * var(--fs));
-
-  --brand-blue:#258cfb; --brand-blue-glow:rgba(37,140,251,0.35); --brand-blue-mid:#005db3;
-  --dark-bg:#040812;
-  --card-bg:rgba(9,19,37,0.78); --card-bg-alt:rgba(13,27,52,0.85);
-  --line:rgba(35,65,110,0.45); --line-bright:rgba(37,140,251,0.25);
-  --heading:#ffffff; --ink:#edf2f7; --mist:#9eb0c6; --mist-dim:#687b94;
-  --green:#10b981; --green-glow:rgba(16,185,129,0.35); --green-dim:rgba(16,185,129,0.15);
-  --gold:#f59e0b; --gold-glow:rgba(245,158,11,0.35); --gold-dim:rgba(245,158,11,0.15);
-  --red:#ef4444; --red-glow:rgba(239,68,68,0.35); --red-dim:rgba(239,68,68,0.15);
-  --purple:#c084fc; --cyan:#22d3ee;
-
-  --f-head:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
-  --f-body:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
-  --f-sub:'JetBrains Mono',monospace,sans-serif;
-
-  --sidebar-w:80px;
+  /* Core tokens now live in theme.css. Only the alias layer is local. */
 
   /* ---- aliases ----
      This workspace was written against its own names before it was folded
@@ -153,7 +113,6 @@ html,body{
      or served on its own. */
   background-color:var(--dark-bg);
   background-image:
-    url('../Background.png'),
     radial-gradient(circle at 90% 90%, rgba(245,158,11,0.10) 0%, transparent 40%),
     radial-gradient(circle at 10% 20%, rgba(37,140,251,0.12) 0%, transparent 45%),
     radial-gradient(circle at 50% 50%, rgba(6,18,36,0.30) 0%, transparent 60%),

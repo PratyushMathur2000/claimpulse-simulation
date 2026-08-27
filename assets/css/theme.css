@@ -1,0 +1,186 @@
+/* =========================================================================
+   ClaimPulse — shared theme
+   -------------------------------------------------------------------------
+   THE SINGLE SOURCE OF TRUTH for tokens across all three surfaces:
+   index.html (home), simulator.html (Executive Decision Simulator) and
+   app/www/index.html (the working demo).
+
+   This file is CANONICAL at assets/css/theme.css in the repository root.
+   A byte-identical copy lives at app/www/assets/css/theme.css because the
+   demo is served with www/ as its document root in three separate places —
+   `npm start`, verify.js (ROOT = app/www) and the Capacitor APK bundle —
+   so a ../ path out of www/ would 404 in all three. `npm run tokens`
+   fails the build if the two copies drift.
+
+   Do not add colours here as literals anywhere else. A hex outside this
+   block is a hex that cannot be themed.
+   ========================================================================= */
+
+:root{
+  /* ---- type scale ---- */
+  --fs:1;
+  --s-xs:calc(11.5px * var(--fs));
+  --s-sm:calc(12.5px * var(--fs));
+  --s-base:calc(13.5px * var(--fs));
+  --s-md:calc(15.5px * var(--fs));
+  --s-lg:calc(18.5px * var(--fs));
+  --s-xl:calc(21px * var(--fs));
+  --s-2xl:calc(25px * var(--fs));
+
+  /* ---- executive palette ---- */
+  --brand-blue:#258cfb; --brand-blue-glow:rgba(37,140,251,0.35); --brand-blue-mid:#005db3;
+  --dark-bg:#040812;
+  --card-bg:rgba(9,19,37,0.78); --card-bg-alt:rgba(13,27,52,0.85);
+  --line:rgba(35,65,110,0.45); --line-bright:rgba(37,140,251,0.25);
+  --heading:#ffffff; --ink:#edf2f7; --mist:#9eb0c6; --mist-dim:#687b94;
+  --green:#10b981; --green-glow:rgba(16,185,129,0.35); --green-dim:rgba(16,185,129,0.15);
+  --gold:#f59e0b; --gold-glow:rgba(245,158,11,0.35); --gold-dim:rgba(245,158,11,0.15);
+  --red:#ef4444; --red-glow:rgba(239,68,68,0.35); --red-dim:rgba(239,68,68,0.15);
+  --purple:#c084fc; --cyan:#22d3ee;
+
+  /* Ink for text sitting ON a tinted well, where the well's own colour is
+     the background. Kept separate from --gold because the readable ink and
+     the fill are different colours in each theme. The old hardcoded #8A5800
+     scored 2.71:1 on the dark amber well - it was written for a light
+     background that did not exist yet, and becomes the light value. */
+  --amber-ink:#fcd34d;
+
+  /* Fraud-graph edges (inspector.js draws these as inline SVG strokes). */
+  --graph-edge:#B7C9D8; --graph-edge-hot:#ef4444;
+
+  /* Bajaj Finserv corporate blue — the logo badge ground. Fixed brand
+     value, identical in every theme, never themed. */
+  --bajaj-corporate:#0071BB;
+
+  /* ---- fonts ---- */
+  --f-head:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+  --f-body:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+  --f-sub:'JetBrains Mono',monospace,sans-serif;
+
+  /* ---- chrome geometry ---- */
+  --sidebar-w:80px;
+  --drawer-w:252px;
+  --bf-logo-h:26px;                    /* logo badge height, all surfaces  */
+  --bf-logo-inset-t:14px;              /* fixed offset from viewport top   */
+  --bf-logo-inset-r:20px;              /* fixed offset from viewport right */
+}
+
+/* =========================================================================
+   BAJAJ FINSERV LOGO — fixed top-right overlay
+   -------------------------------------------------------------------------
+   Pinned to the viewport, outside every surface's header flow, so it lands
+   on identical coordinates on all three surfaces and does not move on
+   scroll. The mark is a solid #0071BB badge with a white wordmark, so it
+   reads on the dark ground and on the light one without inversion.
+   ========================================================================= */
+
+.bf-logo{
+  position:fixed;
+  top:var(--bf-logo-inset-t);
+  right:var(--bf-logo-inset-r);
+  z-index:900;
+  height:var(--bf-logo-h);
+  display:block;
+  border-radius:3px;
+  overflow:hidden;
+  box-shadow:0 2px 10px rgba(0,0,0,0.28);
+  line-height:0;
+  pointer-events:none;               /* never steals a click from the UI  */
+}
+/* The official mark, carried as a data URI so theme.css is the ONLY file
+   that has to stay in sync between the root and app/www copies. Source:
+   commons.wikimedia.org/wiki/File:Bajaj_Finserv_Logo.svg (CC BY-SA 4.0).
+   Vector original also kept at assets/bajaj-finserv.svg for print/decks. */
+.bf-logo{
+  width:calc(var(--bf-logo-h) * 3.78);   /* native 1134x300 = 3.78:1 */
+  background-image:url("data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDExMzQgMzAwIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMTM0IDMwMDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPiA8c3R5bGUgdHlwZT0idGV4dC9jc3MiPiAuc3Qwe2ZpbGw6IzAwNzFCQjt9IC5zdDF7ZmlsbDojRkZGRkZGO30gPC9zdHlsZT4gPHJlY3QgY2xhc3M9InN0MCIgd2lkdGg9IjExMzQiIGhlaWdodD0iMzAwIi8+IDxnPiA8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNDIxLjI5LDEzNi4xMVY1NC45Nmg3MS43NmMxNC43OSwwLDM4LjYsMiwzOC42LDIxLjI5YzAsOS40OC04LjMyLDE2LjE3LTE3Ljk5LDE4LjU5IGMxMi4wNSwzLjYyLDE3Ljk5LDEwLjI4LDE3Ljk5LDE5LjM5YzAsMTkuODktMjIuNiwyMS43OS0zOC42LDIxLjg1aC03MS43NlYxMzYuMTF6IE00NDcuNjQsMTAxLjkybDcuNTMtMTIuNDQgYzEuOTQtMi44Miw1LjEzLTQuNSw4LjU0LTQuNTJoMjkuMzNjNS4yNCwwLDkuNTEtMi40LDkuNTEtNi40NmMwLTQuMDctNC4yMy02LjUxLTkuNTEtNi41MWgtNDUuNDFWMTAxLjkyeiBNNDQ3LjY0LDEwMS45MnYzNC4xNSBsNy41My0xMi40NmMxLjk0LTIuODEsNS4xMy00LjUsOC41NC00LjUyaDI4Ljk0YzUuNDgsMC4wOSw5LjgyLTMuOCw5LjgyLTguNTRjMC00Ljc1LTQuMjUtOC41Ny05LjgyLTguNTdMNDQ3LjY0LDEwMS45MnogTTU5NS4zNSw3NC41NWwtMzUuNTcsNjEuNjJINTI4LjhsNDkuNi04MS4yMWgzMy45bDQ5LjU1LDgxLjE1SDYzMC45bC04LjMyLTE0LjQ2aC00NS45Mmw3LjYyLTEyLjQ0YzEuOTUtMi44LDUuMTMtNC40OCw4LjU0LTQuNTIgaDE5Ljg5TDU5NS4zNSw3NC41NXogTTgxMC43OSw3NC41NWwtMzUuNTQsNjEuNjJINzQ0LjJsNDkuNTgtODEuMjFoMzMuOWw0OS41NCw4MS4xNWgtMzAuODdsLTguMzMtMTQuNDZoLTQ1LjkxbDcuNTMtMTIuNDQgYzEuOTMtMi44LDUuMTEtNC40OSw4LjUxLTQuNTJoMTkuOTJsLTE3LjM2LTMwLjEzSDgxMC43OXogTTcwOS44NSwxMTkuMWM2LjAzLDAsMTAuODMtMi45MSwxMC44My04LjgxVjU0Ljk2aDI2LjIzdjU3Ljc2IGMwLDE3LjUxLTExLjU5LDIzLjM4LTI2Ljc2LDIzLjM4aC00My44NGMtMy40MS0wLjA0LTYuNTgtMS43Mi04LjUzLTQuNTJsLTcuNjItMTIuNUw3MDkuODUsMTE5LjF6IE05MjUuMTksMTE5LjEgYzYuMDMsMCwxMC44Ni0yLjkxLDEwLjg2LTguODFWNTQuOTZoMjYuMzF2NTcuNzZjMCwxNy41MS0xMS41NiwyMy4zOC0yNi43NCwyMy4zOGgtNDMuODRjLTMuNDEtMC4wMi02LjYtMS43MS04LjUzLTQuNTIgbC03LjYyLTEyLjVMOTI1LjE5LDExOS4xeiIvPiA8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNDIxLjE0LDE2My4xMmg2NC45NnYxOS43MmgtNDIuNDZ2MTkuMzRoMzguMzl2MTguNjdoLTM4LjM5djIzLjQ3aC0yMi41MVYxNjMuMTJ6Ii8+IDxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik01MDEuNDEsMTYzLjEyaDIyLjZ2ODEuMjFoLTIyLjZWMTYzLjEyeiIvPiA8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNTQzLjUyLDE2My4xMmgyMWwzMy40Miw0Mi45MnYtNDIuOTJoMjIuMjd2ODEuMjFoLTE5LjcybC0zNC42NS00NC41NHY0NC41NGgtMjIuMzFWMTYzLjEyeiIvPiA8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNjMzLjA5LDIzMi4yNmwxMi41Mi0xNC45NmM3LjM5LDYuMTksMTYuNyw5LjYzLDI2LjM0LDkuNzVjNi4wMywwLDkuMjgtMi4wOSw5LjI4LTUuNTd2LTAuMjMgYzAtMy4zNi0yLjY3LTUuMjMtMTMuNjgtNy43N2MtMTcuMy0zLjk1LTMwLjYzLTguODEtMzAuNjMtMjUuNTJ2LTAuMjNjMC0xNS4wNywxMS45NS0yNS45OSwzMS40NC0yNS45OSBjMTMuOCwwLDI0LjU5LDMuNzEsMzMuNCwxMC43OWwtMTEuMjUsMTUuODljLTcuNDMtNS4yMy0xNS41My04LjAyLTIyLjczLTguMDJjLTUuNDUsMC04LjEyLDIuMzItOC4xMiw1LjIzdjAuMjMgYzAsMy43MiwyLjc5LDUuMzMsMTQuMDQsNy44OWMxOC42OCw0LjA1LDMwLjI3LDEwLjA5LDMwLjI3LDI1LjN2MC4yM2MwLDE2LjU3LTEzLjExLDI2LjQ0LTMyLjgxLDI2LjQ0IEM2NTYuNzQsMjQ1LjcxLDY0My4wNiwyNDEuMTksNjMzLjA5LDIzMi4yNnoiLz4gPHBhdGggY2xhc3M9InN0MSIgZD0iTTcxOS41MSwxNjMuMTJoNjUuMzF2MTkuMTVoLTQzLjAzdjEyLjI5aDM4Ljk4djE3Ljc1aC0zOC45OHYxMi45aDQzLjYydjE5LjEzaC02NS45VjE2My4xMnoiLz4gPHBhdGggY2xhc3M9InN0MSIgZD0iTTgwMS41MywxNjMuMTJoMzguNGMxMi40MSwwLDIxLDMuMjUsMjYuNDQsOC44MWM0Ljc2LDQuNjQsNy4yLDEwLjkxLDcuMiwxOC45MXYwLjI0IGMwLDEyLjQxLTYuNjEsMjAuNjQtMTYuNzEsMjQuOTNsMTkuMzcsMjguMzFoLTI1Ljk5bC0xNi4zNi0yNC41OWgtOS44NXYyNC41OWgtMjIuNTFWMTYzLjEyeiBNODM4LjgxLDIwMi4xMSBjNy42NywwLDEyLjA1LTMuNzIsMTIuMDUtOS42NHYtMC4yM2MwLTYuMzktNC42NC05LjYzLTEyLjE3LTkuNjNoLTE0LjczdjE5LjVMODM4LjgxLDIwMi4xMXoiLz4gPHBhdGggY2xhc3M9InN0MSIgZD0iTTg4MC43NiwxNjMuMTJoMjUuMThsMTguNDQsNTEuMzlsMTguNC01MS4zOWgyNC43MWwtMzIuOTUsODEuNzloLTIwLjgyTDg4MC43NiwxNjMuMTJ6Ii8+IDxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMzguNjIsMTc3LjE1YzAsMjguODgtMzIuMjcsMzEuNjQtNTUuMSwzMS43N2gtMjAuNTN2LTI2aDQwLjgzdi0xOS44NGgtNDAuODN2LTI2Ljk3aDQ1LjJ2LTIwLjk3aC02OS4xNCB2OTMuODNoLTI2LjQxVjkxLjAzaDcwLjkyYzIxLjA5LDAsNTUuMSwzLjAxLDU1LjEsMzAuOTJjMCwxMy44LTExLjgzLDIzLjk1LTI1LjYxLDI3LjQ0IEMzMzAuMTIsMTU0LjY2LDMzOC42MiwxNjMuMTIsMzM4LjYyLDE3Ny4xNXogTTI3Mi40OCw0NC4wNGMtNTguNTIsMC0xMDUuOTYsNDcuNDQtMTA1Ljk2LDEwNS45NnM0Ny40NCwxMDUuOTYsMTA1Ljk2LDEwNS45NiBTMzc4LjQ0LDIwOC41MiwzNzguNDQsMTUwbDAsMGMwLTU4LjUxLTQ3LjQyLTEwNS45NC0xMDUuOTMtMTA1Ljk2TDI3Mi40OCw0NC4wNHoiLz4gPC9nPiA8L3N2Zz4=");
+  background-size:contain; background-repeat:no-repeat; background-position:center;
+}
+
+/* The header actions cluster (download pills, sync pill) lives top-right
+   too. Reserve the logo's footprint so a pill can never slide under it. */
+.top-bar{padding-right:calc(var(--bf-logo-h) * 3.78 + var(--bf-logo-inset-r) + 16px);}
+
+@media (max-width:900px){
+  :root{--bf-logo-h:20px;}
+  .top-bar{padding-right:12px;}      /* pills wrap below; logo clears them */
+}
+
+/* =========================================================================
+   LEVER DRAWER — collapsible model controls, anchored to the rail
+   -------------------------------------------------------------------------
+   The model levers used to sit in a card above the charts they drive, which
+   put the control and its effect on two different parts of the screen. In
+   the drawer they sit beside the charts instead: a presenter changes an
+   assumption on the left and watches the number move on the right, without
+   scrolling. Collapses to give the charts the full width back.
+   ========================================================================= */
+
+.lever-drawer{
+  position:fixed; left:var(--sidebar-w); top:0; bottom:0;
+  width:var(--drawer-w); z-index:80;
+  background:var(--card-bg-alt);
+  border-right:1px solid var(--line);
+  backdrop-filter:blur(8px);
+  overflow-y:auto; overflow-x:hidden;
+  padding:14px 12px 20px;
+  transform:translateX(0);
+  transition:transform .22s ease, visibility 0s;
+}
+/* Slide clear of the rail entirely, not just to its edge. Both the rail and
+   this drawer use backdrop-filter, and a retracted drawer that merely stops
+   at the rail's edge still paints over it despite a lower z-index. Going the
+   full rail width further left removes the overlap instead of arguing with
+   the stacking context. visibility flips only after the slide, so the shut
+   drawer's sliders drop out of the tab order without killing the animation. */
+.lever-drawer[aria-hidden="true"]{
+  transform:translateX(calc(-100% - var(--sidebar-w)));
+  visibility:hidden; transition:transform .22s ease, visibility 0s .22s;
+}
+.lever-drawer::-webkit-scrollbar{width:6px;}
+.lever-drawer::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
+
+.lever-drawer-title{
+  font-family:var(--f-sub); font-size:10px; font-weight:800;
+  letter-spacing:1.2px; text-transform:uppercase;
+  color:var(--brand-blue); margin-bottom:10px;
+  display:flex; align-items:center; justify-content:space-between; gap:6px;
+}
+.lever-drawer-sec{display:none;}
+.lever-drawer-sec.active{display:block;}
+
+/* the handle — stays reachable when the drawer is shut */
+.lever-handle{
+  position:fixed; top:50%; z-index:81;
+  left:calc(var(--sidebar-w) + var(--drawer-w));
+  transform:translateY(-50%);
+  width:18px; height:66px; padding:0;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--card-bg-alt); color:var(--brand-blue);
+  border:1px solid var(--line); border-left:none;
+  border-radius:0 8px 8px 0; cursor:pointer;
+  font-size:11px; line-height:1;
+  transition:left .22s ease, background .18s, color .18s;
+}
+.lever-handle:hover{background:var(--brand-blue); color:#fff;}
+body.drawer-shut .lever-handle{left:var(--sidebar-w);}
+
+/* the drawer displaces the page rather than covering it */
+body.has-drawer{margin-left:calc(var(--sidebar-w) + var(--drawer-w) + 16px); transition:margin-left .22s ease;}
+body.has-drawer.drawer-shut{margin-left:calc(var(--sidebar-w) + 16px);}
+
+/* levers stack one per row in the drawer, whatever grid they came from */
+.lever-drawer .controls{display:block !important; grid-template-columns:none !important; margin:0 !important;}
+.lever-drawer .ctrl{width:100%; min-width:0 !important; margin-bottom:9px;}
+.lever-drawer .filter-row{
+  display:flex; flex-direction:column; align-items:stretch; gap:5px;
+  margin:0 0 12px; padding:0 0 12px; border-bottom:1px solid var(--line);
+}
+.lever-drawer .filter-row > span{margin-bottom:2px;}
+.lever-drawer .filter-row .fbtn{width:100%; text-align:left; font-size:10.5px;}
+
+@media (max-width:900px){
+  .lever-drawer{width:210px;}
+  body.has-drawer{margin-left:calc(var(--sidebar-w) + 8px);}
+  .lever-drawer:not([aria-hidden="true"]){box-shadow:0 0 0 100vw rgba(0,0,0,0.45);}
+}

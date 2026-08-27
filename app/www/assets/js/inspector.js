@@ -493,7 +493,7 @@ const CPInspector = (() => {
                 const A = pos[a], B = pos[b]; if (!A || !B) return '';
                 const hot = A.risk === 'high' && B.risk === 'high';
                 return `<line x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}"
-                  stroke="${hot ? '#C0392B' : '#B7C9D8'}" stroke-width="${hot ? 0.7 : 0.4}"
+                  stroke="${hot ? 'var(--graph-edge-hot)' : 'var(--graph-edge)'}" stroke-width="${hot ? 0.7 : 0.4}"
                   vector-effect="non-scaling-stroke" ${hot ? '' : 'stroke-dasharray="1.5 1"'} />`;
               }).join('')}
             </svg>

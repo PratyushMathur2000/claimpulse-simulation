@@ -7,41 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/theme.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <style>
-:root{
-  --fs:1;
-  --s-xs:calc(11.5px * var(--fs));
-  --s-sm:calc(12.5px * var(--fs));
-  --s-base:calc(13.5px * var(--fs));
-  --s-md:calc(15.5px * var(--fs));
-  --s-lg:calc(18.5px * var(--fs));
-  --s-xl:calc(21px * var(--fs));
-  --s-2xl:calc(25px * var(--fs));
-
-  /* Executive Palette */
-  --brand-blue:#258cfb; --brand-blue-glow:rgba(37,140,251,0.35); --brand-blue-mid:#005db3;
-  --dark-bg:#040812;
-  --card-bg:rgba(9,19,37,0.78); --card-bg-alt:rgba(13,27,52,0.85);
-  --line:rgba(35,65,110,0.45); --line-bright:rgba(37,140,251,0.25);
-  --heading:#ffffff; --ink:#edf2f7; --mist:#9eb0c6; --mist-dim:#687b94;
-  --green:#10b981; --green-glow:rgba(16,185,129,0.35); --green-dim:rgba(16,185,129,0.15);
-  --gold:#f59e0b; --gold-glow:rgba(245,158,11,0.35); --gold-dim:rgba(245,158,11,0.15);
-  --red:#ef4444; --red-glow:rgba(239,68,68,0.35); --red-dim:rgba(239,68,68,0.15);
-  --purple:#c084fc; --cyan:#22d3ee;
-  
-  --f-head:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
-  --f-body:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
-  --f-sub:'JetBrains Mono',monospace,sans-serif;
-
-  --sidebar-w:80px;
-}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
   background-color:var(--dark-bg);
   background-image:
-    url('assets/Background.png'),
     radial-gradient(circle at 90% 90%, rgba(245,158,11,0.10) 0%, transparent 40%),
     radial-gradient(circle at 10% 20%, rgba(37,140,251,0.12) 0%, transparent 45%),
     radial-gradient(circle at 50% 50%, rgba(6,18,36,0.30) 0%, transparent 60%),
@@ -249,7 +222,7 @@ body::before{
 .p-to{font-family:var(--f-sub);font-weight:800;font-size:19px;color:var(--heading);letter-spacing:-0.5px;}
 .p-note{font-size:11px;color:var(--mist-dim);margin-top:3px;}
 
-.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px;}
+.kpi-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:18px;}
 @media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
 .kpi{border-left:4px solid var(--brand-blue);padding:12px 14px;min-width:0;}
@@ -263,9 +236,9 @@ body::before{
 .kpi .d{font-size:11.5px;color:var(--mist-dim);margin-top:3px;line-height:1.35;}
 
 /* === GRIDS & SPACING === */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px;}
-.grid21{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;margin-bottom:18px;}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-bottom:18px;}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:18px;}
+.grid21{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:18px;margin-bottom:18px;}
 .grid12{display:grid;grid-template-columns:1fr 1.6fr;gap:18px;margin-bottom:18px;}
 @media(max-width:1100px){.grid2,.grid3,.grid21,.grid12{grid-template-columns:1fr;}}
 
@@ -480,6 +453,44 @@ a.sidebar-logo:hover{border-color:var(--brand-blue);box-shadow:0 0 0 3px rgba(37
 </style>
 </head>
 <body>
+<!-- Bajaj Finserv — fixed top-right on every surface. See theme.css. -->
+<div class="bf-logo" role="img" aria-label="Bajaj Finserv"></div>
+<!-- =====================================================================
+     LEVER DRAWER
+     The ten model levers, beside the charts they drive rather than stacked
+     above them. Markup is moved here verbatim: same ids, same inline
+     handlers, so update() / updateStress() bind exactly as before.
+     ===================================================================== -->
+<aside class="lever-drawer" id="leverDrawer" aria-label="Model assumptions">
+  <div class="lever-drawer-title"><span id="leverTitle">Assumptions</span></div>
+  <div class="lever-drawer-sec" id="leverSec3">
+    <div class="filter-row">
+      <span style="font-size:11px;color:var(--mist);font-weight:700;text-transform:uppercase;">Implementation Plan:</span>
+      <button class="fbtn" id="btn-conservative" onclick="applyPlan('conservative')">Conservative (20% Rollout · Pilot Scale)</button>
+      <button class="fbtn active" id="btn-base" onclick="applyPlan('base')">Base Case (60% Rollout · Target)</button>
+      <button class="fbtn" id="btn-aggressive" onclick="applyPlan('aggressive')">Aggressive (100% Full Book)</button>
+    </div>
+    <div class="controls">
+      <div class="ctrl"><label>Rollout Share <span class="val" id="val-rollout">60%</span></label><input type="range" id="sl-rollout" min="20" max="100" step="5" value="60" oninput="onRollout()"></div>
+      <div class="ctrl"><label>Green Auto Share <span class="val" id="val-green">65%</span></label><input type="range" id="sl-green" min="40" max="85" step="1" value="65" oninput="update()"></div>
+      <div class="ctrl"><label>Avg Claim Size <span class="val" id="val-claimval">₹45,000</span></label><input type="range" id="sl-claimval" min="25000" max="75000" step="1000" value="45000" oninput="update()"></div>
+      <div class="ctrl"><label>Fraud Recovery <span class="val" id="val-fraud">90%</span></label><input type="range" id="sl-fraud" min="62" max="98" step="1" value="90" oninput="update()"></div>
+      <div class="ctrl"><label>Touches Today <span class="val" id="val-touches">7</span></label><input type="range" id="sl-touches" min="3" max="10" step="0.5" value="7" oninput="update()"></div>
+    </div>
+  </div>
+  <div class="lever-drawer-sec" id="leverSec4">
+    <div class="controls" style="grid-template-columns:repeat(5,1fr);margin-bottom:14px;">
+      <div class="ctrl"><label>Auto-Settlement <span class="val" id="val-st-green">50%</span></label><input type="range" id="sl-st-green" min="30" max="75" step="1" value="50" oninput="updateStress()"></div>
+      <div class="ctrl"><label>Fraud Recovery <span class="val" id="val-st-fraud">62%</span></label><input type="range" id="sl-st-fraud" min="62" max="95" step="1" value="62" oninput="updateStress()"></div>
+      <div class="ctrl"><label>Rollout Share <span class="val" id="val-st-roll">60%</span></label><input type="range" id="sl-st-roll" min="20" max="100" step="5" value="60" oninput="updateStress()"></div>
+      <div class="ctrl"><label>Cost / Touch <span class="val" id="val-st-cpt">₹250</span></label><input type="range" id="sl-st-cpt" min="83" max="350" step="10" value="250" oninput="updateStress()"></div>
+      <div class="ctrl" style="border-color:var(--cyan);"><label>AI Workload <span class="val" id="val-st-tok">Central (25k)</span></label><input type="range" id="sl-st-tok" min="1" max="3" step="1" value="2" oninput="updateStress()"></div>
+    </div>
+  </div>
+</aside>
+<button class="lever-handle" id="leverHandle" onclick="toggleDrawer()"
+        aria-controls="leverDrawer" title="Show / hide assumptions (backslash key)">&#9664;</button>
+
 <div class="app-container">
 
 <!-- SIDEBAR NAVIGATION (6 PROGRESSIVE MANAGEMENT QUESTIONS) -->
@@ -526,13 +537,6 @@ a.sidebar-logo:hover{border-color:var(--brand-blue);box-shadow:0 0 0 3px rgba(37
 <header class="top-bar">
   <div class="brand-group">
     <a class="brand-logo-wrap" href="/" title="ClaimPulse home">
-      <svg width="110" height="26" viewBox="0 0 170 42" fill="none">
-        <path d="M10 6 C16 2, 30 4, 24 14 C20 20, 10 18, 6 26 C3 32, 13 36, 26 32 C18 35, 2 35, 2 26 C2 18, 14 18, 18 12 C22 6, 12 5, 10 6 Z" fill="#258cfb"/>
-        <path d="M14 10 C20 6, 34 8, 28 18 C24 24, 14 22, 10 30 C7 36, 17 40, 30 36 C22 39, 6 39, 6 30 C6 22, 18 22, 22 16 C26 10, 16 9, 14 10 Z" fill="#005db3"/>
-        <text x="38" y="22" font-family="'Plus Jakarta Sans',sans-serif" font-weight="800" font-size="15" fill="#fff" letter-spacing="1">BAJAJ</text>
-        <text x="38" y="35" font-family="'Plus Jakarta Sans',sans-serif" font-weight="700" font-size="10" fill="#258cfb" letter-spacing="2.5">FINSERV</text>
-      </svg>
-      <div style="width:1px;height:20px;background:var(--line-bright);"></div>
       <div style="font-family:var(--f-head);font-weight:700;font-size:12px;color:var(--heading);">ATOM <span style="color:var(--brand-blue);">Season 9</span></div>
     </a>
     <div class="brand-title-box">
@@ -1067,23 +1071,6 @@ a.sidebar-logo:hover{border-color:var(--brand-blue);box-shadow:0 0 0 3px rgba(37
     </div>
   </section>
 
-  <!-- CONTROLS & KPI STRIP -->
-  <div class="card" style="margin-bottom:12px;">
-    <div class="filter-row">
-      <span style="font-size:11px;color:var(--mist);font-weight:700;text-transform:uppercase;">Implementation Plan:</span>
-      <button class="fbtn" id="btn-conservative" onclick="applyPlan('conservative')">Conservative (20% Rollout · Pilot Scale)</button>
-      <button class="fbtn active" id="btn-base" onclick="applyPlan('base')">Base Case (60% Rollout · Target)</button>
-      <button class="fbtn" id="btn-aggressive" onclick="applyPlan('aggressive')">Aggressive (100% Full Book)</button>
-    </div>
-    <div class="controls">
-      <div class="ctrl"><label>Rollout Share <span class="val" id="val-rollout">60%</span></label><input type="range" id="sl-rollout" min="20" max="100" step="5" value="60" oninput="onRollout()"></div>
-      <div class="ctrl"><label>Green Auto Share <span class="val" id="val-green">65%</span></label><input type="range" id="sl-green" min="40" max="85" step="1" value="65" oninput="update()"></div>
-      <div class="ctrl"><label>Avg Claim Size <span class="val" id="val-claimval">₹45,000</span></label><input type="range" id="sl-claimval" min="25000" max="75000" step="1000" value="45000" oninput="update()"></div>
-      <div class="ctrl"><label>Fraud Recovery <span class="val" id="val-fraud">90%</span></label><input type="range" id="sl-fraud" min="62" max="98" step="1" value="90" oninput="update()"></div>
-      <div class="ctrl"><label>Touches Today <span class="val" id="val-touches">7</span></label><input type="range" id="sl-touches" min="3" max="10" step="0.5" value="7" oninput="update()"></div>
-    </div>
-  </div>
-
   <div class="kpi-grid">
     <div class="kpi"><div class="k">Claims Processed / Mo</div><div class="v teal" id="kpi-claims">13,715</div><div class="d" id="kpi-claims-sub">60% addressable book</div></div>
     <div class="kpi green-border"><div class="k">Monthly Net Run-Rate</div><div class="v green" id="kpi-monthly">₹3.61 Cr</div><div class="d" id="kpi-monthly-sub">Steady state</div></div>
@@ -1195,15 +1182,6 @@ a.sidebar-logo:hover{border-color:var(--brand-blue);box-shadow:0 0 0 3px rgba(37
         <span style="font-size:10px;color:var(--green);text-transform:uppercase;font-weight:700;">Investment Case Verdict</span>
         <div style="font-family:var(--f-sub);font-weight:800;font-size:18px;color:var(--green);" id="stressVerdict">STILL ACCRETIVE: ₹25.01 Cr / Yr</div>
       </div>
-    </div>
-
-    <!-- 5 SLIDERS -->
-    <div class="controls" style="grid-template-columns:repeat(5,1fr);margin-bottom:14px;">
-      <div class="ctrl"><label>Auto-Settlement <span class="val" id="val-st-green">50%</span></label><input type="range" id="sl-st-green" min="30" max="75" step="1" value="50" oninput="updateStress()"></div>
-      <div class="ctrl"><label>Fraud Recovery <span class="val" id="val-st-fraud">62%</span></label><input type="range" id="sl-st-fraud" min="62" max="95" step="1" value="62" oninput="updateStress()"></div>
-      <div class="ctrl"><label>Rollout Share <span class="val" id="val-st-roll">60%</span></label><input type="range" id="sl-st-roll" min="20" max="100" step="5" value="60" oninput="updateStress()"></div>
-      <div class="ctrl"><label>Cost / Touch <span class="val" id="val-st-cpt">₹250</span></label><input type="range" id="sl-st-cpt" min="83" max="350" step="10" value="250" oninput="updateStress()"></div>
-      <div class="ctrl" style="border-color:var(--cyan);"><label>AI Workload <span class="val" id="val-st-tok">Central (25k)</span></label><input type="range" id="sl-st-tok" min="1" max="3" step="1" value="2" oninput="updateStress()"></div>
     </div>
 
     <div class="grid2">
@@ -2143,6 +2121,38 @@ function animatePageElements(n){
   }
 }
 
+/* Pages that own model levers, and what to call the drawer on each. */
+const LEVER_PAGES={3:'Value Levers',4:'Stress Levers'};
+
+function syncDrawer(n){
+  const has=!!LEVER_PAGES[n], d=document.getElementById('leverDrawer'),
+        h=document.getElementById('leverHandle');
+  document.querySelectorAll('.lever-drawer-sec').forEach(x=>x.classList.remove('active'));
+  if(has){
+    const sec=document.getElementById('leverSec'+n);
+    if(sec) sec.classList.add('active');
+    document.getElementById('leverTitle').textContent=LEVER_PAGES[n];
+  }
+  /* No levers on this page: retract fully and give the width back. */
+  document.body.classList.toggle('has-drawer',has);
+  d.setAttribute('aria-hidden',String(!has||document.body.classList.contains('drawer-shut')));
+  d.style.visibility=has?'visible':'hidden';
+  h.style.display=has?'flex':'none';
+}
+
+function toggleDrawer(){
+  const shut=document.body.classList.toggle('drawer-shut');
+  const d=document.getElementById('leverDrawer');
+  d.setAttribute('aria-hidden',String(shut));
+  document.getElementById('leverHandle').innerHTML=shut?'&#9654;':'&#9664;';
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='\\' && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)){
+    e.preventDefault(); if(document.getElementById('leverHandle').style.display!=='none') toggleDrawer();
+  }
+});
+
 function switchPage(n){
   document.querySelectorAll('.page-view').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.page-tab-btn').forEach(b=>b.classList.remove('active'));
@@ -2151,7 +2161,8 @@ function switchPage(n){
   if(targetPage) targetPage.classList.add('active');
   if(targetBtn) targetBtn.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
-  
+  syncDrawer(n);
+
   setTimeout(()=>{
     animatePageCharts(n);
     animatePageElements(n);
@@ -2168,6 +2179,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   updateFraudCurve();
   updateStress();
   update();
+  syncDrawer(1);   /* page 1 has no levers: start retracted */
 });
 </script>
 </body>

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """ClaimPulse Live Operations - design-token audit.
 
-The parent product (the ClaimPulse Executive Simulator, ../index.html) is the
-source of truth for this workspace's design system. This checks that the
-workspace does not invent values the parent does not use.
+assets/css/theme.css is the source of truth for the design system across all
+three surfaces. This checks two things: that this workspace does not invent
+values theme.css does not define, and that the two copies of theme.css - the
+canonical one at the repo root and the one inside www/ - have not drifted.
 
 It replaces an earlier golden-ratio audit. That audit was internally
 consistent and checked the wrong thing: a phi ladder the parent product did
@@ -72,4 +73,26 @@ if off:
         near = min(ALLOWED, key=lambda a: abs(a - n))
         print('%-22s %9s %6d   -> %gpx' % (prop, ('%g' % n) + 'px', c, near))
 
-sys.exit(1 if off else 0)
+# ---- theme.css copy drift -------------------------------------------------
+# www/ is the document root for `npm start`, verify.js and the Capacitor APK,
+# so a ../ path out of it would 404 in all three. The file is copied instead,
+# which means it can drift, which means it has to be checked.
+CANON = '../assets/css/theme.css'
+COPY  = 'www/assets/css/theme.css'
+drift = None
+try:
+    a = io.open(CANON, encoding='utf-8').read()
+    b = io.open(COPY,  encoding='utf-8').read()
+    if a != b:
+        drift = 'contents differ (%d vs %d bytes)' % (len(a), len(b))
+except Exception as e:
+    drift = 'could not compare: %s' % e
+
+print()
+if drift:
+    print('theme.css SYNC: FAIL - %s' % drift)
+    print('  fix with:  cp %s %s' % (CANON, COPY))
+else:
+    print('theme.css SYNC: ok - root and www/ copies are identical')
+
+sys.exit(1 if (off or drift) else 0)

@@ -12,7 +12,7 @@
     "android:open": "npx cap open android",
     "android:apk": "node build-apk.js",
     "qr": "node make-qr.js",
-    "tokens": "python token-audit.py www/assets/css/app.css ../index.html"
+    "tokens": "python token-audit.py www/assets/css/app.css ../assets/css/theme.css"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.0",

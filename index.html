@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/theme.css">
 <style>
 /* =====================================================================
    ClaimPulse · Home
@@ -15,24 +16,10 @@
    is the simulator's own — this page is the first thing a judge sees, so
    it has to establish the design language the other two inherit.
    ===================================================================== */
-:root{
-  --s-xs:11.5px; --s-sm:12.5px; --s-base:13.5px; --s-md:15.5px;
-  --s-lg:18.5px; --s-xl:21px; --s-2xl:25px;
-  --brand-blue:#258cfb; --brand-blue-glow:rgba(37,140,251,0.35); --brand-blue-mid:#005db3;
-  --dark-bg:#040812;
-  --card-bg:rgba(9,19,37,0.78); --card-bg-alt:rgba(13,27,52,0.85);
-  --line:rgba(35,65,110,0.45); --line-bright:rgba(37,140,251,0.25);
-  --heading:#ffffff; --ink:#edf2f7; --mist:#9eb0c6; --mist-dim:#687b94;
-  --green:#10b981; --gold:#f59e0b; --purple:#c084fc; --cyan:#22d3ee;
-  --f-head:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
-  --f-body:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
-  --f-sub:'JetBrains Mono',monospace,sans-serif;
-}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
   background-color:var(--dark-bg);
   background-image:
-    url('assets/Background.png'),
     radial-gradient(circle at 90% 90%, rgba(245,158,11,0.10) 0%, transparent 40%),
     radial-gradient(circle at 10% 20%, rgba(37,140,251,0.12) 0%, transparent 45%),
     radial-gradient(circle at 50% 50%, rgba(6,18,36,0.30) 0%, transparent 60%),
@@ -149,17 +136,13 @@ a.brand-logo-wrap:hover{border-color:rgba(37,140,251,0.40);background:rgba(37,14
 </style>
 </head>
 <body>
+<!-- Bajaj Finserv - fixed top-right on every surface. See theme.css. -->
+<div class="bf-logo" role="img" aria-label="Bajaj Finserv"></div>
+
 <div class="wrap">
 
   <header class="top-bar">
     <a class="brand-logo-wrap" href="/" title="ClaimPulse home">
-      <svg width="110" height="26" viewBox="0 0 170 42" fill="none">
-        <path d="M10 6 C16 2, 30 4, 24 14 C20 20, 10 18, 6 26 C3 32, 13 36, 26 32 C18 35, 2 35, 2 26 C2 18, 14 18, 18 12 C22 6, 12 5, 10 6 Z" fill="#258cfb"/>
-        <path d="M14 10 C20 6, 34 8, 28 18 C24 24, 14 22, 10 30 C7 36, 17 40, 30 36 C22 39, 6 39, 6 30 C6 22, 18 22, 22 16 C26 10, 16 9, 14 10 Z" fill="#005db3"/>
-        <text x="38" y="22" font-family="'Plus Jakarta Sans',sans-serif" font-weight="800" font-size="15" fill="#fff" letter-spacing="1">BAJAJ</text>
-        <text x="38" y="35" font-family="'Plus Jakarta Sans',sans-serif" font-weight="700" font-size="10" fill="#258cfb" letter-spacing="2.5">FINSERV</text>
-      </svg>
-      <div style="width:1px;height:20px;background:var(--line-bright);"></div>
       <div style="font-family:var(--f-head);font-weight:700;font-size:12px;color:var(--heading);">ATOM <span style="color:var(--brand-blue);">Season 9</span></div>
     </a>
     <div class="tagline">Team Finsighters · NMIMS Mumbai<br>PS_BFDL · Motor Claims TAT</div>

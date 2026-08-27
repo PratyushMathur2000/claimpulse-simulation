@@ -323,7 +323,7 @@ const CPImpact = (() => {
         </table>
       </div>
       <div class="hr"></div>
-      <div style="font-size:var(--t-sm);color:#8A5800;background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:var(--r);padding:var(--s3);line-height:1.6;">
+      <div style="font-size:var(--t-sm);color:var(--amber-ink);background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:var(--r);padding:var(--s3);line-height:1.6;">
         <b>And the group it costs.</b> ${UI.num(b.downgraded)} honest claimants a year cannot use
         live capture — older phones, indoor parking, GPS off — and drop from green to amber.
         Still handled, just not auto-settled. ${UI.cr(Math.abs(b.benefits.friction))} a year,
