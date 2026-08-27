@@ -41,7 +41,7 @@ const CPInspector = (() => {
 
   /* ================= render ================= */
   function render() {
-    /* The queue on the left is CPOps's — it owns the claim list and the
+    /* The queue above is CPOps's — it owns the claim list and the
        filter state, and those are one thing. Painting it from here keeps a
        single source of truth for "which claims are we looking at" instead
        of two modules each holding half the answer. */
@@ -49,7 +49,7 @@ const CPInspector = (() => {
     const c = claim();
     if (!c) {
       UI.set('inspBody', `<div class="card">${UI.empty('🔍',
-        'Pick a claim from the queue on the left.')}</div>`);
+        'Pick a claim from the queue above.')}</div>`);
       return;
     }
     const s = CPEngine.stageOf(c);

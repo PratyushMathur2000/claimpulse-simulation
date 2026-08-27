@@ -118,7 +118,7 @@ const CPClaimant = (() => {
   /* ================= STEP 0 · FNOL ================= */
   /* ================= STEP 0 · LOGIN ================= */
   function login() {
-    head('Welcome back', 'Bajaj Allianz · Motor');
+    head('Welcome back', 'Bajaj General · Motor');
     $('phBody').innerHTML = `
       <div class="loginwrap">
         <div class="loginmark">CP</div>
@@ -146,7 +146,7 @@ const CPClaimant = (() => {
     side('Customer app', 'This is the policyholder side',
       'A consumer insurance app, not an internal tool.',
       `<p style="font-size:var(--t-sm);line-height:1.65;">
-         Everything on this phone is what a Bajaj Allianz customer would see. The claims
+         Everything on this phone is what a Bajaj General customer would see. The claims
          desk sees the same claim on the <b>Command Center</b> the moment it is filed.</p>
        <div class="hr"></div>
        ${UI.sec('The three demo claims')}
