@@ -32,7 +32,7 @@
   --dark-bg:#040812;
   --card-bg:rgba(9,19,37,0.78); --card-bg-alt:rgba(13,27,52,0.85);
   --line:rgba(35,65,110,0.45); --line-bright:rgba(37,140,251,0.25);
-  --heading:#ffffff; --ink:#edf2f7; --mist:#9eb0c6; --mist-dim:#687b94;
+  --heading:#ffffff; --ink:#edf2f7; --mist:#9eb0c6; --mist-dim:#7089a3;
   --green:#10b981; --green-glow:rgba(16,185,129,0.35); --green-dim:rgba(16,185,129,0.15);
   --gold:#f59e0b; --gold-glow:rgba(245,158,11,0.35); --gold-dim:rgba(245,158,11,0.15);
   --red:#ef4444; --red-glow:rgba(239,68,68,0.35); --red-dim:rgba(239,68,68,0.15);
@@ -47,6 +47,50 @@
 
   /* Fraud-graph edges (inspector.js draws these as inline SVG strokes). */
   --graph-edge:#B7C9D8; --graph-edge-hot:#ef4444;
+
+  /* Text on a saturated brand/status fill. White in BOTH themes - a filled
+     blue button keeps white text on a light page. Distinct from --heading,
+     which is the ink colour and does flip. */
+  --on-accent:#ffffff;
+
+  /* The fill behind white button text. Separate from --brand-blue because
+     the brand blue is tuned to be READ on the page, and white on it is only
+     3.37:1 - fine for a chart mark, too low for a button label. */
+  --brand-fill:#0d6fd4;
+
+  /* The .XLSX / .PDF chip inside a download pill. */
+  --badge-bg:rgba(0,0,0,0.45);
+
+  /* Ink on a STATUS fill (green / amber / red / purple / cyan). Inverts the
+     opposite way to --on-accent: the dark theme's status colours are bright,
+     so white on them scores 1.81-3.76 and dark ink scores 5.04-10.49. The
+     light theme's are dark, so it is the other way round. */
+  --on-status:#06111f;
+
+  /* Which way a filled button moves on hover. Dark themes brighten, light
+     themes darken; mixing toward this token gets both from one rule instead
+     of a hand-picked hover colour per button per theme. */
+  --hover-shift:#ffffff;
+
+  /* Recessed panels ("wells"). The dark theme had these as a dozen different
+     alphas of the same navy; they are one role, so they are one token. */
+  --well:rgba(6,16,34,0.6);
+  --well-2:rgba(6,16,34,0.92);
+
+  /* Chart chrome. Read by initCharts() from the computed styles, so a theme
+     switch repaints axes and labels rather than leaving them unreadable. */
+  --chart-grid:rgba(255,255,255,0.05);
+  --chart-label:#e2e8f0;
+
+  --rail-bg:rgba(4,10,22,0.95);
+  --page-shadow:none;
+
+  /* The whole page ground as one token, so the light theme replaces the
+     entire layer stack rather than trying to recolour four dark gradients. */
+  --page-bg:
+    radial-gradient(circle at 90% 90%, rgba(245,158,11,0.10) 0%, transparent 40%),
+    radial-gradient(circle at 10% 20%, rgba(37,140,251,0.12) 0%, transparent 45%),
+    linear-gradient(135deg,#03060f 0%,#050d1a 50%,#091426 100%);
 
   /* Bajaj Finserv corporate blue — the logo badge ground. Fixed brand
      value, identical in every theme, never themed. */
@@ -64,6 +108,83 @@
   --bf-logo-inset-t:14px;              /* fixed offset from viewport top   */
   --bf-logo-inset-r:20px;              /* fixed offset from viewport right */
 }
+
+/* =========================================================================
+   LIGHT THEME - the default
+   -------------------------------------------------------------------------
+   Built for a projector and an audience that is not living in a terminal.
+   Three rules held throughout:
+
+   1. The ground is offwhite (#F2F5F9), never pure white. Pure white on a
+      bright projector is glare, and glare is what makes a room stop reading.
+      Cards are white ON that ground, so elevation reads as light-on-light
+      rather than as a border alone.
+   2. Body text clears 7:1 (AAA), secondary text 4.5:1, tertiary 3:1.
+   3. Every status colour clears 4.5:1 BOTH as text on a card AND carrying
+      white text as a fill, because the lane chips do both. The dark theme's
+      #10b981 / #f59e0b / #ef4444 score 2.5 / 1.97 / 3.3 on white - all three
+      fail, so all three are re-cut rather than reused.
+
+   Set on <html data-theme="light">. Dark is [data-theme="dark"].
+   ========================================================================= */
+
+:root[data-theme="light"]{
+  --brand-blue:#0060A9;                       /* 6.47:1 - Bajaj corporate blue, darkened */
+  --brand-blue-glow:rgba(0,96,169,0.26);
+  --brand-blue-mid:#004C87;
+  --brand-fill:#0060A9;
+  --badge-bg:rgba(255,255,255,0.92);
+  --on-status:#ffffff;
+
+  --dark-bg:#F2F5F9;                          /* the ground */
+  --card-bg:#FFFFFF;
+  --card-bg-alt:#F7FAFD;
+
+  --line:#D6DFEA; --line-bright:rgba(0,96,169,0.22);
+
+  --heading:#0B1B2E;                          /* 17.35:1 on card */
+  --ink:#16293D;                              /* 14.80:1 */
+  --mist:#4A5F78;                             /*  6.56:1 */
+  --mist-dim:#546579;                         /*  5.86 on card, 5.17 on the well */
+
+  --green:#0F7B57; --green-glow:rgba(15,123,87,0.30); --green-dim:rgba(15,123,87,0.12);
+  --gold:#8A5800;  --gold-glow:rgba(138,88,0,0.30);   --gold-dim:rgba(138,88,0,0.12);
+  --red:#C0281F;   --red-glow:rgba(192,40,31,0.30);   --red-dim:rgba(192,40,31,0.10);
+  --purple:#6D28D9; --cyan:#0E6E86;
+
+  --amber-ink:#8A5800;                        /* 6.04:1 - the value that was
+                                                 always meant for a light ground */
+  --graph-edge:#64748B; --graph-edge-hot:#C0281F;
+  --hover-shift:#000000;
+
+  --well:#EDF1F7; --well-2:#E3EAF3;
+
+  --chart-grid:rgba(11,27,46,0.11);
+  --chart-label:#16293D;
+
+  /* One soft wash from the top, nothing more. Layered gradients on a light
+     ground read as smudges on a projector. */
+  --page-bg:
+    radial-gradient(circle at 12% 6%, rgba(0,96,169,0.055) 0%, transparent 44%),
+    linear-gradient(180deg,#F8FAFC 0%,#F2F5F9 100%);
+
+  /* On a dark page a card separates itself with a glow; on a light one it
+     needs a shadow, or every panel reads as a flat rectangle. */
+  --rail-bg:#FFFFFF;
+  --page-shadow:0 1px 2px rgba(11,27,46,0.05), 0 2px 8px rgba(11,27,46,0.05);
+}
+
+/* The starfield is white dots at 6% - invisible on a light ground, and it
+   costs a full-viewport composite to draw nothing. */
+:root[data-theme="light"] body::before{display:none;}
+
+/* Cards, wells and the rails all take the shadow together, so elevation is
+   consistent instead of applied card by card. */
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .top-bar,
+:root[data-theme="light"] .sidebar,
+:root[data-theme="light"] .navrail,
+:root[data-theme="light"] .lever-drawer{box-shadow:var(--page-shadow);}
 
 /* =========================================================================
    BAJAJ FINSERV LOGO — fixed top-right overlay
@@ -104,6 +225,30 @@
 @media (max-width:900px){
   :root{--bf-logo-h:20px;}
   .top-bar{padding-right:12px;}      /* pills wrap below; logo clears them */
+}
+
+/* =========================================================================
+   THEME TOGGLE
+   Injected by theme.js into whichever rail the surface has, so the three
+   surfaces cannot drift. Pushed to the bottom of the rail by margin-top:auto
+   - it is a setting, not a destination, and should not sit among the tabs.
+   ========================================================================= */
+.theme-toggle{
+  margin-top:auto; flex:0 0 auto;
+  width:38px; height:38px; padding:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; line-height:1; cursor:pointer;
+  background:var(--card-bg-alt); color:var(--mist);
+  border:1px solid var(--line); border-radius:10px;
+  transition:color .18s, border-color .18s, background .18s;
+}
+.theme-toggle:hover{color:var(--brand-blue); border-color:var(--brand-blue); background:var(--brand-blue-glow);}
+.theme-toggle:focus-visible{outline:2px solid var(--brand-blue); outline-offset:2px;}
+/* the home page has no rail */
+.theme-toggle.floating{
+  position:fixed; margin:0;
+  top:calc(var(--bf-logo-inset-t) + var(--bf-logo-h) + 10px);
+  right:var(--bf-logo-inset-r); z-index:900;
 }
 
 /* =========================================================================

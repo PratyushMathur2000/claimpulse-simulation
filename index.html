@@ -7,6 +7,7 @@
 <meta name="description" content="ClaimPulse — Motor Own Damage claims orchestration for Bajaj Allianz. Executive Decision Simulator and the live Claims Operations workspace. Team Finsighters, NMIMS Mumbai, PS_BFDL.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="assets/js/theme.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/theme.css">
 <style>
@@ -19,11 +20,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
   background-color:var(--dark-bg);
-  background-image:
-    radial-gradient(circle at 90% 90%, rgba(245,158,11,0.10) 0%, transparent 40%),
-    radial-gradient(circle at 10% 20%, rgba(37,140,251,0.12) 0%, transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(6,18,36,0.30) 0%, transparent 60%),
-    linear-gradient(135deg,#03060f 0%,#050d1a 50%,#091426 100%);
+  background-image:var(--page-bg);
   background-repeat:no-repeat; background-position:center center;
   background-attachment:fixed; background-size:cover;
   color:var(--ink); font-family:var(--f-body);
@@ -42,11 +39,11 @@ body::before{
 
 .top-bar{
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
-  margin-bottom:32px;background:rgba(5,13,26,0.78);backdrop-filter:blur(14px);
+  margin-bottom:32px;background:var(--card-bg);backdrop-filter:blur(14px);
   padding:12px 18px;border-radius:12px;border:1px solid var(--line-bright);
 }
 .brand-logo-wrap{
-  display:flex;align-items:center;gap:10px;background:rgba(8,20,40,0.85);
+  display:flex;align-items:center;gap:10px;background:var(--well-2);
   border:1px solid var(--line-bright);padding:6px 12px;border-radius:8px;
 }
 .tagline{font-family:var(--f-sub);font-size:10px;font-weight:700;letter-spacing:1px;
@@ -88,17 +85,17 @@ body::before{
 .door li{font-size:var(--s-xs);color:var(--mist);padding-left:16px;position:relative;}
 .door li::before{content:'▸';position:absolute;left:0;color:var(--brand-blue);}
 .door .go{
-  display:inline-flex;align-items:center;gap:6px;background:var(--brand-blue);color:#fff;
+  display:inline-flex;align-items:center;gap:6px;background:var(--brand-fill);color:var(--on-accent);
   font-family:var(--f-head);font-weight:700;font-size:13px;padding:10px 20px;border-radius:8px;
   box-shadow:0 4px 16px rgba(37,140,251,0.45);transition:all .18s;
 }
-.door:hover .go{background:#419eff;box-shadow:0 6px 20px rgba(37,140,251,0.6);}
+.door:hover .go{background:color-mix(in srgb, var(--brand-blue) 84%, var(--hover-shift));box-shadow:0 6px 20px rgba(37,140,251,0.6);}
 
 .strip{
   display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px;
 }
 @media(max-width:760px){.strip{grid-template-columns:repeat(2,1fr);}}
-.p-stat{background:rgba(6,16,34,0.5);border:1px solid var(--line);border-radius:8px;padding:10px 12px;}
+.p-stat{background:var(--well);border:1px solid var(--line);border-radius:8px;padding:10px 12px;}
 .p-k{font-size:10.5px;color:var(--mist);text-transform:uppercase;letter-spacing:.4px;font-weight:700;}
 .p-to{font-family:var(--f-sub);font-weight:800;font-size:19px;color:var(--heading);
   letter-spacing:-0.5px;margin-top:3px;}
@@ -122,7 +119,7 @@ a.brand-logo-wrap:hover{border-color:rgba(37,140,251,0.40);background:rgba(37,14
 @media(max-width:760px){.ev-row{grid-template-columns:1fr;}}
 .ev{
   display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;
-  background:rgba(6,16,34,0.5);border:1px solid var(--line);border-radius:8px;
+  background:var(--well);border:1px solid var(--line);border-radius:8px;
   padding:12px 14px;transition:.18s;
 }
 .ev:hover{border-color:rgba(37,140,251,0.40);background:rgba(37,140,251,0.10);}

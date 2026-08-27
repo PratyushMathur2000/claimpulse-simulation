@@ -77,22 +77,23 @@ if off:
 # www/ is the document root for `npm start`, verify.js and the Capacitor APK,
 # so a ../ path out of it would 404 in all three. The file is copied instead,
 # which means it can drift, which means it has to be checked.
-CANON = '../assets/css/theme.css'
-COPY  = 'www/assets/css/theme.css'
+SHARED = [('../assets/css/theme.css', 'www/assets/css/theme.css'),
+          ('../assets/js/theme.js',    'www/assets/js/theme.js')]
 drift = None
-try:
-    a = io.open(CANON, encoding='utf-8').read()
-    b = io.open(COPY,  encoding='utf-8').read()
-    if a != b:
-        drift = 'contents differ (%d vs %d bytes)' % (len(a), len(b))
-except Exception as e:
-    drift = 'could not compare: %s' % e
-
 print()
-if drift:
-    print('theme.css SYNC: FAIL - %s' % drift)
-    print('  fix with:  cp %s %s' % (CANON, COPY))
-else:
-    print('theme.css SYNC: ok - root and www/ copies are identical')
+for canon, copy in SHARED:
+    try:
+        a = io.open(canon, encoding='utf-8').read()
+        b = io.open(copy,  encoding='utf-8').read()
+        if a != b:
+            drift = '%s differs (%d vs %d bytes)' % (canon.split('/')[-1], len(a), len(b))
+    except Exception as e:
+        drift = 'could not compare %s: %s' % (canon.split('/')[-1], e)
+    name = canon.split('/')[-1]
+    if drift and name in drift:
+        print('%-12s SYNC: FAIL - %s' % (name, drift))
+        print('  fix with:  cp %s %s' % (canon, copy))
+    else:
+        print('%-12s SYNC: ok - root and www/ copies are identical' % name)
 
 sys.exit(1 if (off or drift) else 0)
