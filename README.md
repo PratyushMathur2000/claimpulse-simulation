@@ -230,12 +230,28 @@ directory URL.
 
 ### A note on the Firebase config
 
-`app/www/assets/js/sync.js` contains a Firebase **web** config, including an `apiKey`. This is
-public by design — it is a project identifier, not a credential, and Google documents it as
-safe to ship in client code. Security is enforced by `app/firestore.rules`, which confine all
-access to `rooms/{room}/claims`, cap document size, and close everything else. The project
-holds **synthetic demo claims only** and is disposable. GitHub's secret scanner flags any
-`AIza…` string generically, which is why this repository is private.
+`app/www/assets/js/sync.js` contains a Firebase **web** config, including an `apiKey`. A
+Firebase web API key is a project identifier, not a credential — Google documents it as safe
+to ship in client code, and it cannot be removed, because the browser needs it to reach the
+project at all. It is already visible in the deployed JavaScript and inside the shipped APK.
+
+What actually protects the project:
+
+- `app/firestore.rules` confines all access to `rooms/{room}/claims`, caps document size and
+  closes every other path. Everything outside that one collection is closed to the world.
+- The client loads **only** `firebase-app` and `firebase-firestore`. No Auth, no Storage, no
+  Functions are used or enabled, so Firestore is the only service this key can reach at all.
+- The project is on the free Spark plan with no billing account, so it cannot generate a cost.
+- The database holds **synthetic demo claims only** — no real policy, customer or claim data
+  has ever reached it — and the project is disposable.
+
+The blast radius of this key, in full: a stranger could read, add to or delete a queue of
+invented claims in a throwaway project. It reaches no other Google service, no other Firebase
+project, and nothing outside this repository's demo.
+
+There are no credentials anywhere in this repository or its history: no service-account JSON,
+no signing keystore, no `.env`, no access token. GitHub's secret scanner flags any `AIza…`
+string generically; this one is a false positive and can be dismissed.
 
 ---
 

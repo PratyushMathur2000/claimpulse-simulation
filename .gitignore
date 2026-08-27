@@ -1,0 +1,21 @@
+# Dependencies and build output
+node_modules/
+android/
+.firebase/
+.vercel/
+
+# Local scratch
+*.log
+local.properties
+.DS_Store
+Thumbs.db
+
+# Anything that would ever hold a real credential
+.env
+.env.*
+*.keystore
+*.jks
+*.pem
+*.p12
+serviceAccountKey*.json
+*-firebase-adminsdk-*.json
