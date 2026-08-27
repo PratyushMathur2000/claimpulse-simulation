@@ -244,7 +244,29 @@ body::before{
 
 /* === CHARTS CONTAINER SIZES === */
 .chart-box{position:relative;height:175px;width:100%;}
-.chart-box.tall{height:225px;} .chart-box.short{height:135px;}
+/* small multiples: one unit per panel, never two scales on one frame */
+.chart-pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;}
+.chart-trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.chart-box.trio{height:150px;}
+.trio-key{display:flex;gap:16px;justify-content:center;font-size:10.5px;color:var(--mist);margin-top:8px;}
+.trio-key i.sk{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;}
+.chart-unit{font-family:var(--f-sub);font-size:10px;font-weight:700;letter-spacing:0.6px;
+  text-transform:uppercase;color:var(--mist-dim);margin-bottom:2px;}
+/* the number IS the chart */
+.stat-hero{display:flex;align-items:baseline;gap:12px;margin:10px 0 12px;}
+.stat-hero-v{font-family:var(--f-sub);font-weight:800;font-size:46px;line-height:1;
+  color:var(--red);letter-spacing:-1.5px;}
+.stat-hero-v span{font-size:24px;margin-left:1px;}
+.stat-hero-k{font-size:12px;color:var(--mist);line-height:1.45;}
+.split-bar{display:flex;height:22px;border-radius:6px;overflow:hidden;gap:2px;margin-bottom:6px;}
+.split-bar-a,.split-bar-b{display:grid;place-items:center;font-family:var(--f-sub);
+  font-size:10.5px;font-weight:800;color:var(--on-status);}
+.split-bar-a{background:var(--red);}
+.split-bar-b{background:var(--mist-dim);}
+.split-key{display:flex;gap:14px;font-size:10.5px;color:var(--mist);margin-bottom:10px;}
+.split-key i.sk{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;}
+.split-key i.sk-a{background:var(--red);} .split-key i.sk-b{background:var(--mist-dim);}
+.chart-box.tall{height:225px;} .chart-box.short{height:135px;} .chart-box.tornado{height:340px;}
 
 /* === RANKED BUILD BARS === */
 .build-bars-wrap{display:flex;flex-direction:column;gap:6px;max-height:190px;overflow-y:auto;padding-right:4px;}
@@ -657,16 +679,41 @@ a.sidebar-logo:hover{border-color:var(--brand-blue);box-shadow:0 0 0 3px rgba(37
     <div class="card">
       <h3>The Underwriting Loss Squeeze <span>📉</span></h3>
       <div class="sub">Bajaj General Q1 FY27 combined ratio reached 104.7% with ₹130 Cr underwriting loss.</div>
-      <div class="chart-box"><canvas id="chartSqueeze"></canvas></div>
+      <!-- Two panels, one unit each. These were a single plot with % on the
+           left axis and ₹ Cr on the right; two scales on one frame align
+           arbitrarily and invent a correlation the data does not contain. -->
+      <div class="chart-pair">
+        <div>
+          <div class="chart-unit">Ratios · % of premium</div>
+          <div class="chart-box short"><canvas id="chartSqueeze"></canvas></div>
+        </div>
+        <div>
+          <div class="chart-unit">Underwriting loss · ₹ Cr</div>
+          <div class="chart-box short"><canvas id="chartSqueezeLoss"></canvas></div>
+        </div>
+      </div>
     </div>
 
     <div class="card">
       <h3>Customer Grievance Concentration <span>👥</span></h3>
       <div class="sub">Claims drive 69% of all policyholder grievances on IRDAI Bima Bharosa.</div>
-      <div class="chart-box short"><canvas id="chartGrievance"></canvas></div>
+      <!-- Was a two-slice doughnut. With one number to say, the number is the
+           chart; the bar underneath carries the part-to-whole at a glance. -->
+      <div class="stat-hero">
+        <div class="stat-hero-v">69<span>%</span></div>
+        <div class="stat-hero-k">of all policyholder grievances<br>are claims-related</div>
+      </div>
+      <div class="split-bar" role="img" aria-label="69% claims-related, 31% other themes">
+        <div class="split-bar-a" style="width:69%;">69%</div>
+        <div class="split-bar-b" style="width:31%;">31%</div>
+      </div>
+      <div class="split-key">
+        <span><i class="sk sk-a"></i>Claims-related</span>
+        <span><i class="sk sk-b"></i>Other themes</span>
+      </div>
       <div class="pill-row">
         <div class="pill"><b>257,790</b>Grievances (+20% YoY)</div>
-        <div class="pill"><b>69%</b>Claims-related</div>
+        <div class="pill"><b>+20%</b>Year on year</div>
       </div>
     </div>
   </div>
@@ -1182,7 +1229,27 @@ a.sidebar-logo:hover{border-color:var(--brand-blue);box-shadow:0 0 0 3px rgba(37
     </div>
 
     <div class="grid2">
-      <div><div class="chart-box"><canvas id="chartCompound"></canvas></div></div>
+      <!-- Was one plot carrying ₹ Cr, Months and pp on a single zero-based
+           axis, which flattened Payback and CR Relief into stubs beside the
+           ₹ Cr bars. One unit per panel; each keeps its own scale. -->
+      <div><div class="chart-trio">
+        <div>
+          <div class="chart-unit">Net annual · ₹ Cr</div>
+          <div class="chart-box trio"><canvas id="chartCmpNet"></canvas></div>
+        </div>
+        <div>
+          <div class="chart-unit">Payback · months</div>
+          <div class="chart-box trio"><canvas id="chartCmpPb"></canvas></div>
+        </div>
+        <div>
+          <div class="chart-unit">CR relief · pp</div>
+          <div class="chart-box trio"><canvas id="chartCmpCr"></canvas></div>
+        </div>
+      </div>
+      <div class="trio-key">
+        <span><i class="sk" style="background:var(--brand-blue);"></i>Base case</span>
+        <span><i class="sk" style="background:var(--red);"></i>Simulated stress</span>
+      </div></div>
       <div>
         <table>
           <thead><tr><th>Stress Metric</th><th>Base Case</th><th>Simulated Stress Outcome</th></tr></thead>
@@ -1203,8 +1270,10 @@ a.sidebar-logo:hover{border-color:var(--brand-blue);box-shadow:0 0 0 3px rgba(37
   <div class="grid21">
     <div class="card">
       <h3>13-Scenario Impact Ranking (Tornado Sensitivity) <span>📊</span></h3>
-      <div class="sub">Delta vs. Base Case (₹ Cr/Year) across all 13 scenario-intensity combinations.</div>
-      <div class="chart-box tall"><canvas id="chartTornado"></canvas></div>
+      <div class="sub">Delta vs. Base Case (₹ Cr/Year) across all 13 scenario-intensity combinations.
+        Twelve are monetised; S3 (explainability) carries no rupee impact.
+        <b class="hl-green">Only one scenario moves the result materially.</b></div>
+      <div class="chart-box tornado"><canvas id="chartTornado"></canvas></div>
     </div>
     <div class="card">
       <h3>Fraud Recovery Curve (62% to 90%) <span>📉</span></h3>
@@ -1805,14 +1874,16 @@ function updateStress(){
   setText('st-out-cr',fmt(cr)+' pp');
   setText('stressVerdict',net>0?'STILL ACCRETIVE: ₹'+fmt(net)+' Cr / Yr':'NEGATIVE ROI');
   
-  if(chartCompound){
-    chartCompound.data.datasets[1].data=[net,net>0?pb:50,cr];
-    chartCompound.update('none');
+  if(chartCmpNet){
+    chartCmpNet.data.datasets[0].data[1]=net;
+    chartCmpPb .data.datasets[0].data[1]=net>0?pb:50;
+    chartCmpCr .data.datasets[0].data[1]=cr;
+    [chartCmpNet,chartCmpPb,chartCmpCr].forEach(c=>c.update('none'));
   }
 }
 
 /* =============== CHARTS INITIALIZATION =============== */
-let chartSqueeze,chartGrievance,chartTornado,chartCompound,chartFraudCurve,chartSimLane,
+let chartSqueeze,chartSqueezeLoss,chartTornado,chartCmpNet,chartCmpPb,chartCmpCr,chartFraudCurve,chartSimLane,
     chartBenefit,chartForecast,chartRun,chartBuyBuild;
 
 const CFS=1;
@@ -1851,43 +1922,80 @@ function initCharts(){
     usePointStyle:true
   };
 
+  /* Mark specs, set once: 4px rounded data-ends and a thickness cap, so
+     bars read thin rather than as heavy saturated blocks. */
+  Chart.defaults.elements.bar.borderRadius = 4;
+  Chart.defaults.elements.bar.borderSkipped = 'bottom';
+  Chart.defaults.datasets.bar.maxBarThickness = 44;
+
   const L={labels:{boxWidth:9,font:{size:10*CFS}}};
 
-  // 1. chartSqueeze
+  // 1. chartSqueeze - ratios only, one unit, one axis
   chartSqueeze=new Chart(document.getElementById('chartSqueeze'),{
+    type:'bar',
     data:{labels:['Q1 FY26','Q1 FY27'],
       datasets:[
-        {type:'bar',label:'Combined Ratio %',data:[103.6,104.7],backgroundColor:[cssVar('--brand-blue-mid'),cssVar('--red')],yAxisID:'y',order:2},
-        {type:'bar',label:'Net Incurred Ratio %',data:[71.1,74.3],backgroundColor:[cssVar('--brand-blue'),cssVar('--gold')],yAxisID:'y',order:2},
-        {type:'line',label:'Underwriting Loss (₹ Cr)',data:[116,130],borderColor:cssVar('--green'),borderWidth:2.5,pointRadius:4,pointBackgroundColor:cssVar('--green'),yAxisID:'y1',order:1}
+        {label:'Combined Ratio %',    data:[103.6,104.7], backgroundColor:cssVar('--brand-blue')},
+        {label:'Net Incurred Ratio %',data:[71.1,74.3],   backgroundColor:cssVar('--cyan')}
       ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:L},
-      scales:{y:{grid:GRID,title:{display:true,text:'%',font:{size:9.5*CFS}},min:60},y1:{position:'right',grid:NOGRID,title:{display:true,text:'₹ Cr',font:{size:9.5*CFS}},min:0},x:{grid:NOGRID}}}
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:16}},
+      plugins:{legend:L,datalabels:DL(v=>v.toFixed(1)+'%',{anchor:'end',align:'top',offset:2})},
+      scales:{y:{grid:GRID,title:{display:true,text:'%',font:{size:9.5*CFS}},min:60},x:{grid:NOGRID}}}
   });
 
-  // 2. chartGrievance
-  chartGrievance=new Chart(document.getElementById('chartGrievance'),{
-    type:'doughnut',
-    data:{labels:['Claims-Related (69%)','Other Themes (31%)'],datasets:[{data:[69,31],backgroundColor:[cssVar('--red'),cssVar('--mist-dim')],borderColor:cssVar('--dark-bg'),borderWidth:2}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,font:{size:10*CFS}}},datalabels:DL(v=>v+'%',{color:cssVar('--on-accent'),font:{size:11*CFS,weight:'700'}})}}
+  // 1b. chartSqueezeLoss - the second unit, its own frame
+  chartSqueezeLoss=new Chart(document.getElementById('chartSqueezeLoss'),{
+    type:'bar',
+    data:{labels:['Q1 FY26','Q1 FY27'],
+      datasets:[{label:'Underwriting Loss (₹ Cr)',data:[116,130],
+        backgroundColor:[cssVar('--mist-dim'),cssVar('--red')]}]},
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:16}},
+      plugins:{legend:NOGRID,datalabels:DL(v=>'₹'+v,{anchor:'end',align:'top',offset:2})},
+      scales:{y:{grid:GRID,title:{display:true,text:'₹ Cr',font:{size:9.5*CFS}},beginAtZero:true},x:{grid:NOGRID}}}
   });
+
+  // 2. chartGrievance - removed. Two slices is a stat tile, not a doughnut.
 
   // 3. chartTornado
-  const TOR=[['Synthetic Neutralisation',-23.49],['Partial Synthetic Erosion',-10.90],['Digital Lag L1',-1.21],['Digital Surge L3',1.57]];
+  /* All twelve monetised scenario-intensity combinations from Part B of the
+     workbook's "8. Scenario Simulation" sheet, sorted by impact. The eight
+     zero-delta rows are the point, not padding: they are what "robust" looks
+     like. S4 still moves TAT and S5 still moves build cost - neither changes
+     net annual benefit, which is what this axis measures. */
+  const TOR=[
+    ['S2 L3 · Detection neutralised',   -23.4858],
+    ['S2 L2 · Partial erosion',         -10.9041],
+    ['S1 L1 · Digital expectation L1',   -1.2109],
+    ['S2 L1 · Evidence gate holds',       0],
+    ['S4 L1 · Repair net unconnected',    0],
+    ['S4 L2 · Partial API connectivity',  0],
+    ['S4 L3 · Repair net connected',      0],
+    ['S5 L1 · No new AI rule',            0],
+    ['S5 L2 · EU AI Act lower bound',     0],
+    ['S5 L3 · EU AI Act upper bound',     0],
+    ['S1 L2 · Established (base)',        0],
+    ['S1 L3 · Digital-first accelerated', 1.5741]
+  ];
   chartTornado=new Chart(document.getElementById('chartTornado'),{
     type:'bar',
     data:{labels:TOR.map(t=>t[0]),datasets:[{data:TOR.map(t=>t[1]),backgroundColor:TOR.map(t=>t[1]<0?cssVar('--red'):cssVar('--green'))}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,layout:{padding:{right:45,left:10}},plugins:{legend:NOGRID,datalabels:DL(v=>(v>0?'+':'')+v.toFixed(2)+' Cr',{anchor:'end',align:'end',offset:4,color:DLC})},scales:{x:{grid:GRID,suggestedMin:-26,suggestedMax:4},y:{grid:NOGRID,ticks:{font:{size:9.5*CFS}}}}}
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,layout:{padding:{right:45,left:10}},plugins:{legend:NOGRID,datalabels:DL(v=>v===0?'no change':(v>0?'+':'')+v.toFixed(2)+' Cr',{anchor:'end',align:'end',offset:4,color:DLC})},scales:{x:{grid:GRID,suggestedMin:-26,suggestedMax:6},y:{grid:NOGRID,ticks:{font:{size:9*CFS}}}}}
   });
 
-  // 4. chartCompound
-  chartCompound=new Chart(document.getElementById('chartCompound'),{
+  // 4. chartCompound - three units, three frames. A shared factory so the
+  //    panels cannot drift apart; only the id, formatter and data differ.
+  const cmpPanel=(id,base,stress,fmt)=>new Chart(document.getElementById(id),{
     type:'bar',
-    data:{labels:['Net Annual (₹ Cr)','Payback (Mo)','CR Relief (pp)'],
-      datasets:[{label:'Base Case',data:[43.31,2.74,2.58],backgroundColor:cssVar('--brand-blue')},
-                {label:'Simulated Stress',data:[25.01,5.70,1.48],backgroundColor:cssVar('--red')}]},
-    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:18}},plugins:{legend:L,datalabels:DL(v=>v.toFixed(2),{anchor:'end',align:'top',offset:2})},scales:{y:{grid:GRID,beginAtZero:true},x:{grid:NOGRID}}}
+    data:{labels:['Base','Stress'],
+      datasets:[{data:[base,stress],backgroundColor:[cssVar('--brand-blue'),cssVar('--red')]}]},
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:18}},
+      plugins:{legend:NOGRID,datalabels:DL(fmt,{anchor:'end',align:'top',offset:2})},
+      scales:{y:{grid:GRID,beginAtZero:true,ticks:{font:{size:9.5*CFS}}},
+              x:{grid:NOGRID,ticks:{font:{size:10*CFS}}}}}
   });
+  chartCmpNet=cmpPanel('chartCmpNet',43.31,25.01,v=>'₹'+v.toFixed(2));
+  chartCmpPb =cmpPanel('chartCmpPb', 2.74, 5.70, v=>v.toFixed(2));
+  chartCmpCr =cmpPanel('chartCmpCr', 2.58, 1.48, v=>v.toFixed(2));
 
   // 5. chartFraudCurve
   const fdL=[],fdD=[];
@@ -1901,7 +2009,7 @@ function initCharts(){
       {type:'line',label:'Net Benefit (₹ Cr)',data:fdD,borderColor:cssVar('--brand-blue'),backgroundColor:'rgba(37,140,251,0.15)',fill:true,borderWidth:2,pointRadius:0,tension:.25},
       {type:'line',label:'Selected',data:fdL.map(l=>l===90?fdD[fdD.length-1]:null),borderColor:cssVar('--gold'),pointRadius:6,pointBackgroundColor:cssVar('--gold'),showLine:false}
     ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:NOGRID,datalabels:DL(null,{formatter:(v,c)=>c.datasetIndex===1&&v!=null?'₹'+v.toFixed(2)+' Cr':'',anchor:'end',align:'top',offset:4,color:cssVar('--gold')})},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:L,datalabels:DL(null,{formatter:(v,c)=>c.datasetIndex===1&&v!=null?'₹'+v.toFixed(2)+' Cr':'',anchor:'end',align:'top',offset:4,color:cssVar('--gold')})},
       scales:{y:{grid:GRID,beginAtZero:true},x:{grid:NOGRID,title:{display:true,text:'Fraud Recovery %',font:{size:9*CFS}}}}}
   });
 
@@ -1921,7 +2029,7 @@ function initCharts(){
         {label:'Cumulative Net (₹ Cr)',data:[-9.89,7.45,50.43,101.60],borderColor:cssVar('--green'),backgroundColor:'rgba(16,185,129,0.15)',fill:true,borderWidth:2.2,pointRadius:4,pointBackgroundColor:cssVar('--green'),tension:.2,yAxisID:'y'},
         {type:'bar',label:'In-Year Net (₹ Cr)',data:[null,17.34,42.97,51.17],backgroundColor:'rgba(37,140,251,0.5)',yAxisID:'y'}
       ]},
-    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:16}},plugins:{legend:L,datalabels:DL(v=>v==null?'':'₹'+v.toFixed(1),{anchor:'end',align:'top',offset:3})},scales:{y:{grid:GRID,title:{display:true,text:'₹ Cr',font:{size:9.5*CFS}}},x:{grid:NOGRID}}}
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:16}},plugins:{legend:L,datalabels:DL((v,c)=>(v==null||c.dataIndex!==c.dataset.data.length-1)?'':'₹'+v.toFixed(1),{anchor:'end',align:'top',offset:3})},scales:{y:{grid:GRID,title:{display:true,text:'₹ Cr',font:{size:9.5*CFS}}},x:{grid:NOGRID}}}
   });
 
   // 8. chartRun
@@ -2059,10 +2167,10 @@ function testProfile(k){
 
 /* =============== ANIMATIONS & PAGE SWITCHING =============== */
 const PAGE_CHARTS = {
-  1: () => [chartSqueeze, chartGrievance],
+  1: () => [chartSqueeze, chartSqueezeLoss],
   2: () => [chartSimLane],
   3: () => [chartBenefit, chartForecast, chartRun, chartBuyBuild],
-  4: () => [chartCompound, chartTornado, chartFraudCurve],
+  4: () => [chartCmpNet, chartCmpPb, chartCmpCr, chartTornado, chartFraudCurve],
   5: () => [],
   6: () => []
 };
@@ -2166,7 +2274,7 @@ document.addEventListener('keydown',e=>{
    theme change destroys before it rebuilds. Re-running the same sequence the
    page boots with keeps a repaint identical to a fresh load. */
 function repaintCharts(){
-  [chartSqueeze,chartGrievance,chartTornado,chartCompound,chartFraudCurve,
+  [chartSqueeze,chartSqueezeLoss,chartTornado,chartCmpNet,chartCmpPb,chartCmpCr,chartFraudCurve,
    chartSimLane,chartBenefit,chartForecast,chartRun,chartBuyBuild]
     .forEach(c=>{ try{ c && c.destroy(); }catch(e){} });
   initCharts(); renderTrends('all'); renderStatic(); renderBuildBars();
