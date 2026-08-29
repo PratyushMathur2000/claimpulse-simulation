@@ -1,0 +1,252 @@
+/* =====================================================================
+   ClaimPulse · Layout — the shell, the rail, the wings
+   ---------------------------------------------------------------------
+   The shell is a three-part grid: a fixed top bar, a persistent rail and
+   a scrolling main column. The rail carries the two wings, because the
+   whole point of one application is that crossing from the argument to
+   the product should not feel like leaving.
+
+   Grid splits use the golden ratio (1 : 1.618) wherever a layout has a
+   subordinate column and a dominant one, so the asymmetry is felt rather
+   than noticed.
+   ===================================================================== */
+
+.shell {
+  display: grid;
+  grid-template-columns: var(--rail-w) 1fr;
+  grid-template-rows: var(--topbar-h) 1fr;
+  grid-template-areas: "brand topbar" "rail main";
+  min-height: 100vh;
+  position: relative; z-index: 1;   /* above the aurora ground */
+}
+/* A grid item's default min-width is auto, so one wide child can push a
+   1fr track past the viewport. Every shell child opts out of that. */
+.shell > * { min-width: 0; }
+
+/* ---------------- Top bar ---------------- */
+.brandbar {
+  grid-area: brand;
+  display: flex; align-items: center; gap: var(--s-4);
+  padding: 0 var(--s-5);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 74%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+}
+.topbar {
+  grid-area: topbar;
+  display: flex; align-items: center; gap: var(--s-5);
+  padding: 0 var(--s-6);
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  position: sticky; top: 0; z-index: 40;
+}
+
+/* The menu button occupies the brand cell. Three bars that become an
+   arrow when the rail is collapsed, so the control states what it will
+   do rather than what it is. */
+.railbtn {
+  width: 40px; height: 40px; border-radius: var(--r-3);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background var(--t-fast) var(--ease);
+}
+.railbtn:hover { background: var(--surface-sunken); }
+.railbtn .bars { display: block; width: 19px; height: 14px; position: relative; }
+.railbtn .bars i {
+  position: absolute; left: 0; height: 2px; border-radius: 2px;
+  background: var(--ink); display: block;
+  transition: width var(--t-base) var(--ease-out), transform var(--t-base) var(--ease-out);
+}
+.railbtn .bars i:nth-child(1) { top: 0;  width: 19px; }
+.railbtn .bars i:nth-child(2) { top: 6px; width: 19px; }
+.railbtn .bars i:nth-child(3) { top: 12px; width: 19px; }
+.shell[data-rail="collapsed"] .railbtn .bars i:nth-child(1) { width: 13px; transform: translate(6px,0) rotate(0); }
+.shell[data-rail="collapsed"] .railbtn .bars i:nth-child(3) { width: 13px; transform: translate(6px,0) rotate(0); }
+.shell[data-rail="collapsed"] .railbtn:hover .bars i:nth-child(1) { transform: translate(6px,0); }
+
+/* ---------------- Rail ---------------- */
+.rail {
+  grid-area: rail;
+  border-right: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  padding: var(--s-6) var(--s-4) var(--s-6);
+  display: flex; flex-direction: column; gap: var(--s-6);
+  position: sticky; top: var(--topbar-h);
+  height: calc(100vh - var(--topbar-h));
+  overflow-y: auto;
+}
+.rail-group { display: flex; flex-direction: column; gap: var(--s-2); }
+.rail-label {
+  font-size: var(--fs-xs); font-weight: 700;
+  letter-spacing: var(--tracking-caps); text-transform: uppercase;
+  color: var(--ink-faint);
+  padding: 0 var(--s-4) var(--s-3);
+}
+.rail-link {
+  display: flex; align-items: center; gap: var(--s-4);
+  padding: var(--s-4) var(--s-4);
+  border-radius: var(--r-3);
+  color: var(--ink-muted);
+  font-size: var(--fs-sm); font-weight: 550;
+  border: 1px solid transparent;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+  text-align: left; width: 100%;
+}
+.rail-link:hover { background: var(--surface-2); color: var(--ink); text-decoration: none; }
+.rail-link .ico { width: 17px; height: 17px; flex: 0 0 auto; opacity: .8; }
+.rail-link[aria-current="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 22%, transparent);
+  font-weight: 640;
+}
+.rail-link[aria-current="true"] .ico { opacity: 1; }
+.rail-foot {
+  margin-top: auto;
+  padding: var(--s-5) var(--s-4) var(--s-2);
+  border-top: 1px solid var(--border-faint);
+  display: flex; flex-direction: column; gap: var(--s-5);
+}
+
+/* ---------------- Collapsed rail ----------------
+   The rail keeps its icons and loses its words. Everything stays in the
+   same place, so a collapse never costs the reader their bearings. */
+.shell[data-rail="collapsed"] { grid-template-columns: var(--rail-w-collapsed) 1fr; }
+.shell[data-rail="collapsed"] .rail { padding-left: var(--s-3); padding-right: var(--s-3); }
+.shell[data-rail="collapsed"] .rail-link {
+  justify-content: center; padding-left: 0; padding-right: 0;
+}
+.shell[data-rail="collapsed"] .rail-link > :not(.ico),
+.shell[data-rail="collapsed"] .rail-label > span,
+.shell[data-rail="collapsed"] .rail-note { display: none; }
+.shell[data-rail="collapsed"] .rail-label {
+  text-align: center; padding: 0 0 var(--s-3);
+}
+.shell[data-rail="collapsed"] .rail-label::after {
+  content: ''; display: block; height: 1px; margin: 0 auto;
+  width: 20px; background: var(--border-strong);
+}
+.shell[data-rail="collapsed"] .brandbar { justify-content: center; padding: 0; }
+.brandbar { justify-content: center; }
+.shell[data-rail="collapsed"] .theme-toggle { flex-direction: column; }
+.shell[data-rail="collapsed"] .rail-foot { align-items: center; }
+
+/* A collapsed rail-link shows its label as a floating chip on hover */
+.rail-link { position: relative; }
+.shell[data-rail="collapsed"] .rail-link::after {
+  content: attr(data-label);
+  position: absolute; left: calc(100% + var(--s-4)); top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  background: var(--surface-raised); color: var(--ink);
+  border: 1px solid var(--border-strong); border-radius: var(--r-2);
+  box-shadow: var(--shadow-2);
+  padding: var(--s-3) var(--s-4); font-size: var(--fs-xs); font-weight: 600;
+  white-space: nowrap; pointer-events: none; z-index: 70;
+  opacity: 0; transition: opacity var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.shell[data-rail="collapsed"] .rail-link:hover::after { opacity: 1; transform: translateY(-50%); }
+
+/* ---------------- Main ---------------- */
+.main {
+  grid-area: main;
+  min-width: 0;
+  padding: var(--s-7) var(--s-7) var(--s-9);
+}
+.view { max-width: var(--content-max); margin: 0 auto; min-width: 0; }
+.card, .tile { min-width: 0; }
+
+/* Every grid and stack child opts out of the automatic min-width, so a
+   wide table or diagram scrolls inside its own card instead of pushing
+   the page sideways. This is the whole of the horizontal-overflow story. */
+.g-2 > *, .g-3 > *, .g-4 > *, .g-phi > *, .g-phi-r > *, .g-auto > *,
+.stack > *, .stack-4 > *, .stack-6 > * { min-width: 0; }
+.tbl-wrap { max-width: 100%; }
+
+.view-head { margin-bottom: var(--s-7); }
+.view-head h1 { font-size: var(--fs-2xl); margin-bottom: var(--s-4); }
+
+/* ---------------- Grids · golden-ratio splits ---------------- */
+.g-2      { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--s-6); }
+.g-3      { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: var(--s-6); }
+.g-4      { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: var(--s-5); }
+.g-phi    { display: grid; grid-template-columns: 1fr 1.618fr; gap: var(--s-6); }
+.g-phi-r  { display: grid; grid-template-columns: 1.618fr 1fr; gap: var(--s-6); }
+.g-auto   { display: grid; grid-template-columns: repeat(auto-fit, minmax(232px,1fr)); gap: var(--s-5); }
+
+@media (max-width: 1280px) {
+  .g-phi, .g-phi-r, .g-3 { grid-template-columns: 1fr; }
+  .g-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 900px) {
+  .shell {
+    grid-template-columns: var(--topbar-h) 1fr;
+    grid-template-areas: "brand topbar" "main main";
+  }
+  .brandbar { padding: 0; }
+  .rail {
+    position: fixed; inset: var(--topbar-h) auto 0 0;
+    width: min(84vw, var(--rail-w)); z-index: 60;
+    transform: translateX(-102%);
+    transition: transform var(--t-base) var(--ease-out);
+    box-shadow: var(--shadow-3);
+  }
+  .rail[data-open="true"] { transform: none; }
+  .main { padding: var(--s-6) var(--s-5) var(--s-8); }
+  .g-2 { grid-template-columns: 1fr; }
+  /* The institution badge is context, not navigation — it goes first */
+  .topbar .badge { display: none; }
+  .topbar { padding: 0 var(--s-5); gap: var(--s-4); }
+  .topbar .grow > * { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* Levers stop being sticky once they are stacked above the results */
+  .g-phi > .card:first-child { position: static !important; }
+}
+@media (max-width: 620px) {
+  .g-4 { grid-template-columns: 1fr; }
+  .main { padding: var(--s-5) var(--s-4) var(--s-8); }
+  :root { --fs-2xl: 27.5px; --fs-3xl: 35px; --fs-display: 46px; }
+}
+
+/* Scrim behind the mobile rail */
+.scrim {
+  position: fixed; inset: 0; z-index: 55;
+  background: rgba(6,12,22,.5);
+  backdrop-filter: blur(2px);
+  opacity: 0; pointer-events: none;
+  transition: opacity var(--t-base) var(--ease);
+}
+.scrim[data-open="true"] { opacity: 1; pointer-events: auto; }
+
+/* The rail toggle is always available — it collapses the rail on a wide
+   screen and opens the drawer on a narrow one. */
+/* the old topbar toggle is gone — the brand cell carries it now */
+
+/* ---------------- Bajaj lockup ----------------
+   Rendered as a mask so the official mark takes the brand blue on the
+   light ground and reverses to white on the dark one, rather than
+   sitting on a hard blue plate in both. */
+.bajaj {
+  width: 116px; height: 31px; flex: 0 0 auto;
+  background-color: var(--bajaj-800);
+  -webkit-mask: url('../img/bajaj-finserv.svg') center / contain no-repeat;
+  mask: url('../img/bajaj-finserv.svg') center / contain no-repeat;
+}
+:root[data-theme="dark"] .bajaj { background-color: #FFFFFF; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .bajaj { background-color: #FFFFFF; }
+}
+.bajaj-wrap {
+  display: flex; align-items: center; gap: var(--s-4);
+  padding-left: var(--s-5); border-left: 1px solid var(--border);
+}
+.bajaj-wrap .cap {
+  font-size: 9.5px; font-weight: 700; line-height: 1.3;
+  letter-spacing: var(--tracking-caps); text-transform: uppercase;
+  color: var(--ink-faint); white-space: nowrap;
+}
+@media (max-width: 760px) { .bajaj-wrap .cap { display: none; } }
+@media (max-width: 560px) { .bajaj { width: 88px; height: 24px; } }
