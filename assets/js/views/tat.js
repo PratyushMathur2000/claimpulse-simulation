@@ -19,17 +19,26 @@ const ViewTat = (() => {
      splits are our own operational read of the workflow map, not
      workbook inputs — the screen says so rather than implying otherwise. */
   const ABSORBED = [
-    ['Document collection and chase', 0.32, 'var(--d1)'],
-    ['Manual verification',           0.24, 'var(--d3)'],
-    ['Survey coordination',           0.20, 'var(--d4)'],
-    ['Approval routing',              0.14, 'var(--d7)'],
-    ['Status calls to claimants',     0.10, 'var(--d5)']
+    { label: 'Document collection & chase', share: 0.32, color: 'var(--d1)',
+      d: 'Automated via instant WhatsApp intake, Document AI OCR extraction, and live tamper-proof capture.' },
+    { label: 'Manual policy & coverage check', share: 0.24, color: 'var(--d3)',
+      d: 'Gate 00 and Policy Engine verify active status, deductibles, endorsements, and coverage limits automatically.' },
+    { label: 'Survey coordination & dispatch', share: 0.20, color: 'var(--d4)',
+      d: 'Replaced by AI computer-vision damage appraisal and garage estimate matching for claims under ₹50,000.' },
+    { label: 'Multi-tier approval routing', share: 0.14, color: 'var(--d7)',
+      d: 'Straight-through automated decisioning for Green Lane claims without multi-level manual sign-offs.' },
+    { label: 'Status calls & claimant follow-up', share: 0.10, color: 'var(--d5)',
+      d: 'Real-time proactive claimant tracking on WhatsApp eliminating reactive inbound contact center traffic.' }
   ];
   const REDEPLOYED = [
-    ['Complex and disputed claims',      0.35, 'var(--dom-cap)'],
-    ['Claims above the ₹50,000 corridor',0.25, 'var(--dom-ops)'],
-    ['Fraud investigation',              0.22, 'var(--dom-ai)'],
-    ['Customer recovery and renewal',    0.18, 'var(--dom-cust)']
+    { label: 'Complex & disputed claims', share: 0.35, color: 'var(--dom-cap)',
+      d: 'Adjusters spend dedicated investigation time on contested liabilities, major total-loss cases, and third-party claims.' },
+    { label: 'Claims above ₹50,000 corridor', share: 0.25, color: 'var(--dom-ops)',
+      d: 'Licensed surveyors and senior officers focus on heavy structural damages where physical inspection truly adds value.' },
+    { label: 'Organized fraud ring investigation', share: 0.22, color: 'var(--dom-ai)',
+      d: 'Cross-insurer syndicate detection, synthetic image forensics, and repeat staged-accident prosecution.' },
+    { label: 'Customer recovery & renewal concierge', share: 0.18, color: 'var(--dom-cust)',
+      d: 'Proactive outreach to distressed policyholders to deliver high-touch service and protect annual renewal retention.' }
   ];
 
   function render(host) {
@@ -62,11 +71,11 @@ const ViewTat = (() => {
             el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' },
               text: 'What the platform absorbs, and what the team picks up instead' }),
             el('div.small.muted', { style: { marginTop: 'var(--s-2)' },
-              text: fmt.n1(r.fteReleased) + ' FTE of capacity, moving left to right. Hover any ribbon.' })
+              text: fmt.n1(r.fteReleased) + ' FTE of capacity, moving left to right. Hover any ribbon or bar for operational context.' })
           ]),
           UI.dchip('split is operational, not workbook', 'ai')
         ]),
-        el('div.dtable-wrap', {}, [el('div', { id: 'tatSankey', style: { minWidth: '840px' } })]),
+        el('div.dtable-wrap', {}, [el('div', { id: 'tatSankey', style: { minWidth: '920px' } })]),
         el('div', { id: 'tatChainCells', style: { marginTop: 'var(--s-6)' } })
       ]),
 
@@ -155,9 +164,9 @@ const ViewTat = (() => {
 
     /* ---------------- the sankey ---------------- */
     Charts.sankey($('#tatSankey'), {
-      left:  ABSORBED.map(([label, sh, c]) => ({ label, value: r.fteReleased * sh, color: c })),
-      right: REDEPLOYED.map(([label, sh, c]) => ({ label, value: r.fteReleased * sh, color: c })),
-      height: 320, unit: 'FTE'
+      left:  ABSORBED.map(it => ({ label: it.label, value: r.fteReleased * it.share, color: it.color, d: it.d })),
+      right: REDEPLOYED.map(it => ({ label: it.label, value: r.fteReleased * it.share, color: it.color, d: it.d })),
+      height: 340, unit: 'FTE'
     });
 
     mount($('#tatChainCells'), [

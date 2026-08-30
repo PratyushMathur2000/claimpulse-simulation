@@ -657,23 +657,34 @@ Charts.contrib = function (host, parts) {
 
   /* -------------------------------------------------------------------
      SANKEY · where capacity goes
-     A deliberately small implementation: one source column, one middle,
-     one destination column. That is the shape of the capacity argument,
-     and a general sankey would be more code for no more meaning.
+     A clean three-tier flow: sources (automated) -> links -> destinations (repurposed).
+     Ample margins prevent text clipping, and nodes/ribbons provide deep context.
      ------------------------------------------------------------------- */
-  Charts.sankey = function (host, { left, right, height = 300, unit = 'FTE' }) {
-    const W = 900, H = height, s = svgOf(host, W, H);
-    const colW = 15, m = { t: 22, b: 22 };
+  Charts.sankey = function (host, { left, right, height = 340, unit = 'FTE' }) {
+    const W = 1060, H = height, s = svgOf(host, W, H);
+    const colW = 16, m = { t: 36, b: 24 };
     const ih = H - m.t - m.b;
     const totalL = left.reduce((a, x) => a + x.value, 0);
     const totalR = right.reduce((a, x) => a + x.value, 0);
-    const xL = 168, xR = W - 168;
-    const gapL = 6, gapR = 6;
+    const xL = 248, xR = W - 248;
+    const gapL = 8, gapR = 8;
+
+    // Column titles
+    s.appendChild(el('text', {
+      class: 'lbl-axis', x: xL, y: 16, 'text-anchor': 'end',
+      'font-size': 10.5, 'font-weight': 700, 'letter-spacing': 'var(--tracking-caps)',
+      fill: 'var(--ink-muted)', text: 'REPETITIVE WORK AUTOMATED (SOURCES)'
+    }));
+    s.appendChild(el('text', {
+      class: 'lbl-axis', x: xR - colW, y: 16, 'text-anchor': 'start',
+      'font-size': 10.5, 'font-weight': 700, 'letter-spacing': 'var(--tracking-caps)',
+      fill: 'var(--ink-muted)', text: 'CAPACITY REPURPOSED INTO (DESTINATIONS)'
+    }));
 
     function stackOf(items, total, gap) {
       let y = m.t; const out = [];
       items.forEach(it => {
-        const h = Math.max((it.value / total) * (ih - gap * (items.length - 1)), 6);
+        const h = Math.max((it.value / total) * (ih - gap * (items.length - 1)), 10);
         out.push({ ...it, y, h }); y += h + gap;
       });
       return out;
@@ -689,32 +700,50 @@ Charts.contrib = function (host, parts) {
         const h = l.h * share;
         const y0 = cy, y1 = cursorR[ri];
         const c = W / 2;
+        const flowVal = l.value * share;
         const path = el('path', {
           d: `M${xL + colW},${y0} C${c},${y0} ${c},${y1} ${xR - colW},${y1}
               L${xR - colW},${y1 + h} C${c},${y1 + h} ${c},${y0 + h} ${xL + colW},${y0 + h} Z`,
-          fill: l.color, opacity: 0, style: 'mix-blend-mode:normal' });
+          fill: l.color, opacity: 0, style: 'mix-blend-mode:normal; cursor:pointer' });
         s.appendChild(path);
         requestAnimationFrame(() => {
           path.style.transition = 'opacity 700ms ease ' + (li * 90 + ri * 45) + 'ms';
-          path.setAttribute('opacity', '.20');
+          path.setAttribute('opacity', '.22');
         });
         path.addEventListener('mousemove', e => tip.show(e.clientX, e.clientY,
-          l.label + ' → ' + r.label, [[unit, fmt.n1(l.value * share)]]));
+          `${l.label} → ${r.label}`, [
+            ['Capacity transfer', `${fmt.n1(flowVal)} ${unit} (${fmt.pct(flowVal / totalL, 1)} of released)`],
+            ['Automated source', l.d || 'Redundant manual effort eliminated by AI automation'],
+            ['High-value destination', r.d || 'Specialized capacity redeployed to complex human tasks']
+          ]));
         path.addEventListener('mouseleave', tip.hide);
         cy += h; cursorR[ri] += h;
       });
     });
 
-    [[L, xL, 'end', -12], [R, xR - colW, 'start', colW + 12]].forEach(([col, x, anch, dx]) => {
+    [[L, xL, 'end', -14, totalL], [R, xR - colW, 'start', colW + 14, totalR]].forEach(([col, x, anch, dx, tot]) => {
       col.forEach(n => {
-        s.appendChild(el('rect', { x, y: n.y, width: colW, height: n.h, rx: 4, fill: n.color,
-          style: 'filter:drop-shadow(0 0 8px ' + n.color + ')' }));
-        s.appendChild(el('text', { x: x + dx, y: n.y + n.h / 2 - 3, 'text-anchor': anch,
-          'font-size': 11.5, 'font-weight': 640, fill: 'var(--ink)',
-          text: n.label.length > 30 ? n.label.slice(0, 29) + '…' : n.label }));
-        s.appendChild(el('text', { x: x + dx, y: n.y + n.h / 2 + 11, 'text-anchor': anch,
-          'font-size': 10.5, 'font-weight': 600, fill: 'var(--ink-faint)',
-          text: fmt.n1(n.value) + ' ' + unit }));
+        const barRect = el('rect', { x, y: n.y, width: colW, height: n.h, rx: 4, fill: n.color,
+          style: 'filter:drop-shadow(0 0 8px ' + n.color + '); cursor:pointer' });
+        s.appendChild(barRect);
+
+        const lbl1 = el('text', { x: x + dx, y: n.y + n.h / 2 - 3, 'text-anchor': anch,
+          'font-size': 11.5, 'font-weight': 620, fill: 'var(--ink)', style: 'cursor:pointer',
+          text: n.label });
+        const lbl2 = el('text', { x: x + dx, y: n.y + n.h / 2 + 11, 'text-anchor': anch,
+          'font-size': 10.5, 'font-weight': 600, fill: 'var(--ink-faint)', style: 'cursor:pointer',
+          text: `${fmt.n1(n.value)} ${unit} · ${fmt.pct(n.value / tot, 0)}` });
+        s.appendChild(lbl1);
+        s.appendChild(lbl2);
+
+        const showNodeTip = e => tip.show(e.clientX, e.clientY, n.label, [
+          ['Capacity impact', `${fmt.n1(n.value)} ${unit} (${fmt.pct(n.value / tot, 1)} of total)`],
+          ['Operational role', n.d || 'Workforce capacity reallocation']
+        ]);
+        [barRect, lbl1, lbl2].forEach(elem => {
+          elem.addEventListener('mousemove', showNodeTip);
+          elem.addEventListener('mouseleave', tip.hide);
+        });
       });
     });
     return s;
