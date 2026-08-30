@@ -318,6 +318,65 @@ const Charts = (() => {
   }
 
   /* =====================================================================
+     VBAR · vertical column chart
+     Job: comparison where height represents magnitude.
+     ===================================================================== */
+  function vbar(host, { items, unit = '', height = 240, valueFmt, compact = false }) {
+    const vf = valueFmt || (v => fmt.cr(v) + ' ' + unit);
+    const W = compact ? 520 : 780;
+    const m = { t: 50, r: 20, b: 80, l: 20 };
+    const H = height;
+    const ih = H - m.t - m.b;
+    const iw = W - m.l - m.r;
+    const max = niceMax(Math.max(...items.map(i => i.value)));
+    const s = svg(host, W, H);
+    
+    // X-axis baseline
+    s.appendChild(el('line', { x1: m.l, y1: H - m.b, x2: W - m.r, y2: H - m.b, stroke: 'var(--border-strong)', 'stroke-width': 2 }));
+
+    const colW = Math.min(compact ? 60 : 100, (iw / items.length) * 0.6);
+    
+    items.forEach((it, i) => {
+      const cx = m.l + (iw / items.length) * (i + 0.5);
+      const h = Math.max((it.value / max) * ih, 2);
+      const y = H - m.b - h;
+      const color = it.color || 'var(--d1)';
+
+      // Background track (optional, maybe skip for vertical)
+      s.appendChild(el('rect', {
+        x: cx - colW / 2, y: m.t, width: colW, height: ih, rx: 6,
+        fill: 'var(--grid-2)'
+      }));
+
+      // Filled active bar
+      s.appendChild(el('rect.series', {
+        x: cx - colW / 2, y, width: colW, height: h, rx: 6, fill: color, opacity: .95,
+        style: 'filter:drop-shadow(0 -2px 7px color-mix(in srgb, ' + color + ' 45%, transparent))'
+      }));
+
+      // Value label on top of the bar
+      s.appendChild(el('text', { class: 'lbl-value', x: cx, y: y - 10,
+        'text-anchor': 'middle', 'font-size': 15, 'font-weight': 800, fill: 'var(--ink-strong)',
+        text: vf(it.value) }));
+
+      // Multi-line Label below axis
+      const words = it.label.split('·').map(w => w.trim());
+      words.forEach((w, wi) => {
+        s.appendChild(el('text', { class: 'lbl-axis', x: cx, y: H - m.b + 20 + wi * 18,
+          'text-anchor': 'middle', 'font-size': wi === 0 ? 13 : 11, 'font-weight': wi === 0 ? 700 : 600, fill: wi === 0 ? 'var(--ink)' : 'var(--ink-muted)',
+          text: w }));
+      });
+
+      const hit = el('rect.hit', { x: cx - (iw / items.length)/2, y: 0, width: iw / items.length, height: H });
+      hit.addEventListener('mousemove', e => tip.show(e.clientX, e.clientY, it.label,
+        [[unit || 'Value', vf(it.value)], ...(it.note ? [['', it.note]] : [])]));
+      hit.addEventListener('mouseleave', tip.hide);
+      s.appendChild(hit);
+    });
+    return s;
+  }
+
+  /* =====================================================================
      STACK · one bar, part-to-whole, with a 2px surface gap between fills
      ===================================================================== */
   function stack(host, { segments, height = 30, showLegend = true }) {
@@ -476,7 +535,7 @@ const Charts = (() => {
     return s;
   }
 
-  return { waterfall, cashflow, hbar, stack, tornado, bullet, legend, seriesVar, barPath, niceMax };
+  return { waterfall, cashflow, hbar, vbar, stack, tornado, bullet, legend, seriesVar, barPath, niceMax };
 })();
 
 /* =====================================================================

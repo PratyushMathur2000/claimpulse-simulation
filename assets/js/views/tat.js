@@ -220,42 +220,44 @@ const ViewTat = (() => {
           el('div', {}, [
             el('div', { style: { marginBottom: 'var(--s-3)' } }, [
               el('div', { style: { fontWeight: 700, fontSize: 'var(--fs-lg)', color: 'var(--ink-strong)' },
-                text: 'Physical Surveys: Before vs. After' }),
-              el('div.small.muted', { text: 'Annual survey volume across the addressable book' })
+                text: 'Physical Surveyor Dispatches' }),
+              el('div.small.muted', { text: `18x reduction in site visits for the addressable book` })
             ]),
             el('div', { id: 'tatSurveyBar' })
           ]),
           el('div', {}, [
             el('div', { style: { marginBottom: 'var(--s-3)' } }, [
               el('div', { style: { fontWeight: 700, fontSize: 'var(--fs-lg)', color: 'var(--ink-strong)' },
-                text: 'Garage Approval Wait: Before vs. After' }),
-              el('div.small.muted', { text: 'Days a bay sits idle awaiting repair authorisation' })
+                text: 'Garage Bay Idle Time' }),
+              el('div.small.muted', { text: 'Days wasted awaiting physical repair approval' })
             ]),
             el('div', { id: 'tatGarageBar' })
           ])
         ])
       ]);
-      Charts.hbar($('#tatSurveyBar'), {
+      Charts.vbar($('#tatSurveyBar'), {
         items: [
-          { label: 'Today · Universal survey (55%)', value: r.surveyToday, color: 'var(--dom-risk)',
-            note: 'Every motor claim below ₹50k still gets a physical inspection today.' },
-          { label: 'On ClaimPulse · Above ₹50k only', value: r.surveyAfter, color: 'var(--dom-cap)',
+          { label: 'Today · All claims', value: r.surveyToday, color: 'var(--dom-risk)',
+            note: 'Every motor claim below ₹50k gets a physical inspection today.' },
+          { label: 'ClaimPulse · >₹50k only', value: r.surveyAfter, color: 'var(--dom-cap)',
             note: 'Below the IRDAI corridor, live 360° video evidence resolves the claim.' }
         ],
-        unit: 'surveys / year',
+        unit: 'visits',
         valueFmt: v => fmt.compact(v),
-        large: true
+        height: 260,
+        compact: true
       });
-      Charts.hbar($('#tatGarageBar'), {
+      Charts.vbar($('#tatGarageBar'), {
         items: [
-          { label: 'Today · Awaiting surveyor', value: I.J06_garageToday, color: 'var(--dom-risk)',
+          { label: 'Today · Manual survey', value: I.J06_garageToday, color: 'var(--dom-risk)',
             note: 'Bay idle for up to 4 days while surveyor is dispatched and travels.' },
-          { label: 'On ClaimPulse · Instant FNOL band', value: I.J07_garageAfter, color: 'var(--dom-cap)',
+          { label: 'ClaimPulse · Instant AI', value: I.J07_garageAfter, color: 'var(--dom-cap)',
             note: 'Indicative repair cost band arrives at first notification.' }
         ],
-        unit: 'days idle per job',
+        unit: 'days',
         valueFmt: v => v + ' d',
-        large: true
+        height: 260,
+        compact: true
       });
     }
 
