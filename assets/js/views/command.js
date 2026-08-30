@@ -75,15 +75,33 @@ const ViewCommand = (() => {
       /* ---- the band ---- */
       el('div.panel.hero.rise', { 'data-dom': 'ops' }, [
         el('div.spread.wrap', { style: { alignItems: 'flex-start', gap: 'var(--s-6)' } }, [
-          el('div', { style: { minWidth: 0, maxWidth: '48ch' } }, [
+          el('div', { style: { minWidth: 0, maxWidth: '54ch' } }, [
             el('p.eyebrow', { style: { margin: 0 }, text: 'Demo · claims command centre' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
               'The desk at ', el('span.grad-ink', { text: '09:00.' })
-            ])
+            ]),
+            el('p.lede', { style: { marginTop: 'var(--s-4)', color: 'var(--ink-muted)' },
+              text: 'Intelligent tri-lane orchestration: straight-through payouts, assisted human reviews, and automated fraud interception.' })
           ]),
-          el('div.row', {}, [
-            el('span.orb.busy'),
-            el('span.small.muted', { text: 'live · scored by the same engine as the architecture screen' })
+          el('div.stack-3', { style: { alignItems: 'flex-end', gap: 'var(--s-3)' } }, [
+            el('div.row', { style: { gap: 'var(--s-2)', alignItems: 'center' } }, [
+              el('span.orb.busy'),
+              el('span.small.muted', { text: '5 AI Engines Live · 09:00 IST' })
+            ]),
+            el('div.dl-strip', {}, [
+              el('a.dl-btn.xls', { href: 'downloads/ClaimPulse_Investor_Dashboard_R6.xlsx', download: 'ClaimPulse_Investor_Dashboard_R6.xlsx', title: 'Download Financial Bible Excel' }, [
+                el('span.fmt-badge', { text: 'XLSX' }),
+                el('span', { text: 'Excel Bible' })
+              ]),
+              el('a.dl-btn.pdf', { href: 'downloads/ClaimPulse_Executive_Report.pdf', download: 'ClaimPulse_Executive_Report.pdf', title: 'Download Executive Report PDF' }, [
+                el('span.fmt-badge', { text: 'PDF' }),
+                el('span', { text: 'Report' })
+              ]),
+              el('a.dl-btn.ppt', { href: 'downloads/ClaimPulse_SemiFinal_Deck.pptx', download: 'ClaimPulse_SemiFinal_Deck.pptx', title: 'Download Pitch Deck PPTX' }, [
+                el('span.fmt-badge', { text: 'PPTX' }),
+                el('span', { text: 'Pitch Deck' })
+              ])
+            ])
           ])
         ]),
         el('div.cells.c-4', { style: { marginTop: 'var(--s-6)',
@@ -103,6 +121,25 @@ const ViewCommand = (() => {
             k: 'Average turnaround', v: fmt.cr(avgTat), unit: 'days',
             delta: '▼ ' + fmt.cr(CPModel.INPUTS.B09_tatToday - avgTat) + ' d vs today', deltaGood: true,
             d: 'Against 9.8 days on the legacy process.' })])
+        ]),
+
+        /* Real-Time Proportional Tri-Lane Throughput Bar */
+        el('div', { style: { marginTop: 'var(--s-6)' } }, [
+          el('div.spread', { style: { fontSize: '11.5px', fontWeight: 700, color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: 'var(--tracking-caps)' } }, [
+            el('span', { text: 'Real-Time Tri-Lane Routing Velocity' }),
+            el('span.mono', { text: `${counts.G} Green (${fmt.pct(counts.G/t,0)}) · ${counts.A} Amber (${fmt.pct(counts.A/t,0)}) · ${counts.R} Red (${fmt.pct(counts.R/t,0)})` })
+          ]),
+          el('div.lane-track', {}, [
+            el('div.lane-seg.seg-g', { style: { flex: counts.G }, title: `Green Lane (Straight-Through): ${counts.G} claims (${fmt.pct(counts.G/t,0)}) — Auto-settled in minutes with ₹0 surveyor cost` }, [
+              el('span', { text: `🟢 Straight-Through · ${fmt.pct(counts.G/t, 0)} (${counts.G} claims)` })
+            ]),
+            el('div.lane-seg.seg-a', { style: { flex: counts.A }, title: `Amber Lane (Decision-Assisted): ${counts.A} claims (${fmt.pct(counts.A/t,0)}) — Evidence assembled, 1 reviewer sign-off` }, [
+              el('span', { text: `🟡 Assisted Review · ${fmt.pct(counts.A/t, 0)} (${counts.A} claims)` })
+            ]),
+            el('div.lane-seg.seg-r', { style: { flex: counts.R }, title: `Red Lane (Investigation / High Severity): ${counts.R} claims (${fmt.pct(counts.R/t,0)}) — ₹50k corridor or Gate 00 anomaly` }, [
+              el('span', { text: `🔴 Complex / Red · ${fmt.pct(counts.R/t, 0)} (${counts.R} claim)` })
+            ])
+          ])
         ])
       ]),
 

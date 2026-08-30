@@ -63,6 +63,20 @@ const App = (() => {
             [icon(r.icon), el('span', { text: r.label })]))
       ])),
       el('div.rail-foot', {}, [
+        el('div.rail-downloads', { style: { display: 'flex', gap: 'var(--s-2)', marginBottom: 'var(--s-3)' } }, [
+          el('a.dl-btn.xls', { href: 'downloads/ClaimPulse_Investor_Dashboard_R6.xlsx', download: 'ClaimPulse_Investor_Dashboard_R6.xlsx', title: 'Download Financial Bible Excel', style: { flex: '1', justifyContent: 'center', padding: '5px 4px', fontSize: '11px' } }, [
+            el('span.fmt-badge', { text: 'XLSX' }),
+            el('span', { text: 'Model' })
+          ]),
+          el('a.dl-btn.pdf', { href: 'downloads/ClaimPulse_Executive_Report.pdf', download: 'ClaimPulse_Executive_Report.pdf', title: 'Download Executive Report PDF', style: { flex: '1', justifyContent: 'center', padding: '5px 4px', fontSize: '11px' } }, [
+            el('span.fmt-badge', { text: 'PDF' }),
+            el('span', { text: 'Report' })
+          ]),
+          el('a.dl-btn.ppt', { href: 'downloads/ClaimPulse_SemiFinal_Deck.pptx', download: 'ClaimPulse_SemiFinal_Deck.pptx', title: 'Download Pitch Deck PPTX', style: { flex: '1', justifyContent: 'center', padding: '5px 4px', fontSize: '11px' } }, [
+            el('span.fmt-badge', { text: 'PPTX' }),
+            el('span', { text: 'Deck' })
+          ])
+        ]),
         el('div.theme-toggle', { id: 'themeToggle', role: 'group', 'aria-label': 'Colour theme' }, [
           themeBtn('light',  'Light',         'M12 8a4 4 0 100 8 4 4 0 000-8zM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4'),
           themeBtn('system', 'Match system',  'M3 6a2 2 0 012-2h14a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2zM8 21h8'),
