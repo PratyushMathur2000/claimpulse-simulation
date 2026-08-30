@@ -87,9 +87,9 @@ const Charts = (() => {
      items: [{ label, value, kind: 'add'|'sub'|'total', note }]
      ===================================================================== */
   function waterfall(host, { items, unit = '₹ Cr', height, width }) {
-    const W = width || (items.length <= 6 ? 560 : 740);
-    const H = height || (items.length <= 6 ? 340 : 360);
-    const m = { t: 32, r: 16, b: 64, l: 48 };
+    const W = width || (items.length <= 6 ? 500 : 680);
+    const H = height || (items.length <= 6 ? 280 : 300);
+    const m = { t: 28, r: 16, b: 58, l: 44 };
     const iw = W - m.l - m.r, ih = H - m.t - m.b;
 
     // running extent
@@ -103,7 +103,7 @@ const Charts = (() => {
     });
     const top = niceMax(hi), bot = lo < 0 ? -niceMax(-lo) : 0;
     const y = v => m.t + ih - ((v - bot) / (top - bot)) * ih;
-    const bw = Math.min(58, Math.max(34, (iw / items.length) - 10));
+    const bw = Math.min(36, Math.max(18, (iw / items.length) - 16));
     const step = iw / items.length;
 
     const s = svg(host, W, H);
@@ -113,7 +113,7 @@ const Charts = (() => {
       s.appendChild(el('line', { class: 'grid-line' + (Math.abs(t) < 1e-9 ? ' zero' : ''),
         x1: m.l, x2: W - m.r, y1: y(t), y2: y(t) }));
       s.appendChild(el('text', { class: 'lbl-axis', x: m.l - 6, y: y(t) + 3.5,
-        'text-anchor': 'end', 'font-size': 11, text: fmt.cr(t, 0) }));
+        'text-anchor': 'end', 'font-size': 10.5, text: fmt.cr(t, 0) }));
     });
 
     geo.forEach((g, i) => {
@@ -134,14 +134,14 @@ const Charts = (() => {
       const p = el('path.series', {
         d: barPath(cx, top_, bw, h, END_R, grows ? 'up' : 'down'),
         fill: color, opacity: g.kind === 'total' ? 1 : .92,
-        style: 'filter:drop-shadow(0 2px 8px color-mix(in srgb, ' + color + ' 40%, transparent))'
+        style: 'filter:drop-shadow(0 2px 6px color-mix(in srgb, ' + color + ' 35%, transparent))'
       });
       s.appendChild(p);
 
       // direct label — prominent and bold
-      const labelY = grows ? top_ - 8 : top_ + h + 15;
+      const labelY = grows ? top_ - 7 : top_ + h + 13;
       s.appendChild(el('text', { class: 'lbl-value', x: cx + bw / 2, y: labelY,
-        'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800,
+        'text-anchor': 'middle', 'font-size': 11.5, 'font-weight': 750,
         fill: g.kind === 'total' ? 'var(--ink-strong)' : (g.value >= 0 ? 'var(--dom-cap)' : 'var(--dom-risk)'),
         text: (g.kind === 'total' ? '' : (g.value >= 0 ? '+' : '−')) + fmt.cr(Math.abs(g.value), g.value % 1 === 0 ? 0 : 2) }));
 
@@ -154,8 +154,8 @@ const Charts = (() => {
       });
       if (cur) lines.push(cur);
       lines.slice(0, 3).forEach((ln, k) => {
-        s.appendChild(el('text', { class: 'lbl-axis', x: cx + bw / 2, y: m.t + ih + 16 + k * 12.5,
-          'text-anchor': 'middle', 'font-size': 11.5, 'font-weight': g.kind === 'total' ? 700 : 550, fill: 'var(--ink)', text: ln }));
+        s.appendChild(el('text', { class: 'lbl-axis', x: cx + bw / 2, y: m.t + ih + 15 + k * 11.5,
+          'text-anchor': 'middle', 'font-size': 10.5, 'font-weight': g.kind === 'total' ? 700 : 500, fill: 'var(--ink)', text: ln }));
       });
 
       // hover
@@ -167,7 +167,7 @@ const Charts = (() => {
       s.appendChild(hit);
     });
 
-    s.appendChild(el('text', { class: 'lbl-axis', x: m.l, y: 14, 'font-size': 11.5, 'font-weight': 700, fill: 'var(--ink-muted)', text: unit }));
+    s.appendChild(el('text', { class: 'lbl-axis', x: m.l, y: 13, 'font-size': 10.5, 'font-weight': 700, fill: 'var(--ink-muted)', text: unit }));
     return s;
   }
 
