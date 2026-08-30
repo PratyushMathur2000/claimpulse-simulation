@@ -271,15 +271,61 @@ const ViewArchitecture = (() => {
     bindNodes();
   }
 
+  function showNodePopup(nodeKey) {
+    const n = Pipeline.NODES[nodeKey];
+    if (!n) return;
+    const existing = document.getElementById('archNodePopupOverlay');
+    if (existing) existing.remove();
+
+    const overlay = el('div.node-popup-overlay', { id: 'archNodePopupOverlay' });
+    const card = el('div.node-popup-card', {}, [
+      el('div.node-popup-head', {}, [
+        el('div', {}, [
+          el('p.eyebrow', { style: { margin: 0, color: n.tone }, text: n.sub || 'ARCHITECTURE COMPONENT' }),
+          el('h2', { style: { margin: 'var(--s-2) 0 0', fontSize: 'var(--fs-lg)' }, text: n.label })
+        ]),
+        el('button.node-popup-close', { type: 'button', 'aria-label': 'Close dialog', onclick: () => overlay.remove(), text: '✕' })
+      ]),
+      el('p', { style: { fontSize: 'var(--fs-base)', fontWeight: 650, color: 'var(--ink-strong)', marginBottom: 'var(--s-4)', fontStyle: 'italic' }, text: '“' + n.q + '”' }),
+      el('p.muted', { style: { marginBottom: 'var(--s-5)', lineHeight: '1.6' }, text: n.body }),
+      el('div.stack-3', { style: { marginBottom: 'var(--s-5)', background: 'var(--surface-raised)', padding: 'var(--s-4)', borderRadius: 'var(--r-3)', border: '1px solid var(--border)' } }, [
+        el('div.small.bold', { style: { marginBottom: 'var(--s-2)', color: 'var(--ink-strong)' }, text: 'Key Operational Mechanics:' }),
+        ...(n.bullets || []).map(b => el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-2)' } }, [
+          el('span', { style: { color: n.tone, fontWeight: 800 }, text: '✓' }),
+          el('span.small', { text: b })
+        ]))
+      ]),
+      el('div.spread.wrap', { style: { gap: 'var(--s-3)', paddingTop: 'var(--s-4)', borderTop: '1px solid var(--border)' } }, [
+        el('div.row.wrap', { style: { gap: 'var(--s-2)' } }, [
+          UI.dchip(n.genai ? 'Targeted GenAI' : '₹0 GenAI Tokens (Deterministic/ML)', n.genai ? 'ai' : 'cap'),
+          n.weight ? UI.dchip(`${n.weight()}% weight in Trust Score`, 'fin') : null
+        ]),
+        el('span.badge.neutral', { text: n.build })
+      ])
+    ]);
+
+    overlay.appendChild(card);
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) overlay.remove();
+    });
+
+    const onKey = e => {
+      if (e.key === 'Escape') {
+        overlay.remove();
+        document.removeEventListener('keydown', onKey);
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.appendChild(overlay);
+  }
+
   function bindNodes() {
     $$('#archPipe [data-node]').forEach(n => {
       n.style.cursor = 'pointer';
       n.addEventListener('click', () => {
-        selected = n.dataset.node; tab = 'node';
-        $$('#lcTabs button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.k === 'node')));
-        drawPipe(res()); drawTab();
-        const b = $('#lcTabBody');
-        if (b) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
+        selected = n.dataset.node;
+        showNodePopup(selected);
+        drawPipe(res());
       });
       n.addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); n.click(); }

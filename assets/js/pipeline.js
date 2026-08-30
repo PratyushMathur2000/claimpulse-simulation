@@ -173,11 +173,23 @@ const Pipeline = (() => {
     const mx = x1 + (x2 - x1) / 2;
     const d = Math.abs(y1 - y2) < 1 ? `M${x1},${y1} H${x2 - 7}`
       : `M${x1},${y1} H${mx - 12} Q${mx},${y1} ${mx},${y1 + Math.sign(y2 - y1) * 12} V${y2 - Math.sign(y2 - y1) * 12} Q${mx},${y2} ${mx + 12},${y2} H${x2 - 7}`;
+    
+    // Base static line
     s.appendChild(el('path', {
       d, fill: 'none', stroke: opts.color || 'var(--border-strong)',
       'stroke-width': opts.width || 1.3,
+      opacity: 0.45,
       class: opts.flow ? 'flowing' : '', 'data-edge': from + '-' + to
     }));
+
+    // Continuous animated looping line
+    s.appendChild(el('path.pipe-flow-line', {
+      d, fill: 'none', stroke: opts.color || 'var(--accent)',
+      'stroke-width': (opts.width || 1.3) + 0.6,
+      opacity: 0.85
+    }));
+
+    // Arrowhead
     s.appendChild(el('path', { d: `M${x2 - 7},${y2 - 4} L${x2},${y2} L${x2 - 7},${y2 + 4} Z`,
       fill: opts.color || 'var(--border-strong)' }));
     return d;
@@ -253,10 +265,10 @@ const Pipeline = (() => {
     /* the hard-fail bypass — leaves the gate, touches no engine */
     const g = nodeBox.gate, rl = nodeBox.red;
     const hfY = HF_Y, redCx = rl.x + rl.w / 2;
-    s.appendChild(el('path', {
+    s.appendChild(el('path.pipe-flow-line', {
       d: `M${g.x + g.w / 2},${g.y + g.h} V${hfY} H${redCx} V${rl.y + rl.h + 9}`,
-      fill: 'none', stroke: 'var(--lane-red)', 'stroke-width': 1.5,
-      'stroke-dasharray': '5 4', class: animate ? 'flowing' : '' }));
+      fill: 'none', stroke: 'var(--lane-red)', 'stroke-width': 1.8,
+      opacity: 0.9 }));
     s.appendChild(el('path', { d: `M${redCx - 4},${rl.y + rl.h + 9} L${redCx},${rl.y + rl.h + 2} L${redCx + 4},${rl.y + rl.h + 9} Z`,
       fill: 'var(--lane-red)' }));
     s.appendChild(el('text', { x: COL.intake + 4, y: hfY - 22, 'font-size': 11,
