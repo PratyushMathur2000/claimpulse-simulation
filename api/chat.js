@@ -16,7 +16,7 @@ import {
  * Dynamically builds the system instruction from modular knowledge + live client state
  */
 function buildSystemPrompt(clientContext = {}) {
-  const currentScreen = clientContext.activeScreen || 'overview';
+  const currentScreen = clientContext.activeScreen || 'command';
   const liveModel = clientContext.liveModel || {};
 
   return `You are "Ask Finsighters", the official AI Assistant for ${PROJECT_META.name} (${PROJECT_META.tagline}) developed by ${PROJECT_META.team} (${PROJECT_META.institution}) for ${PROJECT_META.competition} (${PROJECT_META.problemStatement}).

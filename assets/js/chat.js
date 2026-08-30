@@ -320,7 +320,7 @@ const CPChat = (() => {
     renderMessages();
 
     // Extract live runtime context from dashboard & model
-    const activeScreen = (location.hash || '').replace(/^#\/?/, '').split('?')[0] || 'overview';
+    const activeScreen = (location.hash || '').replace(/^#\/?/, '').split('?')[0] || 'command';
     let liveModel = {};
     try {
       if (typeof CPModel !== 'undefined' && CPModel.run) {

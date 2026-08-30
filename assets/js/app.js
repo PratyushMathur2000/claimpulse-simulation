@@ -125,7 +125,7 @@ const App = (() => {
   };
 
   function go() {
-    const raw = location.hash.replace(/^#\/?/, '') || 'overview';
+    const raw = location.hash.replace(/^#\/?/, '') || 'command';
     const [id, qs] = raw.split('?');
     const params = new URLSearchParams(qs || '');
     const route = ROUTES.find(r => r.id === id) || ROUTES[0];
