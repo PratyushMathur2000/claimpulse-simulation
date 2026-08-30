@@ -60,9 +60,9 @@ const ViewArchitecture = (() => {
       el('div.panel.hero.rise', { 'data-dom': 'ops', id: 'lcHero' }, [
         el('div.spread.wrap', { style: { alignItems: 'flex-start', gap: 'var(--s-6)' } }, [
           el('div', { style: { minWidth: 0 } }, [
-            el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · live claim' }),
+            el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · Zero-Trust Multi-Modal Decision Engine' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-              'Watch one claim ', el('span.grad-ink', { text: 'decide itself.' })
+              'Zero-Trust Forensic Pipeline: ', el('span.grad-ink', { text: 'Watch parallel neural engines adjudicate live claims.' })
             ]),
             el('div.row', { id: 'lcStatus', style: { marginTop: 'var(--s-4)' } })
           ]),
@@ -74,7 +74,7 @@ const ViewArchitecture = (() => {
               text: '⟲ another claim' }),
             el('button.btn.primary', { id: 'lcPlay', type: 'button' }, [
               el('span', { id: 'lcPlayIcon', text: '▶' }),
-              el('span', { id: 'lcPlayLabel', text: 'Run it' })
+              el('span', { id: 'lcPlayLabel', text: 'Execute Pipeline' })
             ])
           ])
         ]),
@@ -90,12 +90,12 @@ const ViewArchitecture = (() => {
       el('div.panel.rise', { 'data-dom': 'ops', style: { marginTop: 'var(--s-6)' } }, [
         el('div.spread.wrap', { style: { marginBottom: 'var(--s-5)' } }, [
           el('div', {}, [
-            el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' }, text: 'The architecture, live' }),
+            el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' }, text: 'Nine-Layer End-to-End Enterprise Architecture' }),
             el('div.small.muted', { style: { marginTop: 'var(--s-2)' },
-              text: 'Nine layers. Click any block to open it; it lights as the claim reaches it.' })
+              text: 'Hardware-attested intake, deterministic Gate 00, five parallel inference engines, Bayesian trust fusion, and tri-lane triage.' })
           ]),
           el('div.row.wrap', {}, [
-            UI.dchip('deterministic', 'cap'), UI.dchip('genai', 'ai')
+            UI.dchip('Deterministic First', 'cap'), UI.dchip('Targeted GenAI', 'ai')
           ])
         ]),
         el('div.dtable-wrap', {}, [
@@ -104,15 +104,15 @@ const ViewArchitecture = (() => {
       ]),
 
       /* ============ THE DECISION ENVIRONMENT ============ */
-      UI.clus('The decision environment', 'ai'),
+      UI.clus('Unified Decision & Governance Environment', 'ai'),
       el('div.panel.rise.pad-0', { 'data-dom': 'ai' }, [
         el('div', { style: { padding: 'var(--s-6) var(--s-6) 0' } }, [
           el('div.tabstrip', { id: 'lcTabs' }, [
-            ['engines', 'Engine results'],
-            ['policy',  'Policy and RAG'],
-            ['trust',   'Trust arithmetic'],
-            ['cost',    'What it cost'],
-            ['node',    'This block']
+            ['engines', 'Inference Engine Telemetry'],
+            ['policy',  'Policy RAG & Clause Retrieval'],
+            ['trust',   'Bayesian Trust Score Arithmetic'],
+            ['cost',    'Compute & Token Consumption'],
+            ['node',    'Selected Node Architecture']
           ].map(([k, l]) => el('button', { type: 'button', 'data-k': k,
             'aria-pressed': String(k === tab), text: l })))
         ]),

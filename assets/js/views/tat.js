@@ -51,14 +51,14 @@ const ViewTat = (() => {
       el('div.panel.hero.rise', { 'data-dom': 'cap' }, [
         el('div.spread.wrap', { style: { alignItems: 'flex-start', gap: 'var(--s-6)' } }, [
           el('div', { style: { minWidth: 0, maxWidth: '58ch' } }, [
-            el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · TAT and repurposing' }),
+            el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · TAT & Human Capital Repurposing' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-              'Zero retrenchment. ', el('span.grad-ink', { text: 'Capacity is redeployed to higher value.' })
+              'Strategic Human Capital Redeployment: ', el('span.grad-ink', { text: 'Liberating operational bandwidth into high-yield forensics.' })
             ]),
             el('p.lede', { style: { marginTop: 'var(--s-4)' },
-              text: 'Turnaround falls because deterministic claims stop waiting for redundant manual touchpoints. Adjuster capacity is redeployed into complex claims, proactive customer recovery, and fraud ring investigations.' })
+              text: 'Turnaround latency contracts because deterministic claims resolve instantly at FNOL without administrative queues. Released adjuster capacity is strategically redeployed into high-severity loss management, complex SIU forensic investigations, and proactive renewal retention.' })
           ]),
-          UI.dchip('W-18 labour saving = 0', 'cap')
+          UI.dchip('W-18 Labour Savings = 0 (Zero Retrenchment)', 'cap')
         ]),
         el('div', { id: 'tatFlow', style: { marginTop: 'var(--s-7)' } })
       ]),
@@ -69,9 +69,9 @@ const ViewTat = (() => {
         el('div.spread.wrap', { style: { marginBottom: 'var(--s-5)' } }, [
           el('div', {}, [
             el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' },
-              text: 'What the platform absorbs, and what the team picks up instead' }),
+              text: 'Automated Task Absorption vs. High-Yield Human Capital Reallocation' }),
             el('div.small.muted', { style: { marginTop: 'var(--s-2)' },
-              text: fmt.n1(r.fteReleased) + ' FTE of capacity, moving left to right. Hover any ribbon or bar for operational context.' })
+              text: fmt.n1(r.fteReleased) + ' FTE of productive capacity transitioned from low-yield data entry to high-impact underwriting and claims defense.' })
           ]),
           UI.dchip('split is operational, not workbook', 'ai')
         ]),
@@ -83,16 +83,16 @@ const ViewTat = (() => {
       el('div.g-phi', { style: { marginTop: 'var(--s-6)', alignItems: 'stretch' } }, [
         el('div.panel.rise', { 'data-dom': 'ops' }, [
           el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
-            text: 'How the turnaround number is built' }),
+            text: 'Turnaround Latency Compression Bridge (Waterfall)' }),
           el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-            text: 'Lane-weighted, restated after live-capture friction, then blended across the share of the book actually reached.' }),
+            text: 'Lane-weighted cycle time build-up reflecting conservative live-capture friction and portfolio rollout blending.' }),
           el('div', { id: 'tatSteps' })
         ]),
         el('div.panel.rise', { 'data-dom': 'cust' }, [
           el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
-            text: 'The surveyor and garage chain' }),
+            text: 'Ecosystem Stakeholder Alignment: Garages & Licensed Surveyors' }),
           el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-            text: 'Two stakeholders the case depends on and the deck usually forgets.' }),
+            text: 'Synchronizing cashless repair velocity with IRDAI statutory surveyor mandates (>₹50,000 corridor).' }),
           el('div', { id: 'tatGauge' }),
           el('div.cells.c-2', { style: { marginTop: 'var(--s-5)',
             border: '1px solid var(--hairline)', borderRadius: 'var(--r-3)' } }, [
@@ -111,11 +111,11 @@ const ViewTat = (() => {
       ]),
 
       /* ================= ACQUISITION ================= */
-      UI.clus('And how we attract new customers with it', 'cust'),
+      UI.clus('Self-Funding Growth Flywheel: Channel Acquisition & Policyholder Retention', 'cust'),
       el('div.panel.rise', { 'data-dom': 'cust' }, [
         el('div.spread.wrap', { style: { marginBottom: 'var(--s-5)' } }, [
-          el('div.small.muted', { text: 'The Hunt & Farm plan. In R6 this is a COST line, not a benefit — the same rupees the plan proposes spending.' }),
-          UI.dchip('cost, not benefit', 'risk')
+          el('div.small.muted', { text: 'The Hunt & Farm Plan: Repurposed operational capacity self-funds dealer channel acquisition, repaid via renewal retention.' }),
+          UI.dchip('Self-Funding Capital Reinvestment', 'risk')
         ]),
         el('div.g-phi', {}, [
           el('div', { id: 'tatMkt' }),

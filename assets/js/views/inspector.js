@@ -28,9 +28,9 @@ const ViewInspector = (() => {
     mount(host, [
       el('div.spread.wrap', { style: { alignItems: 'flex-end', marginBottom: 'var(--s-6)' } }, [
         el('div', {}, [
-          el('p.eyebrow', { style: { margin: 0 }, text: 'Demo · claim inspector' }),
+          el('p.eyebrow', { style: { margin: 0 }, text: 'Forensic Dossier · Explainable AI (XAI) & Audit Ledger' }),
           el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-            'Every claim, ', el('span.grad-ink', { text: 'and why it went where it went.' })
+            'Forensic Claim Dossier: ', el('span.grad-ink', { text: 'Evidentiary decomposition & trust audit.' })
           ])
         ]),
         el('a.gbtn', { href: '#/command', text: '← the command centre' })
@@ -160,7 +160,7 @@ const ViewInspector = (() => {
       /* ---- why ---- */
       el('div.panel', { 'data-dom': 'ai' }, [
         el('h3', { style: { margin: '0 0 var(--s-5)', fontSize: 'var(--fs-md)' },
-          text: 'Why it was routed that way' }),
+          text: 'Algorithmic Routing Rationale & Multi-Vector Bayesian Weights' }),
         el('div.stack-4', {}, R.reasons.map(x => el('div.row', { style: { alignItems: 'flex-start' } }, [
           el('span', { style: { fontWeight: 700, flex: '0 0 auto',
             color: x.hard ? 'var(--lane-red)' : x.cap ? 'var(--lane-amber)' : 'var(--dom-cap)' },
@@ -174,13 +174,13 @@ const ViewInspector = (() => {
       /* ---- the machinery, collapsed ---- */
       el('div.panel', { 'data-dom': 'ops' }, [
         el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-          text: 'The technical record. Open whichever section the question needs.' }),
+          text: 'Technical Evidentiary Ledger: Zero-Trust EXIF, Document OCR, CV Localization, and Syndicate Graph Signals.' }),
         el('div', { id: 'insTech' })
       ]),
 
       /* ---- settlement ---- */
       R.skipped ? null : el('div.panel', { 'data-dom': 'fin' }, [
-        el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' }, text: 'The settlement' }),
+        el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' }, text: 'Adjudicated Settlement & Loss Calculation Matrix' }),
         el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
           text: 'Assessed against the band the repair engine returned at first notification.' }),
         el('div', { id: 'insSettle' })
@@ -199,11 +199,11 @@ const ViewInspector = (() => {
 
   /* One sentence. What a person would say. */
   function plain(R) {
-    if (R.skipped) return 'The evidence did not survive Gate 00, so nothing downstream ran — no engine, no model, no token. It goes to investigation with the failed check attached.';
-    if (R.lane === 'G') return 'Everything checked out, so it settled itself — no reviewer, no surveyor, no generative model.';
-    if (R.capped) return 'Clean on every check, but above the ₹50,000 corridor, where regulation requires a registered surveyor. It cannot auto-settle however good it looks.';
-    if (R.lane === 'A') return 'The signals were inconclusive rather than contradictory, so one reviewer decides — with the evidence already assembled and the reasoning already written.';
-    return 'Something contradicted something else, so this claim goes to a person with the conflict and the evidence in front of them.';
+    if (R.skipped) return 'Zero-Trust Capture Failure: Media authenticity violation detected at Gate 00. Downstream model execution halted with ₹0 token expenditure. Escalated to SIU with evidentiary tamper report.';
+    if (R.lane === 'G') return 'Automated Straight-Through Settlement: All deterministic and multi-modal trust vectors verified above threshold with zero manual touches or surveyor overhead.';
+    if (R.capped) return 'Corridor Constraint Enforced: Exemplary trust score (>85/100), but loss estimate exceeds statutory ₹50,000 corridor; routed to licensed surveyor per IRDAI mandate.';
+    if (R.lane === 'A') return 'Human-in-the-Loop (HITL) Assisted Review: Ambiguous damage correlation routed to single adjuster with pre-compiled evidentiary rationale and damage keyframes.';
+    return 'High-Risk Contradiction Escalated: Critical discrepancies between photo metadata, police report, and vehicle telemetry. Dispatched for full SIU forensic investigation.';
   }
 
   /* ------------------------------------------------------------------

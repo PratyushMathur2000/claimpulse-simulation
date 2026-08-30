@@ -160,12 +160,12 @@ const ViewStress = (() => {
       el('div.panel.hero.rise', { 'data-dom': 'fin' }, [
         el('div.spread.wrap', { style: { alignItems: 'flex-start', gap: 'var(--s-6)' } }, [
           el('div', { style: { minWidth: 0, maxWidth: '56ch' } }, [
-            el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · financial stress test' }),
+            el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · Multi-Parametric Financial Stress Test' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-              'Move any assumption. ', el('span.grad-ink', { text: 'The whole model recomputes.' })
+              'Macroeconomic & Stress Engine: ', el('span.grad-ink', { text: 'Dynamic sensitivity across 12 levers recomputes the financial thesis.' })
             ]),
             el('p.lede', { style: { marginTop: 'var(--s-4)', color: 'var(--ink-muted)' },
-              text: 'Every lever writes into the R6 financial engine, live-recomputing gross benefits, annual run costs, and investor return metrics.' })
+              text: 'Every operational parameter feeds dynamically into the R6 financial engine, live-recomputing underwriting margin expansion, combined ratio impact, cash-flow breakeven curves, and shareholder IRR.' })
           ]),
           el('div.stack-4', { style: { alignItems: 'flex-end', minWidth: 0 } }, [
             el('div.row.wrap', { style: { gap: 'var(--s-3)', alignItems: 'center' } }, [
@@ -183,7 +183,7 @@ const ViewStress = (() => {
       ]),
 
       /* ---- the charts, full width ---- */
-      UI.clus('Where the annual benefit comes from', 'fin',
+      UI.clus('Annual Operating Alpha Breakdown (Benefit Waterfall)', 'fin',
         el('button.gbtn', { id: 'tblBtn', type: 'button', text: 'table view' })),
       el('div.panel.rise', { 'data-dom': 'fin' }, [
         el('div', { id: 'bridge' }),
@@ -193,16 +193,16 @@ const ViewStress = (() => {
       el('div.g-phi', { style: { marginTop: 'var(--s-6)', alignItems: 'stretch' } }, [
         el('div.panel.rise', { 'data-dom': 'fin' }, [
           el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
-            text: 'Cumulative cash position' }),
+            text: 'Cumulative Net Cash Flow & Capital Payback Runway' }),
           el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-            text: 'Build spent up front, benefit ramping on B-24 to B-26. The dashed line is where the build has repaid itself.' }),
+            text: 'Upfront capital deployment amortized against phased benefit realization (B-24 to B-26). The dashed line marks the institutional breakeven threshold.' }),
           el('div', { id: 'cash' })
         ]),
         el('div.panel.rise', { 'data-dom': 'ops' }, [
           el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
-            text: 'Annual run cost' }),
+            text: 'Annual Operating Expenditure: Fixed Floor vs. Elastic Volume Scaling' }),
           el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-            text: 'Two lines scale with volume; four are fixed.' }),
+            text: '₹4.24 Cr fixed infrastructure floor (cybersecurity, software, governance) plus volume-variable API inference scaling.' }),
           el('div', { id: 'runcost' })
         ])
       ]),

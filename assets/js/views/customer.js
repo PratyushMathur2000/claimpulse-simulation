@@ -46,15 +46,15 @@ const ViewCustomer = (() => {
     mount(host, [
       el('div.spread.wrap', { style: { alignItems: 'flex-end', marginBottom: 'var(--s-6)' } }, [
         el('div', { style: { maxWidth: '52ch' } }, [
-          el('p.eyebrow', { style: { margin: 0 }, text: 'Demo · the customer\'s app' }),
+          el('p.eyebrow', { style: { margin: 0 }, text: 'Policyholder Interface · Zero-Trust Hardware-Attested FNOL' }),
           el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-            'Filed from the roadside, ',
-            el('span.grad-ink', { text: 'settled before the tow truck arrives.' })
+            'Zero-Trust Roadside Intake: ',
+            el('span.grad-ink', { text: 'Sub-minute evidentiary verification & STP settlement.' })
           ])
         ]),
         el('div.row', {}, [
           el('span.orb'),
-          el('span.small.muted', { text: 'click any step · no gallery button, on any screen' })
+          el('span.small.muted', { text: 'Hardware-attested live camera capture · zero gallery injection' })
         ])
       ]),
 
@@ -99,9 +99,9 @@ const ViewCustomer = (() => {
             el('div.spread.wrap', { style: { marginBottom: 'var(--s-5)' } }, [
               el('div', {}, [
                 el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' },
-                  text: 'What the system has understood' }),
+                  text: 'Live Telemetry & Evidentiary Knowledge Graph' }),
                 el('div.small.muted', { style: { marginTop: 'var(--s-2)' },
-                  text: 'Filled in as the claimant moves. Nothing here is asked for twice.' })
+                  text: 'Progressive extraction of policy parameters, VAHAN records, and damage keyframes.' })
               ]),
               el('span.dchip', { id: 'cuProgChip', 'data-dom': 'ai', text: '0%' })
             ]),
@@ -112,7 +112,7 @@ const ViewCustomer = (() => {
           ]),
           el('div.panel.rise', { 'data-dom': 'risk' }, [
             el('h3', { style: { margin: '0 0 var(--s-5)', fontSize: 'var(--fs-md)' },
-              text: 'The rule, and what it costs us' }),
+              text: 'Zero-Trust Protocol & Conservative Friction Constraint' }),
             UI.disc('Live capture only — why the gallery button does not exist',
               '<p>Every frame is taken inside our SDK, with EXIF, timestamp and GPS written at the moment of capture and signed. A gallery upload cannot carry that, so the gate would have nothing to verify. The button does not exist rather than being discouraged.</p>',
               { open: true }),

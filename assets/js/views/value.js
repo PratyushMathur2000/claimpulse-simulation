@@ -28,9 +28,9 @@ const ViewValue = (() => {
       el('div.panel.hero.rise', { 'data-dom': 'fin' }, [
         el('div.spread.wrap', { style: { alignItems: 'flex-start', gap: 'var(--s-6)' } }, [
           el('div', { style: { minWidth: 0, maxWidth: '50ch' } }, [
-            el('p.eyebrow', { style: { margin: 0 }, text: 'Demo · value to management' }),
+            el('p.eyebrow', { style: { margin: 0 }, text: 'Executive Committee · Investment Thesis & Value Realization' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-              'What the board is actually ', el('span.grad-ink', { text: 'being asked to approve.' })
+              'Strategic Value Realization: ', el('span.grad-ink', { text: 'Delivering ₹53.01 Cr in net operating alpha & 4.4-mo payback.' })
             ])
           ]),
           el('div.seg.accent', { id: 'vlPlan' }, ['conservative', 'base', 'aggressive'].map(p =>
@@ -40,14 +40,14 @@ const ViewValue = (() => {
         el('div', { id: 'vlBand', style: { marginTop: 'var(--s-6)' } })
       ]),
 
-      UI.clus('What changed', 'ops'),
+      UI.clus('Operational Cycle Transformation & Velocity Gains', 'ops'),
       el('div.panel.rise', { 'data-dom': 'ops' }, [el('div', { id: 'vlChanged' })]),
 
-      UI.clus('What we are saving, and who books it', 'fin'),
+      UI.clus('Net Financial Alpha & Inter-Entity Value Attribution', 'fin'),
       el('div.g-phi', { style: { alignItems: 'stretch' } }, [
         el('div.panel.rise', { 'data-dom': 'fin' }, [
           el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
-            text: 'The benefit, line by line' }),
+            text: 'Line-by-Line P&L Benefit Realization (Waterfall)' }),
           el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
             text: 'Sheet 3 Part C at steady state. Labour is deliberately zero.' }),
           el('div', { id: 'vlBridge' }),
@@ -60,7 +60,7 @@ const ViewValue = (() => {
         ]),
         el('div.panel.rise', { 'data-dom': 'fin' }, [
           el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
-            text: 'Which ratio each rupee moves' }),
+            text: 'Ratio Movement: Loss Ratio Compression vs. Expense Ratio De-leveraging' }),
           el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
             text: 'The distinction the finance function will make first.' }),
           el('div', { id: 'vlRatio' }),
@@ -68,31 +68,31 @@ const ViewValue = (() => {
         ])
       ]),
 
-      UI.clus('Where capacity went', 'cap'),
+      UI.clus('Human Capital Reallocation: 175.9 FTE Capacity Redeployment', 'cap'),
       el('div.panel.rise', { 'data-dom': 'cap' }, [el('div', { id: 'vlCap' })]),
 
-      UI.clus('Operational impact', 'ops'),
+      UI.clus('Enterprise-Scale Operational Metrics', 'ops'),
       el('div.panel.rise.pad-0', { 'data-dom': 'ops' }, [el('div', { id: 'vlOps' })]),
 
-      UI.clus('Financial impact', 'fin'),
+      UI.clus('Institutional Financial Metrics & RoIC Accretion', 'fin'),
       el('div.g-phi', { style: { alignItems: 'stretch' } }, [
         el('div.panel.rise', { 'data-dom': 'fin' }, [
           el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
-            text: 'Cumulative cash position' }),
+            text: 'Cumulative Net Cash Flow & Capital Payback Runway' }),
           el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
             text: 'Build spent up front; benefit ramps on the realisation curve.' }),
           el('div', { id: 'vlCash' })
         ]),
         el('div.panel.rise', { 'data-dom': 'risk' }, [
           el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
-            text: 'What has to be true' }),
+            text: 'Core Governance Principles & Decision Boundaries' }),
           el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
             text: 'The four decisions that are not ours to make.' }),
           el('div', { id: 'vlOpen' })
         ])
       ]),
 
-      UI.clus('Future potential', 'ai'),
+      UI.clus('Strategic Rollout Sensitivity: Phased Scenario Expansion', 'ai'),
       el('div.panel.rise', { 'data-dom': 'ai' }, [
         el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
           text: 'The same engine at three rollouts. Nothing here is a separate model — only C-01 and the touch cost move.' }),

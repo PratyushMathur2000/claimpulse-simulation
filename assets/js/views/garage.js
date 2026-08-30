@@ -28,13 +28,13 @@ const ViewGarage = (() => {
     mount(host, [
       el('div.spread.wrap', { style: { alignItems: 'flex-end', marginBottom: 'var(--s-6)' } }, [
         el('div', { style: { maxWidth: '52ch' } }, [
-          el('p.eyebrow', { style: { margin: 0 }, text: 'Demo · garage and surveyor' }),
+          el('p.eyebrow', { style: { margin: 0 }, text: 'Supply Chain & Network Orchestration · Cashless Garage & Surveyor Console' }),
           el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-            'The repair network waits one day, ',
-            el('span.grad-ink', { text: 'not four.' })
+            'Distributed Ecosystem Velocity: ',
+            el('span.grad-ink', { text: '75% bay turnaround acceleration (4.0d → 1.0d).' })
           ])
         ]),
-        el('div.seg', { id: 'gaTab' }, [['garage', 'Garage console'], ['surveyor', 'Surveyor desk']]
+        el('div.seg', { id: 'gaTab' }, [['garage', 'Garage Console'], ['surveyor', 'Surveyor Desk']]
           .map(([k, l]) => el('button', { type: 'button', 'data-t': k,
             'aria-pressed': String(k === tab), text: l })))
       ]),
@@ -79,9 +79,9 @@ const ViewGarage = (() => {
         el('div.spread.wrap', { style: { marginBottom: 'var(--s-6)', paddingBottom: 'var(--s-4)', borderBottom: '1px solid var(--hairline)' } }, [
           el('div', { style: { maxWidth: '58ch' } }, [
             el('h2', { style: { margin: 0, fontSize: 'var(--fs-lg)', fontWeight: 680 },
-              text: 'Repair Bay Hold-Time Optimization (4.0 Days → 1.0 Day)' }),
+              text: 'Repair Bay Velocity Optimization & Real-Time Estimate Harmonization' }),
             el('p.small.muted', { style: { margin: 'var(--s-2) 0 0' },
-              text: 'Instant indicative repair bands delivered at First Notice of Loss (FNOL) eliminate physical surveyor wait times, freeing garage bays 3 days faster across the authorized network.' })
+              text: 'Algorithmic parts and labor cost bands delivered at FNOL eliminate physical surveyor idle latency, freeing garage bays 3 days faster across the authorized network.' })
           ]),
           el('div.row.wrap', { style: { gap: 'var(--s-3)' } }, [
             UI.dchip('3 Bay-Days Saved / Claim', 'cap'),
@@ -106,7 +106,7 @@ const ViewGarage = (() => {
       ]),
 
       /* ---- the network, as a table ---- */
-      UI.clus('The network', 'ops',
+      UI.clus('Authorized Cashless Garage Network Performance Ledger', 'ops',
         el('div.seg', { id: 'gaSort' }, [['jobs', 'Volume'], ['over', 'Above band'], ['value', 'Value']]
           .map(([k, l]) => el('button', { type: 'button', 'data-s': k,
             'aria-pressed': String(k === sortBy), text: l })))),

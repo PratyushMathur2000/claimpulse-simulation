@@ -80,21 +80,21 @@ const ViewTokens = (() => {
     };
 
     mount(host, [
-      UI.head('Simulation · Token economics & inference risk',
-        el('h1', {}, ['We cannot measure tokens yet. ',
-          el('span.grad-ink', { text: 'So we bounded them, and the answer did not move.' })]),
+      UI.head('Simulation · Bounded Unit Economics & AI Inference Risk',
+        el('h1', {}, ['Bounded Unit Economics: ',
+          el('span.grad-ink', { text: 'Stress-testing inference parameters across an 18× range leaves payback unchanged.' })]),
         el('div.stack-2', { style: { marginTop: 'var(--s-3)' } }, [
           el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-2)' } }, [
             el('span', { style: { color: 'var(--accent)', fontWeight: 800 }, text: '•' }),
-            el('span.small', { html: '<strong>AI Inference Scalability:</strong> Token usage scales linearly with claim volume, bound by deterministic pre-filtering before any model call.' })
+            el('span.small', { html: '<strong>AI Inference Scalability:</strong> Token consumption scales linearly with claim volume, strictly governed by deterministic pre-filters prior to any model invocation.' })
           ]),
           el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-2)' } }, [
             el('span', { style: { color: 'var(--accent)', fontWeight: 800 }, text: '•' }),
-            el('span.small', { html: '<strong>Payback Resilience:</strong> Across an 18-fold token pricing variation, steady-state payback moves by only <strong>0.02 months</strong>.' })
+            el('span.small', { html: '<strong>Payback Resilience:</strong> Across an eighteen-fold token pricing and volume variation, steady-state payback shifts by a negligible <strong>0.02 months</strong>.' })
           ]),
           el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-2)' } }, [
             el('span', { style: { color: 'var(--accent)', fontWeight: 800 }, text: '•' }),
-            el('span.small', { html: '<strong>Architectural Defense:</strong> Self-hosting the proprietary fraud/gate moat while buying commodity language APIs saves <strong>₹2.70 Cr</strong> over 5 years.' })
+            el('span.small', { html: '<strong>Architectural Moat Strategy:</strong> Self-hosting the proprietary fraud-graph and zero-trust capture moat while consuming commodity language APIs yields <strong>₹2.70 Cr</strong> in 5-year NPV savings.' })
           ])
         ])),
 
@@ -113,25 +113,25 @@ const ViewTokens = (() => {
           d: 'Across an 18× token range. Proves complete cost resilience.' })
       ]),
 
-      UI.card('The bounded component table', 'Rates are vendor-published with dated retrievals (Sheet 1 Table M). Volumes are derived or assumed, and each row states which.', [
+      UI.card('Parametric Unit Economics & Inference Bounds Table', 'Vendor-published enterprise rate cards (Sheet 1 Table M) stress-tested across low, medium, and high token consumption scenarios.', [
         el('div', { id: 'tkTable' })
       ]),
 
       el('div.g-2', { style: { marginTop: 'var(--s-6)' } }, [
-        UI.card('Cost per claim, four delivery paths', 'The economy tier with batching executes the same workload on specialized models with a 50% discount for asynchronous processing.', [
+        UI.card('Unit Cost Sensitivity Across Four Model Delivery Tiers', 'Comparative inference unit economics: Evaluates frontier vs. economy models with asynchronous micro-batching discounts.', [
           el('div', { id: 'tkPaths' })
         ]),
-        UI.card('How large would inference have to become before it mattered?', 'Sheet 12 Part D breakeven analysis against net annual benefit.', [
+        UI.card('Inference Cost Breakeven & Tolerance Threshold Analysis', 'Sheet 12 Part D: Quantifies the extreme inference workload required to consume incremental shares of net annual benefit.', [
           el('div', { id: 'tkBreak' })
         ])
       ]),
 
-      UI.card('The nine cost optimisation decisions', 'Architectural design choices that aggressively suppress compute overhead. The cheapest inference is the one never run.', [
+      UI.card('Nine Architectural Design Decisions Suppressing Compute Overhead', 'Deterministic-first heuristics and edge caching that minimize GPU compute overhead. The most cost-efficient token is the one never evaluated.', [
         el('div', { id: 'tkDecisions' })
       ]),
 
       el('div.g-phi-r', { style: { marginTop: 'var(--s-6)' } }, [
-        UI.card('Build versus buy, for the GenAI layer only', 'Sheet 13. The comparison is narrowed to the workload that could genuinely be served either way — 45% of GPU hours. Baseline ML and the moat are excluded because there is no buy option for them.', [
+        UI.card('Build vs. Buy Capital Allocation: GenAI Layer (5-Year NPV Analysis)', 'Sheet 13: Strict 5-year NPV comparison evaluating self-hosted GPU clusters vs. enterprise cloud APIs for commodity language reasoning.', [
           el('div', { id: 'tkBvB' })
         ]),
         el('div.stack-6', {}, [
