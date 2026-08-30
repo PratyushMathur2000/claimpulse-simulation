@@ -156,24 +156,24 @@ const ViewStress = (() => {
     resetTo('base');
     mount(host, [
 
-      /* ---- the scenario header: state, plan, control panel trigger ---- */
+      /* ---- the scenario header: state, plan, control panel trigger on right ---- */
       el('div.panel.hero.rise', { 'data-dom': 'fin' }, [
         el('div.spread.wrap', { style: { alignItems: 'flex-start', gap: 'var(--s-6)' } }, [
-          el('div', { style: { minWidth: 0, maxWidth: '56ch' } }, [
+          el('div', { style: { minWidth: 0, maxWidth: '54ch' } }, [
             el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · financial stress test' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
               'Move any assumption. ', el('span.grad-ink', { text: 'The whole model recomputes.' })
             ]),
-            el('div.row.wrap', { style: { marginTop: 'var(--s-5)', gap: 'var(--s-3)' } }, [
-              el('button.btn.accent', { id: 'leverToggleBtn', type: 'button',
-                style: { display: 'inline-flex', alignItems: 'center', gap: 'var(--s-3)' } }, [
-                el('span', { text: '⚙ Control Panel' }),
-                el('span.badge.neutral', { id: 'drCountBadge', text: 'Base Plan' })
-              ]),
-              el('button.gbtn', { id: 'resetBtn', type: 'button', text: '↺ reset' })
-            ])
+            el('div', { id: 'stressScen', style: { marginTop: 'var(--s-4)', minWidth: 0 } })
           ]),
-          el('div', { id: 'stressScen', style: { minWidth: 0 } })
+          el('div.stack-3', { style: { alignItems: 'flex-end', gap: 'var(--s-3)' } }, [
+            el('button.btn.accent', { id: 'leverToggleBtn', type: 'button',
+              style: { display: 'inline-flex', alignItems: 'center', gap: 'var(--s-3)', boxShadow: '0 4px 14px -3px var(--accent-glow)' } }, [
+              el('span', { text: '⚙ Control Panel' }),
+              el('span.badge.neutral', { id: 'drCountBadge', text: 'Base Plan' })
+            ]),
+            el('button.gbtn', { id: 'resetBtn', type: 'button', text: '↺ reset all' })
+          ])
         ]),
         el('div', { id: 'kpis', style: { marginTop: 'var(--s-6)' } })
       ]),
