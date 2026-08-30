@@ -35,16 +35,29 @@ const CP = (() => {
       else if (k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2).toLowerCase(), v);
       else node.setAttribute(k, v);
     }
-    (Array.isArray(kids) ? kids : [kids]).forEach(k => {
+    const appendKid = (k) => {
       if (k === null || k === undefined || k === false) return;
+      if (Array.isArray(k)) { k.forEach(appendKid); return; }
       node.appendChild(typeof k === 'string' || typeof k === 'number'
         ? document.createTextNode(String(k)) : k);
-    });
+    };
+    (Array.isArray(kids) ? kids : [kids]).forEach(appendKid);
     return node;
   }
 
   const clear = n => { while (n && n.firstChild) n.removeChild(n.firstChild); return n; };
-  const mount = (n, kids) => { clear(n); (Array.isArray(kids)?kids:[kids]).forEach(k => k && n.appendChild(k)); return n; };
+  const mount = (n, kids) => {
+    if (!n) return n;
+    clear(n);
+    const appendKid = (k) => {
+      if (k === null || k === undefined || k === false) return;
+      if (Array.isArray(k)) { k.forEach(appendKid); return; }
+      n.appendChild(typeof k === 'string' || typeof k === 'number'
+        ? document.createTextNode(String(k)) : k);
+    };
+    (Array.isArray(kids) ? kids : [kids]).forEach(appendKid);
+    return n;
+  };
 
   /* ---------------- Formatting ----------------
      Indian conventions throughout: rupee crore for money, lakh/crore

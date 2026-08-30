@@ -296,7 +296,7 @@ const ViewStress = (() => {
           el('span', { text: grp.title }),
           UI.dchip(grp.tier, grp.tier === 'Plan' ? 'fin' : grp.tier === 'Tier 2' ? 'cap' : grp.tier === 'Tier 3' ? 'ops' : 'risk')
         ]),
-        groupLevers.map(l => {
+        ...groupLevers.map(l => {
           const wrap = el('div.lever', { 'data-key': l.key });
           const input = el('input', {
             type: 'range', min: l.min, max: l.max, step: l.step, value: state[l.key],
