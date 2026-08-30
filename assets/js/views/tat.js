@@ -131,9 +131,6 @@ const ViewTat = (() => {
         el('div.g-phi', {}, [
           el('div', { id: 'tatMkt' }),
           el('div.stack-5', {}, [
-            UI.metric({ dom: 'fin', size: 'sm', k: 'Marketing plan, total', ref: 'MARKETTING E51',
-              v: fmt.cr(mkt.totalCr), unit: '₹ Cr',
-              d: 'Physical dealer kit plus digital, campaign and event channels. Dealer commission is excluded by the B-30 switch.' }),
             UI.metric({ dom: 'risk', size: 'sm', k: 'Carried at 60% rollout', ref: 'W-23a',
               v: fmt.cr(Math.abs(r.lines.marketingCost)), unit: '₹ Cr',
               d: 'Subtracted before the headline benefit, and booked against BFDL distribution.' }),
@@ -281,6 +278,28 @@ const ViewTat = (() => {
       mktHost.innerHTML = '';
       mount(mktHost, [
         el('div.growth-flywheel', {}, [
+          // STAGE FLOW ROW
+          el('div.flywheel-flow-row', {}, [
+            el('div.flywheel-step-card', {}, [
+              el('span.step-tag', { text: 'STEP 1 · EFFICIENCY SAVINGS' }),
+              el('h4', { text: 'Repurposed Fund Pool' }),
+              el('div.stat-val.gold', { text: '₹23.82 Cr' }),
+              el('p.xsmall.muted', { text: '175.9 FTE capacity released + 74k surveys eliminated generates productive gross value.' })
+            ]),
+            el('div.flywheel-step-card', {}, [
+              el('span.step-tag', { text: 'STEP 2 · RE-INVESTMENT' }),
+              el('h4', { text: 'Self-Funded Growth' }),
+              el('div.stat-val.blue', { text: `₹${fmt.cr(Math.abs(r.lines.marketingCost))} Cr` }),
+              el('p.xsmall.muted', { text: 'Marketing budget funded directly from operational savings — zero new equity required.' })
+            ]),
+            el('div.flywheel-step-card', {}, [
+              el('span.step-tag', { text: 'STEP 3 · REVENUE RETURN' }),
+              el('h4', { text: 'Renewal Retention (Farm)' }),
+              el('div.stat-val.green', { text: `₹${fmt.cr(r.lines.renewal)} Cr` }),
+              el('p.xsmall.muted', { text: '1.5% renewal conversion lift on 2-day claim experience self-repays the entire plan.' })
+            ])
+          ]),
+
           // HUNT & FARM DUAL ENGINE BREAKDOWN
           el('div.hunt-farm-split', {}, [
             // THE HUNT
