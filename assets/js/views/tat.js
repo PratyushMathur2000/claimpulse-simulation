@@ -128,20 +128,7 @@ const ViewTat = (() => {
         el('div.spread.wrap', { style: { marginBottom: 'var(--s-5)' } }, [
           el('div.small.muted', { text: 'The Hunt & Farm Plan: Repurposed operational capacity self-funds dealer channel acquisition, repaid via renewal retention.' })
         ]),
-        el('div.g-phi', {}, [
-          el('div', { id: 'tatMkt' }),
-          el('div.stack-5', {}, [
-            UI.metric({ dom: 'risk', size: 'sm', k: 'Carried at 60% rollout', ref: 'W-23a',
-              v: fmt.cr(Math.abs(r.lines.marketingCost)), unit: '₹ Cr',
-              d: 'Subtracted before the headline benefit, and booked against BFDL distribution.' }),
-            UI.metric({ dom: 'cust', size: 'sm', k: 'Renewal retention it defends', ref: 'W-22',
-              v: fmt.cr(r.lines.renewal), unit: '₹ Cr',
-              d: 'Uplift on the claimant cohort only. The whole-book NPS effect is not counted at all.' }),
-            UI.disc('The plan costs more than the renewal line it defends',
-              '<p>At this rollout that is simply true. It is carried anyway, at full cost, because the acquisition case rests on new business the model does not attempt to value — and a benefit we cannot size does not get to offset a cost we can.</p>',
-              { chip: 'read this one' })
-          ])
-        ])
+        el('div', { id: 'tatMkt' })
       ]),
 
       el('div', { style: { marginTop: 'var(--s-6)' } }, [
