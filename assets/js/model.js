@@ -134,6 +134,7 @@ const CPModel = (() => {
       coverShowroom: 0.50, coverUsedCar: 0.30, coverGarage: 0.20,
       kitShowroom: 5200, kitUsedCar: 12000, kitGarage: 2000,
       digital: [
+        { name:'Press release',                    qty: 1,       rate: 1500000 },
         { name:'Policybazaar sponsored placement', qty: 20,      rate: 50000   },
         { name:'LinkedIn employee advocacy',       qty: 150,     rate: 8445.25 },
         { name:'Google Search, cost per click',    qty: 400000,  rate: 40      },
@@ -366,20 +367,20 @@ const CPModel = (() => {
      Every figure below was read out of R6 after Excel recalculated it.
      --------------------------------------------------------------- */
   const GOLDEN = {
-    conservative: { gross: 12.685633842675127, run: 2.5098821779084224, net: 10.175751664766704,
-                    payback: 11.663574496510778, combinedPP: 0.30711302540239693,
-                    npv3: 9.461831789726391, paybackKickoff: 30.064130620070635,
-                    capacity: 6.647565278704751, marketing: -1.74553355, fte: 58.62050510321647 },
-    base:         { gross: 34.851619680964845, run: 3.9006065337252656, net: 30.95101314723958,
-                    payback: 3.8346285155639634, combinedPP: 1.1478218500267996,
-                    npv3: 51.064611223227246, paybackKickoff: 20.072939142864193,
-                    capacity: 16.618913196761863, marketing: -5.23660065, fte: 175.86151530964938 },
-    aggressive:   { gross: 52.74389638984052, run: 5.29133088954211, net: 47.45256550029841,
-                    payback: 2.5011426958412533, combinedPP: 1.9980794746512016,
-                    npv3: 83.94890028653336, paybackKickoff: 16.43512003755401,
-                    capacity: 22.158550929015835, marketing: -8.72766775, fte: 293.1025255160823 },
+    conservative: { gross: 12.655633842675128, run: 2.5098821779084224, net: 10.145751664766706,
+                    payback: 11.698062550866615, combinedPP: 0.30711302540239693,
+                    npv3: 9.400630921069776, paybackKickoff: 30.104817338431015,
+                    capacity: 6.647565278704747, marketing: -1.7755335500000002, fte: 58.62050510321647 },
+    base:         { gross: 34.76161968096484, run: 3.9006065337252656, net: 30.861013147239575,
+                    payback: 3.845811446103353, combinedPP: 1.1478218500267996,
+                    npv3: 50.88100861725739, paybackKickoff: 20.10768192820352,
+                    capacity: 16.618913196761863, marketing: -5.3266006500000005, fte: 175.86151530964938 },
+    aggressive:   { gross: 52.59389638984052, run: 5.29133088954211, net: 47.302565500298414,
+                    payback: 2.5090740078199625, combinedPP: 1.9980794746512016,
+                    npv3: 83.6428959432503, paybackKickoff: 16.458758067311077,
+                    capacity: 22.15855092901582, marketing: -8.87766775, fte: 293.1025255160823 },
     buildTotal: 9.890469800000002,
-    marketingTotalCr: 8.72766775
+    marketingTotalCr: 8.87766775
   };
 
   function selfCheck() {

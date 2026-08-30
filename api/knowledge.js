@@ -17,7 +17,7 @@ export const BASELINE_METRICS = {
   physicalSurveyRate: '55.0%',
   combinedRatio: '104.70%',
   frictionCostPerClaim: '₹1,750',
-  rootCause: 'Decision absence. 65% of Motor OD claims are structurally deterministic, but legacy systems treat all claims with identical manual friction.'
+  rootCause: 'Lack of automated evidence triage. 65% of Motor OD claims are structurally deterministic, but legacy workflows apply identical manual friction across all claims.'
 };
 
 export const PLATFORM_TARGETS = {
@@ -30,9 +30,11 @@ export const PLATFORM_TARGETS = {
 };
 
 export const ACCOUNTING_PRINCIPLES_R6 = {
-  w18_labourSavings: '₹0 / year. Zero retrenchments — headcount is retained and no payroll cost leaves the P&L.',
-  w22a_capacityRedeployed: '175.9 FTE of liberated capacity is redeployed into renewals, cross-selling, and complex loss control at B-29 realisation rate (70% placeholder) = ₹16.62 Cr output.',
-  w23a_marketingInvestment: 'Marketing cost of -₹5.24 Cr at Base (the Hunt & Farm marketing plan).',
+  w18_labourSavings: '₹0 / year. Zero retrenchment — adjuster headcount is preserved, and effort is redirected into high-value operations.',
+  w22a_capacityRedeployed: '175.9 FTE of liberated capacity is redeployed into complex claims, renewals, and fraud investigations at B-29 realisation rate (70%) = ₹16.62 Cr productive capacity value.',
+  w23a_marketingInvestment: 'Marketing cost of -₹5.33 Cr at Base (the Hunt & Farm marketing plan total of ₹8.88 Cr at 60% rollout).',
+  netAnnualBenefit: '₹30.86 Cr at Base (60% rollout), ₹10.15 Cr at Conservative (20%), ₹47.30 Cr at Aggressive (100%).',
+  threeYearNPV: '₹50.88 Cr at Base, ₹9.40 Cr at Conservative, ₹83.64 Cr at Aggressive.',
   modelIntegrity: 'All 24 workbook internal checks pass; 35 programmatic assertions run on every load.'
 };
 
@@ -69,9 +71,9 @@ export const STATUTORY_RULES = {
 
 export const EXCEL_SHEET_MAP = [
   { sheet: 'Sheet 1 (Inputs)', desc: 'Tables A to J: All model inputs, assumptions, and Tier 1-4 classification.' },
-  { sheet: 'Sheet 3 (Workings)', desc: 'Core calculations: W-15 (TAT), W-18 (Labour ₹0), W-22a (Capacity Redeployed), W-23a (Marketing), W-35 (Net Benefit), W-43 (Combined Ratio).' },
-  { sheet: 'Sheet 4 (Forecast)', desc: '10-year financial trajectory, 3-year NPV @ 12% WACC (₹51.06 Cr), cash flows.' },
+  { sheet: 'Sheet 3 (Workings)', desc: 'Core calculations: W-15 (TAT), W-18 (Labour ₹0), W-22a (Capacity Redeployed), W-23a (Marketing), W-35 (Net Benefit ₹30.86 Cr), W-43 (Combined Ratio).' },
+  { sheet: 'Sheet 4 (Forecast)', desc: '5-year financial trajectory, 3-year NPV @ 12% WACC (₹50.88 Cr at Base), cash flows.' },
   { sheet: 'Sheet 8 (Sensitivities)', desc: 'Payback matrices, green lane sensitivity, downside scenario stress tests.' },
   { sheet: 'Sheet 12 (Tokens & Compute)', desc: 'Inference cost architecture, token budgets across 4 delivery paths.' },
-  { sheet: 'MARKETTING', desc: 'Hunt & Farm marketing budget build-up (dealers, used car outlets, digital spend).' }
+  { sheet: 'MARKETTING', desc: 'Hunt & Farm marketing budget build-up (dealers, used car outlets, digital spend, ₹8.88 Cr total).' }
 ];

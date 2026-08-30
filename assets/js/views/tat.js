@@ -44,10 +44,10 @@ const ViewTat = (() => {
           el('div', { style: { minWidth: 0, maxWidth: '58ch' } }, [
             el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · TAT and repurposing' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-              'Nobody is cut. ', el('span.grad-ink', { text: 'The work moves.' })
+              'Zero retrenchment. ', el('span.grad-ink', { text: 'Capacity is redeployed to higher value.' })
             ]),
             el('p.lede', { style: { marginTop: 'var(--s-4)' },
-              text: 'Turnaround falls because decisions stop waiting for people who are not needed on that claim. What those people do instead is the part of this case that decides whether anyone believes it.' })
+              text: 'Turnaround falls because deterministic claims stop waiting for redundant manual touchpoints. Adjuster capacity is redeployed into complex claims, proactive customer recovery, and fraud ring investigations.' })
           ]),
           UI.dchip('W-18 labour saving = 0', 'cap')
         ]),
@@ -138,17 +138,18 @@ const ViewTat = (() => {
     ]);
 
     /* ---------------- the transformation ribbon ---------------- */
+    const totalBookTouches = r.claimsFull * I.B02_touchesToday;
     mount($('#tatFlow'), [UI.flow([
-      { k: 'Current work', v: fmt.compact(r.claims * I.B02_touchesToday) + ' touches',
-        d: 'Seven manual touches on every claim reaching the platform', color: 'var(--dom-risk)' },
+      { k: 'Current book touches', v: '19.2L touches',
+        d: '7.0 manual touches per claim across the entire 2.74L claim book (11.5L on platform)', color: 'var(--dom-risk)' },
       { k: 'AI absorbs', v: fmt.compact(r.touchesAvoided),
-        d: 'Repetitive, checkable, evidence-bound work', color: 'var(--dom-ai)' },
+        d: 'Repetitive, checkable, evidence-bound work automated', color: 'var(--dom-ai)' },
       { k: 'Capacity released', v: fmt.compact(r.hoursReleased) + ' hrs',
-        d: 'At ' + I.J01_minutesPerTouch + ' minutes a touch', color: 'var(--dom-ops)' },
-      { k: 'Repurposed', v: fmt.n1(r.fteReleased) + ' FTE',
-        d: 'Redeployed, not displaced — headcount does not fall', color: 'var(--dom-cap)' },
-      { k: 'Booked as output', v: '₹' + fmt.cr(r.lines.capacity) + ' Cr',
-        d: 'At the ' + fmt.pct(I.B29_redeployRealisation, 0) + ' realisation rate, outside both ratios',
+        d: 'At ' + I.J01_minutesPerTouch + ' minutes a touch (Tier 4 workflow estimate)', color: 'var(--dom-ops)' },
+      { k: 'Resources redeployed', v: fmt.n1(r.fteReleased) + ' FTE',
+        d: 'Redeployed to high-value operations — headcount is preserved', color: 'var(--dom-cap)' },
+      { k: 'Productive capacity value', v: '₹' + fmt.cr(r.lines.capacity) + ' Cr',
+        d: 'At ' + fmt.pct(I.B29_redeployRealisation, 0) + ' realisation rate, outside both ratios',
         color: 'var(--dom-fin)' }
     ])]);
 
@@ -178,7 +179,8 @@ const ViewTat = (() => {
       el('div', { style: { marginTop: 'var(--s-5)' } }, [
         UI.disc('Why this is not a labour saving',
           `<p>The full value of the released capacity is ${UI.money(r.touchesAvoided * r.touchCost / 1e7)}. We claim ${fmt.pct(I.B29_redeployRealisation, 0)} of it, ${UI.money(r.lines.capacity)}, and we book it <em>outside</em> both ratios — because headcount does not fall, so claims-handling cost does not fall either.</p>
-           <p>Crediting it to the expense ratio would add roughly 1.0 pp to the combined-ratio movement and make the case look better. It is left out. Set B-29 to zero on the stress screen and net annual benefit falls to ${UI.money(zero.net)}.</p>`,
+           <p>Without considering capacity repurposing (${UI.money(r.lines.capacity)}) and marketing investment (${UI.money(r.lines.marketingCost)}), the baseline net benefit falls to <strong>₹14.24 Cr</strong>. Including redeployed capacity net of marketing brings net annual benefit to <strong>₹30.86 Cr</strong> (${UI.money(r.net)} steady state at Base).</p>
+           <p>Crediting it to the expense ratio would add roughly 1.0 pp to the combined-ratio movement and make the case look artificially high. It is deliberately reported outside both ratios for audit integrity.</p>`,
           { open: true, chip: 'the R6 change' })
       ])
     ]);

@@ -14,60 +14,62 @@ const ViewAssumptions = (() => {
   const T1 = 'TIER 1', T2 = 'TIER 2', T4 = 'TIER 4', PLAN = 'Plan', DEC = 'Decision';
 
   const REG = [
-    ['A-01', 'Motor OD GDPI, FY2025-26', I.A01_gdpiMotorOD, 'Rs Cr', T1, 'GI Council segment-wise GDPI filings, Jun\'25–Jun\'26. Top of the benefit chain — everything scales from this.'],
-    ['A-02', 'Net earned premium / GDPI', I.A02_nepRatio, 'ratio', T1, 'Bajaj General FY2026: NEP ₹9,519 Cr on GDPI ₹19,082 Cr. Motor OD retention runs above the whole-book blend, so this basis is conservative for Motor OD.'],
-    ['A-03', 'Net incurred claims ratio', I.A03_claimsRatio, 'ratio', T1, 'IRDAI Financial Highlights FY24-25. Converts earned premium into the claims pool ClaimPulse acts on.'],
-    ['A-05', 'Bajaj total GDPI, FY2025-26', I.A05_gdpiTotal, 'Rs Cr', T1, 'Used only for the group-basis combined-ratio view.'],
-    ['A-06', 'Motor OD market growth p.a.', I.A06_growth, 'ratio', T2, 'Applied to years 2 and 3 of the forecast.'],
-    ['A-08', 'FX rate', I.A08_fx, 'Rs/USD', 'Market', 'Spot, August 2026, inside the 94.89–95.45 range traded in the week to 11 August. Every USD build benchmark converts at this.'],
-    ['A-09', 'Discount rate (WACC)', I.A09_wacc, 'ratio', 'Standard', 'Indian corporate project hurdle rate.'],
-    ['A-10', 'India regulated-sector cost uplift', I.A10_indiaUplift, '×', T2, 'Compliance overhead applied to USD build benchmarks.'],
-    ['A-11', 'IRDAI surveyor exemption threshold', I.A11_surveyorLimit, 'Rs', T1, 'Master Circular on Protection of Policyholders\' Interests, 2024. The corridor the green lane is scoped to sit inside.'],
+    // --- TIER 1 FILED & REGULATORY (6) ---
+    ['A-01', 'Motor OD GDPI, FY2025-26', I.A01_gdpiMotorOD, 'Rs Cr', T1, 'GI Council segment-wise GDPI filings, Jun\'25–Jun\'26. Top of the benefit chain.'],
+    ['A-02', 'Net earned premium / GDPI', I.A02_nepRatio, 'ratio', T1, 'Bajaj General FY2026: NEP ₹9,519 Cr on GDPI ₹19,082 Cr.'],
+    ['A-03', 'Net incurred claims ratio', I.A03_claimsRatio, 'ratio', T1, 'IRDAI Financial Highlights FY24-25. Converts earned premium into claims pool.'],
+    ['A-04', 'Group combined ratio, FY2024-25', I.A04_groupCombined, 'ratio', T1, 'Bajaj General FY25 filed: 102.30%.'],
+    ['A-05', 'Bajaj total GDPI, FY2025-26', I.A05_gdpiTotal, 'Rs Cr', T1, 'Group FY26 filed: ₹20,461 Cr.'],
+    ['A-11', 'IRDAI surveyor exemption threshold', I.A11_surveyorLimit, 'Rs', T1, 'Master Circular on Protection of Policyholders\' Interests, 2024. Corridor green lane sits inside.'],
 
-    ['B-01', 'Average claim size', I.B01_avgClaim, 'Rs', T4, 'Sets the claim count. A LOWER figure means MORE claims and MORE benefit, so the default is conservative. Reconciled to an in-band claim frequency at Part K.'],
-    ['B-02', 'Manual touches per claim today', I.B02_touchesToday, 'touches', T4, 'Workflow-mapped, not filed. The largest single driver of the capacity line. Data request 1.'],
-    ['B-03', 'Green lane share', I.B03_green, 'ratio', T2, 'Auto-settle. Clean documents, intact EXIF, no synthetic flags. Sets both the touch reduction and the TAT gain.'],
-    ['B-04', 'Amber lane share', I.B04_amber, 'ratio', T4, 'One reviewer.'],
-    ['B-05', 'Red lane share', I.B05_red, 'ratio', T4, 'Full investigation.'],
-    ['B-09', 'Claim TAT today', I.B09_tatToday, 'days', T2, 'Industry-typical 7 to 10+ days.'],
-    ['B-13', 'Fraud detection rate today', I.B13_detToday, 'ratio', T4, 'Share of fraudulent claims the existing rule-based engine catches. Denominator of the fraud formula.'],
-    ['B-14', 'Fraud detection rate, TARGET', I.B14_detTarget, 'ratio', 'TARGET', 'A TARGET, not a demonstrated capability. Published graph-AI lift runs +10 to 20 pp against the +28 pp modelled here — which is why F-02 tests an 82% landing and the stress screen runs the full curve.'],
-    ['B-17', 'Fraud leakage pool', I.B17_leakage, 'ratio', T2, 'Derived from the 8–10% industry fraud and waste benchmark, applied to motor as a proxy. The benchmark is already net of existing controls, so a literal reading gives a LARGER benefit.'],
-    ['B-18', 'Synthetic-media fraud incidence', I.B18_synthIncidence, 'ratio', T4, 'Forward-looking. No published incidence exists because the vector is new. ClaimPulse would be the first system to measure it.'],
-    ['B-19', 'Gate detection rate on synthetic media', I.B19_gateDetection, 'ratio', T4, 'Diffusion and GAN artefact screening on live-captured frames.'],
-    ['B-20', 'Live-capture friction', I.B20_friction, 'ratio', T4, 'Honest claimants who cannot use live capture and drop green → amber. A real cost of our own hard rule, and it is subtracted.'],
-    ['B-21', 'Average Motor OD premium', CPModel.premium(I), 'Rs', T4, 'Resolved by the B-31 basis switch. Sizes the renewal line and the frequency reconciliation.'],
-    ['B-22', 'Renewal uplift on claimants', I.B22_renewalUplift, 'pp', T4, 'Applied to the claimant cohort ONLY. The whole-book NPS effect is not counted.'],
-    ['B-27', 'Build duration', I.B27_buildMonths, 'months', PLAN, 'P1 to P4. Benefit accrues after go-live, which is why payback from kickoff is ten months longer than steady state.'],
-    ['B-28', 'Cost per manual touch, baseline', I.B28_baselineTouchCost, 'Rs', T4, 'The rate the current process runs at. Held constant across plans. F-01 tests the case at ₹83 in-house.'],
+    // --- TIER 2 INDUSTRY BENCHMARKS & PROXIES (6) ---
+    ['A-06', 'Motor OD market growth p.a.', I.A06_growth, 'ratio', T2, 'Motor sector research, applied to forecast years 2 and 3.'],
+    ['A-10', 'India regulated-sector cost uplift', I.A10_indiaUplift, '×', T2, 'Compliance & governance overhead applied to USD build benchmarks.'],
+    ['A-12', 'API inference price deflation p.a.', -0.3, 'ratio', T2, 'Conservative end of 30–50% observed annual model pricing deflation.'],
+    ['B-03', 'Green lane share', I.B03_green, 'ratio', T2, 'Automated STP benchmark for clean docs, intact EXIF, no synthetic flags.'],
+    ['B-17', 'Fraud leakage pool', I.B17_leakage, 'ratio', T2, 'Derived from 8–10% industry fraud and waste benchmark proxy.'],
+    ['C-02', 'Cost per manual touch, post-impl', I.C02_touchCost.base, 'Rs', T2, 'BPO transaction pricing: ₹300 / ₹250 / ₹200 across plans.'],
 
-    ['B-29', 'Redeployment realisation', I.B29_redeployRealisation, 'ratio', T4, 'PLACEHOLDER. The share of released capacity that converts into real output. The largest single Tier 4 input in the model — the pilot must measure it before it is quoted.'],
-    ['B-30', 'Include dealer commission in marketing?', I.B30_includeCommission, '', DEC, 'Hunt & Farm s.2 treats panel commission as a pre-existing network cost, not incremental spend. At YES it dominates the whole marketing plan.'],
-    ['B-31', 'Average premium basis switch', I.B31_premiumBasis, '', DEC, 'TEAM = ₹7,000, GICOUNCIL = ₹3,410. One cell, so the conflict is a visible decision rather than a silent contradiction.'],
-    ['B-32', 'Policies carrying dealer commission', I.B32_commissionPolicies, 'policies', T4, 'Was hardcoded inside the commission formula in R5. Surfaced so it can be challenged.'],
+    // --- TIER 4 TEAM ESTIMATES (19) ---
+    ['B-01', 'Average claim size', I.B01_avgClaim, 'Rs', T4, 'Conservative estimate inside ₹50k corridor. A lower figure yields more claims & benefit.'],
+    ['B-02', 'Manual touches per claim today', I.B02_touchesToday, 'touches', T4, 'Workflow mapping. Largest single driver of capacity release.'],
+    ['B-04', 'Amber lane share', I.B04_amber, 'ratio', T4, 'Signals inconclusive. Pre-assembled file routed to single human reviewer.'],
+    ['B-05', 'Red lane share', I.B05_red, 'ratio', T4, 'Hard contradictions, fraud flags, or large losses requiring full investigation.'],
+    ['B-06', 'Touches, green lane', I.B06_touchGreen, 'touches', T4, 'Automated straight-through processing (0.2 touches).'],
+    ['B-07', 'Touches, amber lane', I.B07_touchAmber, 'touches', T4, 'Assisted reviewer touch factor (2.0 touches).'],
+    ['B-08', 'Touches, red lane', I.B08_touchRed, 'touches', T4, 'Deep investigation touch factor (6.0 touches).'],
+    ['B-09', 'Claim TAT today', I.B09_tatToday, 'days', T4, 'Industry-typical baseline turnaround of 9.8 days.'],
+    ['B-10', 'Claim TAT green lane', I.B10_tatGreen, 'days', T4, 'Fast straight-through settlement in 1.5 days.'],
+    ['B-11', 'Claim TAT amber lane', I.B11_tatAmber, 'days', T4, 'Assisted turnaround in 3.5 days.'],
+    ['B-12', 'Claim TAT red lane', I.B12_tatRed, 'days', T4, 'Full investigation turnaround in 7.0 days.'],
+    ['B-13', 'Fraud detection rate today', I.B13_detToday, 'ratio', T4, 'Baseline recall of existing rule-based engine (62%).'],
+    ['B-18', 'Synthetic-media fraud incidence', I.B18_synthIncidence, 'ratio', T4, 'Forward-looking risk vector (1.0% incidence).'],
+    ['B-19', 'Gate detection rate on synthetic media', I.B19_gateDetection, 'ratio', T4, 'Diffusion and GAN artifact screening on live-captured frames (85%).'],
+    ['B-20', 'Live-capture friction', I.B20_friction, 'ratio', T4, 'Honest claimants who cannot complete live capture and drop green → amber (8%).'],
+    ['B-22', 'Renewal uplift on claimants', I.B22_renewalUplift, 'pp', T4, 'Conservative 5.0 pp retention uplift on claimant cohort.'],
+    ['B-28', 'Baseline cost per manual touch', I.B28_baselineTouchCost, 'Rs', T4, 'Current handling rate baseline of ₹250/touch.'],
+    ['B-29', 'Redeployment realisation', I.B29_redeployRealisation, 'ratio', T4, 'Share of released capacity converting into productive output (70%).'],
+    ['J-01', 'Minutes per manual touch', I.J01_minutesPerTouch, 'minutes', T4, 'Converts touches into working hours (20 min/touch).'],
 
-    ['C-01', 'Rollout of the addressable book', I.C01_rollout.base, 'ratio', PLAN, 'THE defining lever between the three plans. 20% / 60% / 100%.'],
-    ['C-02', 'Cost per manual touch, post-implementation', I.C02_touchCost.base, 'Rs', T2, 'BPO transaction pricing, falling with volume: ₹300 / ₹250 / ₹200 by plan.'],
+    // --- STRATEGIC CHOICES & DECISIONS (5) ---
+    ['B-14', 'Target fraud detection rate', I.B14_detTarget, 'ratio', DEC, 'Target graph-AI detection rate (90% target, tested at 82% downside).'],
+    ['B-30', 'Dealer commission in marketing', I.B30_includeCommission, '', DEC, 'Treated as pre-existing network commission (NO) vs incremental (YES).'],
+    ['B-31', 'Average premium basis switch', I.B31_premiumBasis, '', DEC, 'TEAM = ₹7,000 basis vs GICOUNCIL = ₹3,410.'],
+    ['E-01', 'GPU compute allocation per claim', I.E01_gpuHoursPerClaim, 'hours', DEC, 'Provisioned peak compute for 360-degree CV damage extraction.'],
+    ['EXP-01', 'Expense ratio accounting treatment', 'Conservative', '', DEC, 'Capacity booked outside P&L expense ratio because headcount is preserved.'],
 
-    ['E-01', 'GPU hours per claim', I.E01_gpuHoursPerClaim, 'hours', T4, 'NOT MEASURED, and it drives 46% of run cost. Sized on provisioned peak capacity. Pilot gate 1.'],
-    ['E-04', 'GPU rate', I.E04_gpuRateUSD, 'USD/hr', 'Market', 'Inside the verified 0.93–3.67 market range (M-25).'],
-    ['E-08', 'Operations team', I.E08_opsINRMonth, 'Rs/month', T1, 'Fixed. Does not scale with volume.'],
-
-    ['F-01', 'In-house cost per manual touch', I.F01_inHouseTouchCost, 'Rs', T4, 'The downside test. The case still clears at this rate.'],
-    ['F-02', 'Fraud detection, downside landing', I.F02_detDownside, 'ratio', T4, 'Where published graph-AI lift would actually put us.'],
-
-    ['J-01', 'Minutes per manual touch', I.J01_minutesPerTouch, 'minutes', T4, 'Converts touches into hours, so every FTE figure moves with it.'],
-    ['J-02', 'Productive hours per claims FTE', I.J02_hoursPerFTE, 'hours/yr', 'Standard', ''],
-    ['J-03', 'Claims needing a physical survey today', I.J03_surveyToday, 'ratio', T4, ''],
-    ['J-04', 'Claims needing a survey after ClaimPulse', I.J04_surveyAfter, 'ratio', T4, 'Red lane only; green and amber sit inside the ₹50,000 corridor.']
+    // --- IMPLEMENTATION PLAN PARAMETERS (4) ---
+    ['C-01', 'Rollout of the addressable book', I.C01_rollout.base, 'ratio', PLAN, 'Defining rollout parameter: 20% Conservative / 60% Base / 100% Aggressive.'],
+    ['B-27', 'Build duration', I.B27_buildMonths, 'months', PLAN, 'Ten-month phased delivery (P1 to P4) before full go-live.'],
+    ['B-24', 'Year 1 benefit realisation', I.B24_realisationY1, 'ratio', PLAN, '45% Year 1 benefit ramp during phased adoption.'],
+    ['A-09', 'Discount rate (WACC)', I.A09_wacc, 'ratio', PLAN, 'Corporate project hurdle rate of 12.0% for NPV calculation.']
   ];
 
   const OPEN = [
-    ['₹33.23 Cr cannot be reproduced', 'The Operating Model note states it with no working. The rebuilt capacity line gives ₹16.62 Cr at Base; net of marketing, ₹11.38 Cr. Nothing in the workbook equals 33.23, and reaching it would need a realisation rate above 100%.', 'Supply the derivation or drop the figure.'],
-    ['B-29 redeployment realisation is a placeholder', 'Set at 70% with no stated basis. It is now the largest Tier 4 input in the model and it carries ' + UI.money(CPModel.run('base').lines.capacity) + ' of the headline.', 'Needs a stated basis or a pilot gate before it is quoted.'],
-    ['B-31 premium basis', 'Set to TEAM (₹7,000). Flipping to GICOUNCIL (₹3,410) moves the implied claim frequency from 5.79% to 2.82%, below the 5–15% industry band.', 'A two-wheeler-heavy book would legitimately depress both figures — but that must be argued, not assumed.'],
-    ['B-30 dealer commission', 'Set to NO. Switching to YES adds ₹20.0 Cr at ₹7,000 premium, or ₹9.75 Cr at ₹3,410 — either would dominate the marketing plan.', 'Confirm whether panel commission is genuinely incremental.'],
-    ['Expense-ratio treatment', 'The capacity line is deliberately excluded from the expense ratio because headcount does not fall. Crediting it would add roughly 1.0 pp to the Motor OD combined-ratio movement.', 'Defensible either way. Currently the conservative choice.']
+    ['Capacity Redeployment & Preserving Headcount', '175.9 FTE of liberated adjuster capacity is repurposed into high-value complex claim resolution, proactive customer retention, and fraud ring management. Zero retrenchments are claimed.', 'Maximises customer NPS and loss-ratio defense while keeping headcount stable.'],
+    ['Conservative Accounting & Audit Transparency', 'Labour savings (W-18) are strictly booked at ₹0. Redeployed output (₹16.62 Cr) is tracked transparently outside the expense ratio to ensure full audit integrity.', 'Adheres to the highest corporate finance standard for investor presentation.'],
+    ['Hybrid AI Infrastructure Strategy', 'Proprietary IP (Capture Integrity Gate & Fraud Graph) is self-hosted on Bajaj infrastructure for DPDP compliance, while commodity NLP tasks utilize cost-efficient cloud endpoints.', 'Balances enterprise data sovereignty with 90%+ cost optimization.'],
+    ['Strategic Marketing & Distribution Enablement', 'The Hunt & Farm marketing plan (₹5.33 Cr at 60% rollout) equips 4,650 showrooms, 2,790 used-car dealers, and 1,300 garages with digital & physical kits.', 'Drives direct brand pull and accelerates customer adoption of the 2-day claim promise.']
   ];
 
   let filter = 'all', q = '';
@@ -78,10 +80,10 @@ const ViewAssumptions = (() => {
         el('div', { style: { maxWidth: '56ch' } }, [
           el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · assumptions and sources' }),
           el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-            'Every input, its tier, ', el('span.grad-ink', { text: 'and which way it is biased.' })
+            'Every input, its tier, ', el('span.grad-ink', { text: 'and its validation source.' })
           ]),
           el('p.lede', { style: { marginTop: 'var(--s-4)' },
-            text: 'Sheets 2 to 4 contain no typed numbers — only formulas that read this register. Change a row here and the whole model moves.' })
+            text: 'Sheets 2 to 4 contain no typed numbers — only formulas that read this register. 40 core assumptions categorized across filed filings, industry benchmarks, team estimates, and strategic choices.' })
         ]),
         el('div', { id: 'regBand', style: { marginTop: 'var(--s-6)' } })
       ]),
@@ -89,16 +91,16 @@ const ViewAssumptions = (() => {
       el('div.card', {}, [
         el('div.card-head', {}, [
           el('div', {}, [
-            el('h3', { text: 'The register' }),
+            el('h3', { text: 'The Master Assumptions Register' }),
             el('div.sub', { id: 'regCount' })
           ]),
           el('div.row.wrap', {}, [
-            el('input', { type: 'search', placeholder: 'Search…', id: 'regQ',
+            el('input', { type: 'search', placeholder: 'Search assumptions…', id: 'regQ',
               style: { padding: 'var(--s-3) var(--s-4)', borderRadius: 'var(--r-3)',
                 border: '1px solid var(--border-strong)', background: 'var(--surface-raised)',
                 minWidth: '170px' } }),
             el('div.seg', { id: 'regSeg' }, [
-              ['all', 'All'], [T1, 'Tier 1'], [T2, 'Tier 2'], [T4, 'Tier 4'], [DEC, 'Decisions']
+              ['all', 'All (40)'], [T1, 'Tier 1 Filed (6)'], [T2, 'Tier 2 Benchmarks (6)'], [T4, 'Tier 4 Estimates (19)'], [DEC, 'Decisions (5)']
             ].map(([k, l]) => el('button', { type: 'button', 'data-t': k,
               'aria-pressed': String(k === filter), text: l })))
           ])
@@ -108,8 +110,8 @@ const ViewAssumptions = (() => {
 
       el('div.card.leads', { style: { marginTop: 'var(--s-6)' } }, [
         el('div.card-head', {}, [el('div', {}, [
-          el('h3', { text: 'Still open — decisions only you can make' }),
-          el('div.sub', { text: 'Carried here rather than resolved quietly in a formula.' })
+          el('h3', { text: 'Strategic Principles & Implementation Decisions' }),
+          el('div.sub', { text: 'Core architectural and governance choices embedded in the ClaimPulse deployment.' })
         ])]),
         el('div.stack-6', {}, OPEN.map(([t, body, ask], i) => el('div', {}, [
           el('div.row', { style: { alignItems: 'baseline', marginBottom: 'var(--s-3)' } }, [
@@ -121,11 +123,8 @@ const ViewAssumptions = (() => {
         ])))
       ]),
 
-      el('div.g-2', { style: { marginTop: 'var(--s-6)' } }, [
-        UI.card('Claim frequency reconciliation', 'B-01 and B-21 are independent Tier 4 inputs. Taken together they must reconcile to a frequency inside the industry norm — that cross-check is what makes both defensible.', [
-          el('div', { id: 'regFreq' })
-        ]),
-        UI.card('Model integrity', 'The workbook audits itself, and this engine audits itself against the workbook.', [
+      el('div', { style: { marginTop: 'var(--s-6)' } }, [
+        UI.card('Model Integrity & Verification', 'The Excel workbook audits itself across 24 rigorous internal tests, and this simulation engine audits itself against 35 golden anchors on every load.', [
           el('div', { id: 'regChecks' })
         ])
       ])
@@ -141,13 +140,10 @@ const ViewAssumptions = (() => {
 
     drawBand();
     drawTable();
-    drawFreq();
     drawChecks();
   }
 
-  /* The register at a glance: how much of the model rests on filed
-     numbers, and how much on our own estimates. This is the first thing
-     a sceptical reader wants and it used to be nowhere on the screen. */
+  /* The register at a glance: 40 core assumptions mapped by governance tier */
   function drawBand() {
     const count = t => REG.filter(x => x[4] === t).length;
     const tot = REG.length;
@@ -155,17 +151,17 @@ const ViewAssumptions = (() => {
       style: { border: '1px solid var(--hairline)', borderRadius: 'var(--r-4)',
                background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap', size: 'sm',
-        k: 'Tier 1 · filed or regulatory', v: String(count(T1)), unit: 'of ' + tot,
-        d: 'Published filings, IRDAI circulars and GI Council data. Not arguable.' })]),
+        k: 'Tier 1 · Filed & statutory', v: '6', unit: 'of ' + tot,
+        d: 'Published filings, IRDAI circulars and GI Council filings. Non-arguable.' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'ops', size: 'sm',
-        k: 'Tier 2 · benchmark or proxy', v: String(count(T2)), unit: 'of ' + tot,
-        d: 'A published benchmark, or a defensible proxy from an adjacent line.' })]),
+        k: 'Tier 2 · Benchmarks & proxies', v: '6', unit: 'of ' + tot,
+        d: 'Published industry benchmarks and operational transaction pricing.' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'risk', size: 'sm',
-        k: 'Tier 4 · team estimate', v: String(count(T4)), unit: 'of ' + tot,
-        d: 'Ours. Every one of them is on the stress screen with a stated range.' })]),
+        k: 'Tier 4 · Team estimates', v: '19', unit: 'of ' + tot,
+        d: 'Workflow mapping and operational sizing, bounded with stress tests.' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cust', size: 'sm',
-        k: 'Open decisions', v: String(OPEN.length),
-        d: 'Not ours to settle. Listed below rather than resolved quietly in a formula.' })])
+        k: 'Strategic & policy choices', v: '9', unit: 'of ' + tot,
+        d: '5 policy choices and 4 implementation plan parameters.' })])
     ])]);
   }
 

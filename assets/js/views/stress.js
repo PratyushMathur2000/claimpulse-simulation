@@ -75,7 +75,7 @@ const ViewStress = (() => {
 
     { key:'mkt', label:'Marketing investment', ref:'W-23a', tier:'Plan',
       min:0, max:2, step:0.1, def:1, fmtv:v=>fmt.x(v,1),
-      note:'Scales the whole Hunt & Farm plan. 1.0× is the plan as costed, ₹8.73 Cr at full rollout.',
+      note:'Scales the whole Hunt & Farm plan. 1.0× is the plan as costed, ₹8.88 Cr at full rollout.',
       apply:(o,v)=>{ o.MKT_SCALE = v; } },
 
     { key:'realY1', label:'Benefit realisation, Year 1', ref:'B-24', tier:'Plan',
@@ -185,10 +185,10 @@ const ViewStress = (() => {
         ])
       ]),
 
-      UI.clus('What actually moves the answer', 'risk'),
+      UI.clus('Assumption Sensitivity & Key Value Drivers (Tornado Analysis)', 'risk'),
       el('div.panel.rise', { 'data-dom': 'risk' }, [
         el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-          text: 'Each bar is the model re-run with that one lever at its limits, everything else held where you have it. The ranking is measured, not asserted.' }),
+          text: 'Each bar represents the model re-run with that individual assumption swung between bounded limits while holding all other parameters constant. Proves model resilience and ranks core drivers by impact.' }),
         el('div', { id: 'tornado' })
       ]),
 

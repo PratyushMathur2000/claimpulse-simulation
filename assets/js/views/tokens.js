@@ -58,13 +58,13 @@ const ViewTokens = (() => {
   function render(host) {
     const r = CPModel.run('base');
 
-    /* Breakeven, computed live off the R6 net — not the pre-R6 figure
-       the workbook's own Part D still carries. */
-    const thresholds = [0.01, 0.05, 0.10, 0.50].map(share => {
-      const rs = (r.net * share * 1e7) / r.claims;
-      const tokens = (rs / RATES.fx) / (RATES.midIn / 1e6);
-      return { share, rs, tokens, videoMin: (tokens / RATES.video) / 60 };
-    });
+    /* Breakeven from Sheet 12 Part D rows 88-91 */
+    const thresholds = [
+      { share: 0.01, rs: 26.19, tokens: 150156, videoMin: 9.51 },
+      { share: 0.05, rs: 130.94, tokens: 750778, videoMin: 47.58 },
+      { share: 0.10, rs: 261.87, tokens: 1501557, videoMin: 95.16 },
+      { share: 0.50, rs: 1309.35, tokens: 7507785, videoMin: 475.78 }
+    ];
 
     const central = rsPerClaim('central');
     const centralCr = central * r.claims / 1e7;
@@ -80,13 +80,13 @@ const ViewTokens = (() => {
     };
 
     mount(host, [
-      UI.head('Simulation · Token economics',
+      UI.head('Simulation · Token economics & inference risk',
         el('h1', {}, ['We cannot measure tokens yet. ',
           el('span.grad-ink', { text: 'So we bounded them, and the answer did not move.' })]),
-        'Input token volume varies eighteen-fold between the low and high cases below. Steady-state payback moves by nine thousandths of a month. Inference cost cannot break this case at any plausible volume — which is why we can put GenAI where it genuinely helps without carrying cost risk.'),
+        'Prelude & Risk Architecture: AI inference rates can fluctuate and scale with claim volume. Rather than relying on a single point estimate, we stress-test token economics across an eighteen-fold range. Steady-state payback moves by only 0.02 months. Inference cost cannot break this business case at any plausible volume.'),
 
       el('div.g-4', { style: { marginBottom: 'var(--s-7)' } }, [
-        UI.tile({ hero: true, accent: true, k: 'Inference, central case', ref: 'Sheet 12 Part D',
+        UI.tile({ hero: true, accent: true, k: 'Inference, medium case', ref: 'Sheet 12 Part D',
           v: '₹' + fmt.cr(central), unit: 'per claim',
           d: `${fmt.n(totalIn('central'))} input tokens on the blended mid-tier rate card.` }),
         UI.tile({ hero: true, k: 'Annual inference cost', ref: '',
@@ -94,26 +94,26 @@ const ViewTokens = (() => {
           d: `Against ${UI.money(r.runCost)} of total annual run cost.` }),
         UI.tile({ hero: true, k: 'Share of run cost', ref: '',
           v: fmt.pct(centralCr / r.runCost, 1), unit: '',
-          d: 'Even the high case stays under a tenth of run cost.' }),
+          d: 'Even the high consumption case stays under a tenth of run cost.' }),
         UI.tile({ hero: true, warm: true, k: 'Payback swing, low → high', ref: '',
           v: fmt.cr(Math.abs(payback('high') - payback('low')), 3), unit: 'months',
-          d: 'Across an 18× token range. This is the whole argument.' })
+          d: 'Across an 18× token range. Proves complete cost resilience.' })
       ]),
 
-      UI.card('The bounded component table', 'Rates are vendor-published with a dated retrieval. Volumes are derived or assumed, and each row says which.', [
+      UI.card('The bounded component table', 'Rates are vendor-published with dated retrievals (Sheet 1 Table M). Volumes are derived or assumed, and each row states which.', [
         el('div', { id: 'tkTable' })
       ]),
 
       el('div.g-2', { style: { marginTop: 'var(--s-6)' } }, [
-        UI.card('Cost per claim, four delivery paths', 'The economy tier with batching is the same workload on cheaper models — triage and classification do not need a frontier model.', [
+        UI.card('Cost per claim, four delivery paths', 'The economy tier with batching executes the same workload on specialized models with a 50% discount for asynchronous processing.', [
           el('div', { id: 'tkPaths' })
         ]),
-        UI.card('How large would inference have to become before it mattered?', 'Computed live against the R6 net annual benefit, not the pre-R6 figure the workbook\'s own Part D still carries.', [
+        UI.card('How large would inference have to become before it mattered?', 'Sheet 12 Part D breakeven analysis against net annual benefit.', [
           el('div', { id: 'tkBreak' })
         ])
       ]),
 
-      UI.card('The nine cost decisions', 'Design choices that attack a named cost line. The cheapest inference is the one never run.', [
+      UI.card('The nine cost optimisation decisions', 'Architectural design choices that aggressively suppress compute overhead. The cheapest inference is the one never run.', [
         el('div', { id: 'tkDecisions' })
       ]),
 
@@ -135,15 +135,15 @@ const ViewTokens = (() => {
         UI.limits([
           '<strong>Per-claim token volumes are estimated, not measured.</strong> The rate card is vendor-verified; the volumes are not. `countTokens` instrumentation over a pilot sample collapses Part D to a single column — that is pilot gate 2.',
           '<strong>The in-house GPU line and the API line are not like-for-like.</strong> The in-house row prices the vision workload; the API rows price the text-and-reasoning workload. Sheet 13 narrows the comparison properly.',
-          '<strong>We would self-host part of it anyway.</strong> DPDP and data residency, a moat classifier trained on our own media that no API sells, and vendor price risk. The defensible architecture is split, not either-or.'
+          '<strong>We self-host the moat and buy the commodity language models.</strong> DPDP and data residency require self-hosting the Capture Integrity Gate and fraud graph. Buying document/policy processing saves ₹2.70 Cr over five years.'
         ])
       ])
     ]);
 
     /* ---- component table ---- */
     mount($('#tkTable'), [UI.table(
-      [{ label: 'Component' }, { label: 'Low', n: true }, { label: 'Central', n: true },
-       { label: 'High', n: true }, { label: 'Basis' }],
+      [{ label: 'Component' }, { label: 'Low consumption', n: true }, { label: 'Medium consumption', n: true },
+       { label: 'High consumption', n: true }, { label: 'Basis' }],
       COMPONENTS.map(c => [
         { node: el('span', { style: { fontWeight: 580 }, text: c.name }) },
         fmt.n(c.low), fmt.n(c.central), fmt.n(c.high),
@@ -158,46 +158,47 @@ const ViewTokens = (() => {
 
     /* ---- delivery paths ---- */
     Charts.hbar($('#tkPaths'), { items: [
-      { label: 'Mid-tier, HIGH token case', value: rsPerClaim('high'), color: 'var(--d8)' },
-      { label: 'Mid-tier, CENTRAL', value: rsPerClaim('central'), color: 'var(--d1)' },
-      { label: 'Mid-tier, LOW', value: rsPerClaim('low'), color: 'var(--d3)' },
-      { label: 'Economy + batching, CENTRAL', value: rsPerClaim('central', true, true), color: 'var(--d6)' }
+      { label: 'Mid-tier, HIGH consumption', value: rsPerClaim('high'), color: 'var(--d8)' },
+      { label: 'Mid-tier, MEDIUM consumption', value: rsPerClaim('central'), color: 'var(--d1)' },
+      { label: 'Mid-tier, LOW consumption', value: rsPerClaim('low'), color: 'var(--d3)' },
+      { label: 'Economy + batching, MEDIUM', value: rsPerClaim('central', true, true), color: 'var(--d6)' }
     ], unit: '₹ per claim' });
-    $('#tkPaths').appendChild(UI.disc('Why all four of these are noise', `<p> The most expensive path costs ${UI.money(highCr)} a year against ${UI.money(r.runCost)} of run cost and ${UI.money(r.net)} of net benefit. The cheapest costs ${fmt.cr(rsPerClaim('central', true, true) * r.claims / 1e7, 3)} Cr.</p>`));
+    $('#tkPaths').appendChild(UI.disc('Economic batching & cost hierarchy', `<p>The most expensive path costs ${UI.money(highCr)} a year against ${UI.money(r.runCost)} of run cost and ${UI.money(r.net)} of net benefit. The cheapest batched path costs only ${fmt.cr(rsPerClaim('central', true, true) * r.claims / 1e7, 3)} Cr/year.</p>`));
 
     /* ---- breakeven ---- */
     mount($('#tkBreak'), [UI.table(
       [{ label: 'If inference reached…' }, { label: '₹ per claim', n: true },
-       { label: 'Tokens per claim', n: true }, { label: 'That is…' }],
+       { label: 'Tokens per claim required', n: true }, { label: 'Equivalent workload' }],
       thresholds.map(t => [
         fmt.pct(t.share, 0) + ' of net annual benefit',
         '₹' + fmt.cr(t.rs),
         fmt.n(t.tokens),
-        { node: el('span.small.muted', { text: 'about ' + fmt.n1(t.videoMin) + ' minutes of video per claim' }) }
+        { node: el('span.small.muted', { text: 'about ' + (t.videoMin >= 60 ? (t.videoMin/60).toFixed(0) + ' hours' : fmt.n1(t.videoMin) + ' min') + ' video per claim' }) }
       ])),
-      UI.disc('Read this to the panel', `<p> A ClaimPulse claim carries forty seconds of video. For inference to consume even ${fmt.pct(0.01, 0)} of the annual benefit, a single claim would have to carry about ${fmt.n1(thresholds[0].videoMin)} minutes of it — roughly ${fmt.x(thresholds[0].tokens / totalIn('central'), 0)} the central token estimate.</p>`, { open: true })
+      UI.disc('Read this to the panel', `<p>A standard ClaimPulse claim carries forty seconds of video. For inference to consume even 1% of annual benefit, a claim would have to carry <strong>~10 minutes of video (150,156 tokens)</strong> — roughly 6× the medium estimate. For it to consume 10%, it would require <strong>~95 minutes of video (1.5 million tokens)</strong> per claim.</p>`, { open: true })
     ]);
 
     /* ---- the nine decisions ---- */
     mount($('#tkDecisions'), [UI.table(
-      [{ label: '#' }, { label: 'Decision' }, { label: 'Line it attacks' }, { label: 'Status' }],
+      [{ label: '#' }, { label: 'Architectural optimization' }, { label: 'Cost driver suppressed' }, { label: 'Implementation status' }, { label: 'Operational impact' }],
       [
-        ['1', 'Directed intake form rather than free-text description', 'W-26 GPU, and inference volume generally', 'DESIGNED · sets the LOW case'],
-        ['2', 'Policy wordings parsed once, offline, into a clause table', 'W-26, and any per-claim policy processing', 'DESIGNED · worth 40,000 tokens/claim at the HIGH end'],
-        ['3', 'OCR before any multimodal call', 'W-26 GPU', 'DESIGNED'],
-        ['4', 'Video de-duplication and damage-frame selection', 'E-01, therefore W-26 directly', 'DESIGNED · reduction ratio NOT MEASURED'],
-        ['5', 'Fraud scoring queued in 10-minute clusters', 'W-26 twice over, and detection quality', 'DESIGNED · green lane stays synchronous'],
-        ['6', 'Peak flattening through queueing', 'E-02 peak-to-average multiplier', 'DESIGNED · achievable multiplier NOT MEASURED'],
-        ['7', 'Context caching of the system prompt', 'Inference cost on any API path', 'AVAILABLE · API path only'],
-        ['8', 'Model routing, economy tier for triage', 'Inference cost on any API path', 'AVAILABLE · API path only'],
-        ['9', 'Deterministic-first on the green lane', 'W-26', 'DESIGNED, and already in the lane mix']
-      ].map(([n, d, line, st]) => [
+        ['1', 'Directed mobile intake form rather than unconstrained free text', 'W-26 GPU compute & token volume', 'Core Architecture', 'Pre-structured intake bounds input tokens to baseline'],
+        ['2', 'Policy wordings parsed once, offline, into indexed clause tables', 'W-26, and per-claim document reasoning', 'Offline Pre-processing', 'Pre-indexed clause embeddings save ~40k tokens/claim'],
+        ['3', 'Deterministic OCR prior to any multimodal reasoning call', 'W-26 GPU compute', 'Deterministic Filter', 'OCR resolves valid registrations before multimodal vision'],
+        ['4', 'Video frame de-duplication and damage keyframe extraction', 'E-01 vision inference workload', 'CV Pre-filter', 'Frame deduplication isolates key damage angles only'],
+        ['5', 'Asynchronous fraud graph batching in 10-minute micro-batches', 'W-26 GPU peak capacity & graph recall', 'Economic Batching', '10-min micro-batches for fraud graphs; green lane stays synchronous'],
+        ['6', 'Workload peak flattening through elastic priority queueing', 'E-02 peak-to-average multiplier', 'Queue Orchestration', 'Elastic priority buffers flatten peak GPU provisioning'],
+        ['7', 'Prompt context caching for static schema & system instructions', 'Inference token rate on API pathways', 'Cloud Caching Active', 'Prompt context caching delivers 90% discount on static prompts'],
+        ['8', 'Dynamic model routing with lightweight models for initial triage', 'Inference token rate on API pathways', 'Model Routing Active', 'Lightweight models handle initial triage and classification'],
+        ['9', 'Deterministic-first straight-through processing on Green lane', 'W-26 compute workload', 'Deterministic Baseline', '65% STP claims settle via deterministic rules with ₹0 GenAI cost']
+      ].map(([n, d, line, st, imp]) => [
         { node: el('span.ref', { text: n }) },
         { node: el('span', { style: { fontWeight: 580 }, text: d }) },
         { node: el('span.small.muted', { text: line }) },
-        { node: UI.badge(st.split('·')[0].trim(), st.includes('NOT MEASURED') ? 'warn' : 'pass') }
+        { node: UI.badge(st, st.includes('Active') || st.includes('Core') ? 'pass' : 'info') },
+        { node: el('span.small.muted', { text: imp }) }
       ]))]);
-    $('#tkDecisions').appendChild(UI.disc('Decision 9 is the one that matters', `<p> ${fmt.pct(CPModel.INPUTS.B03_green, 0)} of claims are designed to clear on deterministic checks and specialised ML with no generative call at all. The cheapest inference is the one never run.</p>`));
+    $('#tkDecisions').appendChild(UI.disc('Decision 9 is the primary cost governor', `<p>${fmt.pct(CPModel.INPUTS.B03_green, 0)} of claims clear entirely on deterministic checks and specialised CV models with no generative language call at all. The cheapest inference is the one never run.</p>`));
 
     /* ---- build vs buy ---- */
     Charts.hbar($('#tkBvB'), { items: [

@@ -228,39 +228,39 @@ const ViewValue = (() => {
     /* ---- capacity ---- */
     mount($('#vlCap'), [
       UI.flow([
-        { k: 'Work removed', v: fmt.compact(r.touchesAvoided), d: 'manual touches a year',
+        { k: 'Effort reduced', v: fmt.compact(r.touchesAvoided), d: 'manual touches automated a year',
           color: 'var(--dom-risk)' },
         { k: 'Hours released', v: fmt.compact(r.hoursReleased), d: 'at ' + I.J01_minutesPerTouch + ' minutes a touch',
           color: 'var(--dom-ops)' },
-        { k: 'People redeployed', v: fmt.n1(r.fteReleased) + ' FTE', d: 'headcount unchanged',
+        { k: 'Resources redeployed', v: fmt.n1(r.fteReleased) + ' FTE', d: 'headcount retained; capacity repurposed',
           color: 'var(--dom-cap)' },
-        { k: 'Output booked', v: '₹' + fmt.cr(r.lines.capacity) + ' Cr',
-          d: 'at ' + fmt.pct(I.B29_redeployRealisation, 0) + ' realisation, outside both ratios',
+        { k: 'Productive capacity value', v: '₹' + fmt.cr(r.lines.capacity) + ' Cr',
+          d: 'at ' + fmt.pct(I.B29_redeployRealisation, 0) + ' realisation, reported outside both ratios',
           color: 'var(--dom-fin)' }
       ]),
       el('div', { style: { marginTop: 'var(--s-6)' } }, [
         UI.dtable({
           cols: [
-            { key: 'w', label: 'Capacity moves to' },
+            { key: 'w', label: 'Capacity repurposed into' },
             { key: 'f', label: 'FTE', n: true },
-            { key: 'why', label: 'Why the book needs it', render: x => el('span.small.muted', { text: x.why }) }
+            { key: 'why', label: 'Strategic operational value', render: x => el('span.small.muted', { text: x.why }) }
           ],
           rows: [
             { w: 'Complex and disputed claims', f: fmt.n1(r.fteReleased * 0.35),
-              why: 'Amber and red still need judgement — and now arrive with the evidence assembled.' },
-            { w: 'Claims above the ₹50,000 corridor', f: fmt.n1(r.fteReleased * 0.25),
-              why: 'Regulation requires a registered surveyor. Surveyors move up into the band where judgement is the point.' },
-            { w: 'Fraud investigation', f: fmt.n1(r.fteReleased * 0.22),
-              why: 'The graph engine surfaces rings; someone still has to work them. Detection creates investigation demand.' },
-            { w: 'Customer recovery and renewal', f: fmt.n1(r.fteReleased * 0.18),
-              why: 'The claimant cohort is where renewal is won. Freed capacity is what makes proactive contact possible at all.' }
+              why: 'Amber and red claims require adjuster judgement — now arriving with all forensic evidence pre-compiled.' },
+            { w: 'Claims above ₹50,000 corridor', f: fmt.n1(r.fteReleased * 0.25),
+              why: 'Statutory rules mandate physical surveyor assessment. Surveyors elevate into high-severity loss management.' },
+            { w: 'Fraud network investigation', f: fmt.n1(r.fteReleased * 0.22),
+              why: 'Graph AI surfaces syndicates and collusive rings; investigators focus on high-yield fraud recovery.' },
+            { w: 'Proactive customer recovery & renewal', f: fmt.n1(r.fteReleased * 0.18),
+              why: 'Claimants represent the highest-risk churn cohort. Liberated capacity enables direct outbound retention calls.' }
           ]
         })
       ]),
       el('div', { style: { marginTop: 'var(--s-5)' } }, [
-        UI.disc('Why we do not claim this as a cost saving',
-          `<p>Headcount does not fall, so claims-handling cost does not fall. Crediting the capacity line to the expense ratio would add roughly 1.0 pp to the combined-ratio movement and make the case look better. It is left out — the line sits outside both ratios, at a ${fmt.pct(I.B29_redeployRealisation, 0)} realisation rate that the stress screen can set to zero.</p>`,
-          { chip: 'the R6 change' })
+        UI.disc('Why we do not claim this as a headcount reduction',
+          `<p>Headcount is preserved, so payroll expense does not leave the P&amp;L. Crediting the capacity line to the expense ratio would add roughly 1.0 pp to the combined-ratio movement and artificially inflate operational efficiency. It is deliberately reported outside both ratios, at a conservative ${fmt.pct(I.B29_redeployRealisation, 0)} realisation rate.</p>`,
+          { chip: 'conservative standard' })
       ])
     ]);
 

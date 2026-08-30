@@ -142,7 +142,7 @@ const ViewOverview = (() => {
         UI.limits([
           '<strong>No headcount reduction is claimed.</strong> The labour line (W-18) is deliberately zero. Released capacity is booked as redeployed output at a 70% realisation rate, outside both ratios.',
           '<strong>90% fraud detection is a target, not a demonstrated capability.</strong> The downside test lands it at 82%; the stress screen runs the curve back to today\'s 62%.',
-          '<strong>The marketing plan is a cost here, not a benefit.</strong> ₹5.24 Cr at this rollout, subtracted before the headline.',
+          '<strong>The marketing plan is a cost here, not a benefit.</strong> ₹5.33 Cr at this rollout (Hunt & Farm plan total of ₹8.88 Cr), subtracted before the headline (BFDL distribution net value is −₹4.75 Cr).',
           '<strong>Four inputs are still open decisions</strong> — redeployment rate, premium basis, dealer commission and the expense-ratio treatment.'
         ])
       ])

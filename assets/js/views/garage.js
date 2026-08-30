@@ -80,15 +80,15 @@ const ViewGarage = (() => {
           el('div', { id: 'gaBeam' }),
           el('div.cells.c-1', { style: { border: '1px solid var(--hairline)',
             borderRadius: 'var(--r-4)' } }, [
-            el('div.cell-x', {}, [UI.metric({ dom: 'cap', size: 'sm', k: 'Bay-days returned',
-              ref: 'W-73', v: fmt.n(jobs.length * r.garageDaysSaved), unit: 'days',
-              d: 'On this desk alone. At book scale it is ' + fmt.compact(r.claims * r.garageDaysSaved) + ' a year.' })]),
-            el('div.cell-x', {}, [UI.metric({ dom: 'ops', size: 'sm', k: 'Jobs on this console',
-              v: fmt.n(jobs.length), unit: 'claims',
-              d: sel ? sel.g.name : 'Across all six network garages.' })]),
+            el('div.cell-x', {}, [UI.metric({ dom: 'cap', size: 'sm', k: 'Portfolio bay-days saved',
+              ref: 'W-73', v: fmt.compact(r.claims * r.garageDaysSaved), unit: 'days/year',
+              d: '3 days saved per job across ' + fmt.compact(r.claims) + ' on-platform claims. (' + fmt.n(jobs.length * r.garageDaysSaved) + ' days on demo desk)' })]),
+            el('div.cell-x', {}, [UI.metric({ dom: 'ops', size: 'sm', k: 'Estimate approval TAT',
+              ref: 'J-07', v: '1.0 day', unit: 'vs 4.0d today',
+              d: 'Instant indicative band at FNOL frees repair bays 3 days faster.' })]),
             el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'risk', size: 'sm',
-              k: 'Estimates above band', v: fmt.n(over(jobs)), unit: 'of ' + jobs.length,
-              d: 'The excess is disallowed, not the claim. The garage sees the band before it quotes.' })])
+              k: 'Band compliance rate', v: fmt.pct(1 - (over(jobs)/jobs.length), 0), unit: 'in band',
+              d: fmt.n(jobs.length - over(jobs)) + ' of ' + jobs.length + ' jobs in band. (' + fmt.n(over(jobs)) + ' excess estimates flagged for re-quote)' })])
           ])
         ])
       ]),
@@ -160,9 +160,9 @@ const ViewGarage = (() => {
                 ? UI.dchip('above band', 'r') : UI.dchip('in band', 'g') },
               { key: 'a', label: 'Next action', render: c => el('span.small.muted', {
                 text: c.repair.over ? 'Excess disallowed — re-quote or justify'
-                    : c.lane === 'G' ? 'Approved. Start the repair.'
-                    : c.surveyor.required ? 'Hold the bay for the surveyor slot'
-                    : 'Awaiting one reviewer' }) }
+                    : c.lane === 'G' ? 'Approved straight-through — begin repair'
+                    : c.surveyor.required ? 'Surveyor scheduled — hold bay for inspection'
+                    : 'Assisted verification in progress' }) }
             ],
             rows: jobs,
             onRow: c => { location.hash = '#/inspector?id=' + c.claim.id; },
