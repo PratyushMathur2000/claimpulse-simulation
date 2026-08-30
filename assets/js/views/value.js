@@ -178,7 +178,7 @@ const ViewValue = (() => {
     /* ---- benefit bridge ---- */
     /* ---- benefit bridge ---- */
     const L = r.lines;
-    Charts.waterfall($('#vlBridge'), { height: 360, unit: '₹ Cr', items: [
+    Charts.waterfall($('#vlBridge'), { width: 680, height: 380, unit: '₹ Cr', items: [
       { label: 'Fraud, graph detection', value: L.fraudGraph, kind: 'add', note: 'W-19 · Loss ratio saving' },
       { label: 'Fraud, capture gate', value: L.fraudGate, kind: 'add', note: 'W-20 · Loss ratio saving' },
       { label: 'Synthetic media detection', value: L.synthetic, kind: 'add', note: 'W-21 · Loss ratio saving' },

@@ -179,7 +179,7 @@ const ViewTokens = (() => {
         note: 'Lightweight CV validation with structured JSON decision output' },
       { label: 'Economy + batching, MEDIUM', value: rsPerClaim('central', true, true), color: 'var(--d6)',
         note: 'Asynchronous 10-min micro-batched processing on economy model tier (50% discount)' }
-    ], unit: '₹ per claim', height: 260 });
+    ], unit: '₹ per claim', width: 560, height: 260 });
     $('#tkPaths').appendChild(UI.disc('Economic batching & cost hierarchy', `<p>The most expensive path costs ${UI.money(highCr)} a year against ${UI.money(r.runCost)} of run cost and ${UI.money(r.net)} of net benefit. The cheapest batched path costs only ${fmt.cr(rsPerClaim('central', true, true) * r.claims / 1e7, 3)} Cr/year.</p>`));
 
     /* ---- breakeven ---- */

@@ -210,7 +210,8 @@ const ViewTat = (() => {
         { label: 'BLENDED TARGET TAT', value: r.tatBlended, kind: 'total', note: `${fmt.cr(r.tatBlended, 2)} days (${fmt.pct(r.tatCutPct, 1)} cut)` }
       ],
       unit: 'days',
-      height: 270
+      width: 560,
+      height: 360
     });
 
     /* ---------------- surveyor and garage intuitive dual-card comparison ---------------- */

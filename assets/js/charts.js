@@ -86,9 +86,10 @@ const Charts = (() => {
      slots that sit under 3:1 never have to carry meaning by colour alone.
      items: [{ label, value, kind: 'add'|'sub'|'total', note }]
      ===================================================================== */
-  function waterfall(host, { items, unit = '₹ Cr', height = 340 }) {
-    const W = 900, H = height;
-    const m = { t: 30, r: 18, b: 74, l: 52 };
+  function waterfall(host, { items, unit = '₹ Cr', height, width }) {
+    const W = width || (items.length <= 6 ? 560 : 740);
+    const H = height || (items.length <= 6 ? 340 : 360);
+    const m = { t: 32, r: 16, b: 64, l: 48 };
     const iw = W - m.l - m.r, ih = H - m.t - m.b;
 
     // running extent
@@ -102,7 +103,7 @@ const Charts = (() => {
     });
     const top = niceMax(hi), bot = lo < 0 ? -niceMax(-lo) : 0;
     const y = v => m.t + ih - ((v - bot) / (top - bot)) * ih;
-    const bw = Math.min(62, (iw / items.length) - 14);
+    const bw = Math.min(58, Math.max(34, (iw / items.length) - 10));
     const step = iw / items.length;
 
     const s = svg(host, W, H);
@@ -111,8 +112,8 @@ const Charts = (() => {
     ticks(bot, top, 4).forEach(t => {
       s.appendChild(el('line', { class: 'grid-line' + (Math.abs(t) < 1e-9 ? ' zero' : ''),
         x1: m.l, x2: W - m.r, y1: y(t), y2: y(t) }));
-      s.appendChild(el('text', { class: 'lbl-axis', x: m.l - 8, y: y(t) + 3.5,
-        'text-anchor': 'end', text: fmt.cr(t, 0) }));
+      s.appendChild(el('text', { class: 'lbl-axis', x: m.l - 6, y: y(t) + 3.5,
+        'text-anchor': 'end', 'font-size': 11, text: fmt.cr(t, 0) }));
     });
 
     geo.forEach((g, i) => {
@@ -132,39 +133,41 @@ const Charts = (() => {
 
       const p = el('path.series', {
         d: barPath(cx, top_, bw, h, END_R, grows ? 'up' : 'down'),
-        fill: color, opacity: g.kind === 'total' ? 1 : .92
+        fill: color, opacity: g.kind === 'total' ? 1 : .92,
+        style: 'filter:drop-shadow(0 2px 8px color-mix(in srgb, ' + color + ' 40%, transparent))'
       });
       s.appendChild(p);
 
-      // direct label — always, never a hover-only number
+      // direct label — prominent and bold
       const labelY = grows ? top_ - 8 : top_ + h + 15;
       s.appendChild(el('text', { class: 'lbl-value', x: cx + bw / 2, y: labelY,
-        'text-anchor': 'middle', 'font-size': 11.5,
-        text: (g.kind === 'total' ? '' : (g.value >= 0 ? '+' : '−')) + fmt.cr(Math.abs(g.value)) }));
+        'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800,
+        fill: g.kind === 'total' ? 'var(--ink-strong)' : (g.value >= 0 ? 'var(--dom-cap)' : 'var(--dom-risk)'),
+        text: (g.kind === 'total' ? '' : (g.value >= 0 ? '+' : '−')) + fmt.cr(Math.abs(g.value), g.value % 1 === 0 ? 0 : 2) }));
 
       // wrapped category label
       const words = String(g.label).split(' ');
       const lines = []; let cur = '';
       words.forEach(w => {
-        if ((cur + ' ' + w).trim().length > 15) { lines.push(cur.trim()); cur = w; }
+        if ((cur + ' ' + w).trim().length > 12) { lines.push(cur.trim()); cur = w; }
         else cur = (cur + ' ' + w).trim();
       });
       if (cur) lines.push(cur);
       lines.slice(0, 3).forEach((ln, k) => {
-        s.appendChild(el('text', { class: 'lbl-axis', x: cx + bw / 2, y: m.t + ih + 18 + k * 12,
-          'text-anchor': 'middle', 'font-weight': g.kind === 'total' ? 650 : 400, text: ln }));
+        s.appendChild(el('text', { class: 'lbl-axis', x: cx + bw / 2, y: m.t + ih + 16 + k * 12.5,
+          'text-anchor': 'middle', 'font-size': 11.5, 'font-weight': g.kind === 'total' ? 700 : 550, fill: 'var(--ink)', text: ln }));
       });
 
       // hover
       const hit = el('rect.hit', { x: m.l + step * i, y: m.t, width: step, height: ih });
       hit.addEventListener('mousemove', e => tip.show(e.clientX, e.clientY, g.label,
-        [[g.kind === 'total' ? 'Total' : 'Contribution', fmt.money(g.value)],
-         ...(g.note ? [['', g.note]] : [])]));
+        [[g.kind === 'total' ? 'Total' : 'Contribution', (g.value >= 0 ? '+' : '−') + fmt.cr(Math.abs(g.value)) + ' ' + unit],
+         ...(g.note ? [['Context', g.note]] : [])]));
       hit.addEventListener('mouseleave', tip.hide);
       s.appendChild(hit);
     });
 
-    s.appendChild(el('text', { class: 'lbl-axis', x: m.l, y: 14, text: unit }));
+    s.appendChild(el('text', { class: 'lbl-axis', x: m.l, y: 14, 'font-size': 11.5, 'font-weight': 700, fill: 'var(--ink-muted)', text: unit }));
     return s;
   }
 
@@ -257,13 +260,13 @@ const Charts = (() => {
      Job: magnitude with identity. Direct value labels; a share column
      rather than a pie, because comparing angles is guesswork.
      ===================================================================== */
-  function hbar(host, { items, unit = '₹ Cr', colorBy = 'series', height, valueFmt, compact = false }) {
+  function hbar(host, { items, unit = '₹ Cr', colorBy = 'series', height, width, valueFmt, compact = false }) {
     const vf = valueFmt || (v => (unit.includes('₹') ? (unit.includes('claim') ? '₹' + fmt.cr(v, 2) : '₹' + fmt.cr(v, 2) + ' Cr') : fmt.cr(v) + ' ' + unit));
-    const W = compact ? 520 : 780;
-    const m = compact ? { t: 10, r: 90, b: 10, l: 200 } : { t: 14, r: 140, b: 14, l: 270 };
-    const rowH = height ? Math.floor((height - m.t - m.b) / items.length) : (compact ? 34 : 46);
+    const W = width || (compact ? 480 : 600);
+    const m = compact ? { t: 10, r: 90, b: 10, l: 180 } : { t: 14, r: 120, b: 14, l: 220 };
+    const rowH = height ? Math.floor((height - m.t - m.b) / items.length) : (compact ? 36 : 48);
     const H = height || (m.t + m.b + items.length * rowH);
-    const barH = Math.max(16, Math.min(28, Math.floor(rowH * 0.54)));
+    const barH = Math.max(18, Math.min(30, Math.floor(rowH * 0.52)));
     const iw = W - m.l - m.r;
     const max = niceMax(Math.max(...items.map(i => i.value)));
     const s = svg(host, W, H);
@@ -280,7 +283,7 @@ const Charts = (() => {
       }));
 
       // Label on the left
-      s.appendChild(el('text', { class: 'lbl-axis', x: m.l - 14, y: y + barH / 2 + 4.5,
+      s.appendChild(el('text', { class: 'lbl-axis', x: m.l - 12, y: y + barH / 2 + 4.5,
         'text-anchor': 'end', 'font-size': compact ? 11.5 : 12.5, 'font-weight': 600, fill: 'var(--ink)',
         text: it.label }));
 
@@ -291,8 +294,8 @@ const Charts = (() => {
       }));
 
       // Value label on the right of the bar
-      s.appendChild(el('text', { class: 'lbl-value', x: m.l + w + 12, y: y + barH / 2 + 4.5,
-        'font-size': compact ? 12 : 13, 'font-weight': 800, fill: 'var(--ink-strong)',
+      s.appendChild(el('text', { class: 'lbl-value', x: m.l + w + 10, y: y + barH / 2 + 4.5,
+        'font-size': compact ? 12 : 13.5, 'font-weight': 800, fill: 'var(--ink-strong)',
         text: vf(it.value) + (it.share !== undefined ? ` · ${fmt.pct(it.share, 0)}` : '') }));
 
       const hit = el('rect.hit', { x: 0, y: m.t + i * rowH, width: W, height: rowH });
