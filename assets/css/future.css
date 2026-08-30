@@ -302,28 +302,21 @@ table.dtable thead th.srt:hover { color: var(--ink); }
 table.dtable thead th .arw { opacity: .5; margin-left: 3px; }
 
 /* =====================================================================
-   9 · LEFT-DOCKED COLLAPSIBLE LEVER PANEL (ATTACHED TO MENU RAIL)
+   9 · RIGHT-DOCKED COLLAPSIBLE CONTROL PANEL
    ===================================================================== */
 .wsdrawer {
-  position: fixed; top: var(--topbar-h); left: var(--rail-w); bottom: 0;
-  width: min(440px, calc(100vw - var(--rail-w))); z-index: 56; display: flex; flex-direction: column;
+  position: fixed; top: var(--topbar-h); right: 0; left: auto; bottom: 0;
+  width: min(450px, 94vw); z-index: 60; display: flex; flex-direction: column;
   background: var(--surface-raised, #ffffff);
-  border-right: 1px solid var(--border-strong, var(--border));
-  box-shadow: 20px 0 50px -15px rgba(0,0,0,.35);
-  transform: translateX(-100%);
+  border-left: 1px solid var(--border-strong, var(--border));
+  box-shadow: -20px 0 50px -15px rgba(0,0,0,.35);
+  transform: translateX(100%);
   visibility: hidden; pointer-events: none;
-  transition: transform var(--t-slow) var(--ease-out), visibility var(--t-slow), left var(--t-base) var(--ease);
+  transition: transform var(--t-slow) var(--ease-out), visibility var(--t-slow);
 }
 :root[data-theme="dark"] .wsdrawer {
   background: #0d1527;
-  border-right-color: rgba(255,255,255,0.12);
-}
-.shell[data-rail="collapsed"] .wsdrawer {
-  left: var(--rail-w-collapsed);
-  width: min(440px, calc(100vw - var(--rail-w-collapsed)));
-}
-@media (max-width: 900px) {
-  .wsdrawer { left: 0; width: min(420px, 94vw); }
+  border-left-color: rgba(255,255,255,0.12);
 }
 .wsdrawer.open {
   transform: translateX(0);
@@ -340,13 +333,11 @@ table.dtable thead th .arw { opacity: .5; margin-left: 3px; }
   background: var(--surface); display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); flex: none;
 }
 .dr-scrim {
-  position: fixed; top: var(--topbar-h); left: var(--rail-w); right: 0; bottom: 0;
-  z-index: 54; background: color-mix(in srgb, var(--scrim) 80%, transparent);
+  position: fixed; inset: var(--topbar-h) 0 0 0;
+  z-index: 54; background: color-mix(in srgb, var(--scrim) 75%, transparent);
   -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
   opacity: 0; visibility: hidden; pointer-events: none; transition: opacity var(--t-base) var(--ease), visibility var(--t-base);
 }
-.shell[data-rail="collapsed"] .dr-scrim { left: var(--rail-w-collapsed); }
-@media (max-width: 900px) { .dr-scrim { left: 0; } }
 .dr-scrim.open { opacity: 1; visibility: visible; pointer-events: auto; }
 
 .lever-grp {

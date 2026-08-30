@@ -156,7 +156,7 @@ const ViewStress = (() => {
     resetTo('base');
     mount(host, [
 
-      /* ---- the scenario header: state, plan, integrity ---- */
+      /* ---- the scenario header: state, plan, control panel trigger ---- */
       el('div.panel.hero.rise', { 'data-dom': 'fin' }, [
         el('div.spread.wrap', { style: { alignItems: 'flex-start', gap: 'var(--s-6)' } }, [
           el('div', { style: { minWidth: 0, maxWidth: '56ch' } }, [
@@ -167,14 +167,10 @@ const ViewStress = (() => {
             el('div.row.wrap', { style: { marginTop: 'var(--s-5)', gap: 'var(--s-3)' } }, [
               el('button.btn.accent', { id: 'leverToggleBtn', type: 'button',
                 style: { display: 'inline-flex', alignItems: 'center', gap: 'var(--s-3)' } }, [
-                el('span', { text: '⚙ Assumption Levers & Controls' }),
-                el('span.badge.neutral', { id: 'drCountBadge', text: 'Default' })
+                el('span', { text: '⚙ Control Panel' }),
+                el('span.badge.neutral', { id: 'drCountBadge', text: 'Base Plan' })
               ]),
-              el('div.seg.accent', { id: 'planSeg' }, Object.keys(PLANS).map(p =>
-                el('button', { type: 'button', 'data-plan': p, 'aria-pressed': String(p === plan),
-                  text: p[0].toUpperCase() + p.slice(1) }))),
-              el('button.gbtn', { id: 'resetBtn', type: 'button', text: '↺ reset' }),
-              el('div', { id: 'integrity' })
+              el('button.gbtn', { id: 'resetBtn', type: 'button', text: '↺ reset' })
             ])
           ]),
           el('div', { id: 'stressScen', style: { minWidth: 0 } })
@@ -216,24 +212,38 @@ const ViewStress = (() => {
 
       el('div', { id: 'verdict', style: { marginTop: 'var(--s-6)' } }),
 
-      /* ---- the left-docked collapsible drawer ---- */
+      /* ---- the right-docked collapsible Control Panel ---- */
       el('div.dr-scrim', { id: 'drScrim' }),
-      el('aside.wsdrawer', { id: 'drawer', 'aria-label': 'Assumptions' }, [
+      el('aside.wsdrawer', { id: 'drawer', 'aria-label': 'Control Panel' }, [
         el('div.dr-head', {}, [
           el('div', {}, [
-            el('div', { style: { fontWeight: 700, fontSize: 'var(--fs-md)', color: 'var(--ink)' }, text: 'Assumption Levers & Controls' }),
+            el('div', { style: { fontWeight: 700, fontSize: 'var(--fs-md)', color: 'var(--ink)' }, text: 'Control Panel' }),
             el('div.small.muted', { style: { marginTop: '2px' },
-              text: '12 active financial & operational dials. Tagged by data tier.' })
+              text: 'Master scenario presets & 12 financial / operating dials.' })
           ]),
           el('button.gbtn', { id: 'drClose', type: 'button', 'aria-label': 'Close', style: { fontSize: '15px', fontWeight: 700, padding: '4px 10px' }, text: '✕' })
         ]),
-        el('div.dr-body', { id: 'levers' }),
+        el('div.dr-body', {}, [
+          /* Section 1: Scenario Presets */
+          el('div.lever-grp', {}, [
+            el('div.lever-grp-title', {}, [
+              el('span', { text: 'Scenario Presets' }),
+              UI.dchip('Master Plans', 'fin')
+            ]),
+            el('div.seg.accent', { id: 'planSeg', style: { width: '100%', display: 'flex' } }, Object.keys(PLANS).map(p =>
+              el('button', { type: 'button', 'data-plan': p, 'aria-pressed': String(p === plan),
+                style: { flex: '1', textAlign: 'center', padding: '6px 8px', fontSize: '12px' },
+                text: p === 'base' ? 'Base (60%)' : p === 'conservative' ? 'Cons. (20%)' : 'Aggr. (100%)' })))
+          ]),
+          /* Section 2: Levers container */
+          el('div', { id: 'levers', style: { display: 'flex', flexDirection: 'column', gap: 'var(--s-5)' } })
+        ]),
         el('div.dr-foot', {}, [
           el('div', {}, [
             el('div.xsmall.muted', { text: 'Simulated Net Annual Benefit' }),
             el('div.mono', { id: 'drFootVal', style: { fontWeight: 800, fontSize: 'var(--fs-lg)', color: 'var(--dom-fin)' }, text: '₹30.86 Cr' })
           ]),
-          el('button.gbtn', { id: 'drResetAllBtn', type: 'button', text: '↺ Reset Levers' })
+          el('button.gbtn', { id: 'drResetAllBtn', type: 'button', text: '↺ Reset All' })
         ])
       ])
     ]);
@@ -411,7 +421,8 @@ const ViewStress = (() => {
 
     /* --- what is off default, stated plainly --- */
     const off = LEVERS.filter(l => Math.abs(state[l.key] - l.def) > 1e-9);
-    if (CP.$('#drCountBadge')) CP.$('#drCountBadge').textContent = off.length ? `${off.length} modified` : 'Defaults';
+    const planName = plan === 'base' ? 'Base (60%)' : plan === 'conservative' ? 'Cons. (20%)' : 'Aggr. (100%)';
+    if (CP.$('#drCountBadge')) CP.$('#drCountBadge').textContent = off.length ? `${planName} · ${off.length} mod` : `${planName} · Defaults`;
     mount(CP.$('#stressScen'), [
       el('div.panel', { 'data-dom': off.length ? 'cust' : 'none',
         style: { padding: 'var(--s-6)', minWidth: '260px' } }, [
@@ -428,18 +439,8 @@ const ViewStress = (() => {
               el('span.xsmall', { style: { fontWeight: 700, color: 'var(--dom-cust)' },
                 text: l.fmtv(state[l.key]) })
             ])).concat(off.length > 5 ? [el('div.xsmall.muted', { text: '+' + (off.length - 5) + ' more' })] : []))
-          : el('div.xsmall.muted', { text: 'Open the assumptions drawer to stress any of the twelve levers.' })
+          : el('div.xsmall.muted', { text: 'Open the Control Panel to stress any of the twelve levers.' })
       ])
-    ]);
-
-    /* --- integrity --- */
-    const chk = CPModel.selfCheck();
-    const ok = chk.allPass && Math.abs(r.stake.check) < 1e-9;
-    mount(CP.$('#integrity'), [
-      el('span.integrity.' + (ok ? 'ok' : 'bad'), {
-        title: 'The stakeholder split must reconcile to net annual benefit exactly (W-60 = 0), and the engine must reproduce the workbook on all 35 anchors.',
-        text: ok ? `✓ engine ties to R6 · ${chk.passed}/${chk.total} anchors · W-60 = 0`
-                 : `✕ ${chk.total - chk.passed} anchor(s) drifting` })
     ]);
 
     /* --- benefit bridge --- */
