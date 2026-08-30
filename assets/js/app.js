@@ -152,18 +152,7 @@ const App = (() => {
     if (VIEWS[route.id]) {
       const v = el('div.view');
       mount(host, [v]);
-      try {
-        VIEWS[route.id]().render(v, params);
-      } catch (err) {
-        console.error('Error rendering view ' + route.id + ':', err);
-        mount(v, [
-          el('div.panel.hero', { 'data-dom': 'risk' }, [
-            el('h2', { text: route.label }),
-            el('p.small.muted', { style: { marginTop: 'var(--s-3)' }, text: 'Operational rendering notice: ' + (err.message || err) }),
-            el('button.btn.primary', { style: { marginTop: 'var(--s-4)' }, onclick: () => go(), text: '↺ Retry rendering' })
-          ])
-        ]);
-      }
+      VIEWS[route.id]().render(v, params);
     } else stub(route);
     $('#rail').setAttribute('data-open', 'false');
     $('#scrim').setAttribute('data-open', 'false');

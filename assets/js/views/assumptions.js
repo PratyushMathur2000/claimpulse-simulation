@@ -113,13 +113,13 @@ const ViewAssumptions = (() => {
           el('h3', { text: 'Strategic Principles & Implementation Decisions' }),
           el('div.sub', { text: 'Core architectural and governance choices embedded in the ClaimPulse deployment.' })
         ])]),
-        el('div.g-2', { style: { gap: 'var(--s-5)' } }, OPEN.map(([t, body, ask], i) => el('div.panel', { style: { padding: 'var(--s-5)', border: '1px solid var(--border)' } }, [
-          el('div.row', { style: { alignItems: 'center', gap: 'var(--s-3)', marginBottom: 'var(--s-3)' } }, [
+        el('div.stack-6', {}, OPEN.map(([t, body, ask], i) => el('div', {}, [
+          el('div.row', { style: { alignItems: 'baseline', marginBottom: 'var(--s-3)' } }, [
             el('span.ref', { text: String(i + 1) }),
-            el('span', { style: { fontWeight: 650, fontSize: '13.5px', color: 'var(--ink-strong)' }, text: t })
+            el('span', { style: { fontWeight: 640 }, text: t })
           ]),
-          el('p.small.muted', { style: { marginBottom: 'var(--s-4)', lineHeight: 'var(--lh-snug)' }, text: body }),
-          el('div.callout', { style: { padding: 'var(--s-3) var(--s-4)', margin: 0 } }, [el('span.xsmall', { style: { fontWeight: 600 }, text: ask })])
+          el('p.small.muted', { style: { marginBottom: 'var(--s-3)' }, text: body }),
+          el('div.callout', { style: { padding: 'var(--s-4)' } }, [el('span.small', { text: ask })])
         ])))
       ]),
 
@@ -192,16 +192,7 @@ const ViewAssumptions = (() => {
   function fmtVal(v, unit) {
     if (typeof v === 'string') return v;
     if (unit === 'ratio') return fmt.pct(v, v < 0.01 ? 2 : 1);
-    if (unit === 'Rs Cr') return '₹' + fmt.cr(v) + ' Cr';
-    if (unit === 'Rs') return '₹' + fmt.n(v);
-    if (unit === 'Rs/month') return '₹' + fmt.n(v) + '/mo';
-    if (unit === 'touches') return fmt.n1(v) + ' touches';
-    if (unit === 'days') return fmt.n1(v) + ' days';
-    if (unit === 'minutes') return fmt.n(v) + ' min';
-    if (unit === 'months') return fmt.n(v) + ' mo';
-    if (unit === 'pp') return fmt.n1(v) + ' pp';
-    if (unit === 'hours') return fmt.n1(v) + ' hrs';
-    if (unit === '×') return fmt.n1(v) + '×';
+    if (unit === 'Rs' || unit === 'Rs Cr' || unit === 'policies' || unit === 'Rs/month') return fmt.n(v);
     return fmt.cr(v, v % 1 === 0 ? 0 : 2);
   }
 

@@ -502,17 +502,17 @@ const ViewStress = (() => {
       paybackLabel: r.paybackKickoff
         ? `build repaid · ${fmt.n1(r.paybackKickoff)} mo from kickoff` : null });
 
-    /* --- run cost donut chart --- */
-    Charts.donut(CP.$('#runcost'), { slices: [
-      { label:'GPU compute', value: r.gpu,      d:'Vision damage assessment compute overhead', color:'var(--d1)' },
-      { label:'MLOps & infra', value: r.mlops,    d:'Pipeline orchestration, monitoring & pipelines', color:'var(--d2)' },
-      { label:'Operations team', value: r.opsTeam,  d:'Specialized SIU & human audit queue operations', color:'var(--d3)' },
-      { label:'Security & DPDP', value: r.security, d:'Data protection, audit logging & encryption', color:'var(--d4)' },
-      { label:'Media storage',   value: r.storage,  d:'360° video evidence retention & archival', color:'var(--d5)' },
-      { label:'Legal & governance', value: r.legal, d:'IRDAI compliance review & surveyor network audit', color:'var(--d7)' }
-    ], height: 260 });
-    CP.$('#runcost').appendChild(UI.disc('Fixed floor vs Variable scalability',
-      `<p>Variable lines total <strong>₹${fmt.cr(r.runVariable)} Cr</strong> and fixed infrastructure lines total <strong>₹${fmt.cr(r.runFixed)} Cr</strong>. No optimisation programme can take annual run cost below that fixed floor at this operating design.</p>`));
+    /* --- run cost --- */
+    Charts.stack(CP.$('#runcost'), { segments: [
+      { label:'GPU compute', value: r.gpu,      display: fmt.cr(r.gpu),      color:'var(--d1)' },
+      { label:'MLOps',       value: r.mlops,    display: fmt.cr(r.mlops),    color:'var(--d2)' },
+      { label:'Operations',  value: r.opsTeam,  display: fmt.cr(r.opsTeam),  color:'var(--d3)' },
+      { label:'Security',    value: r.security, display: fmt.cr(r.security), color:'var(--d4)' },
+      { label:'Storage',     value: r.storage,  display: fmt.cr(r.storage),  color:'var(--d5)' },
+      { label:'Legal',       value: r.legal,    display: fmt.cr(r.legal),    color:'var(--d7)' }
+    ]});
+    CP.$('#runcost').appendChild(UI.disc('There is a floor under this',
+      `<p>Variable lines total ₹${fmt.cr(r.runVariable)} Cr and fixed lines ₹${fmt.cr(r.runFixed)} Cr. No optimisation programme, however good, can take annual run cost below that fixed floor at this operating design.</p>`));
 
     /* --- tornado --- */
     Charts.tornado(CP.$('#tornado'), { items: sensitivity(), baseline: r.net });

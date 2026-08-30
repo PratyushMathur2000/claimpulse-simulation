@@ -83,20 +83,7 @@ const ViewTokens = (() => {
       UI.head('Simulation · Token economics & inference risk',
         el('h1', {}, ['We cannot measure tokens yet. ',
           el('span.grad-ink', { text: 'So we bounded them, and the answer did not move.' })]),
-        el('div.stack-2', { style: { marginTop: 'var(--s-3)' } }, [
-          el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-2)' } }, [
-            el('span', { style: { color: 'var(--dom-ai)', fontWeight: 800 }, text: '•' }),
-            el('span.small', {}, [el('strong', { style: { color: 'var(--ink-strong)' }, text: 'AI Inference Scalability: ' }), 'Token consumption rates scale with claim volume. Rather than relying on a single point estimate, we bound costs across an 18-fold range.'])
-          ]),
-          el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-2)' } }, [
-            el('span', { style: { color: 'var(--dom-fin)', fontWeight: 800 }, text: '•' }),
-            el('span.small', {}, [el('strong', { style: { color: 'var(--ink-strong)' }, text: 'Payback Resilience: ' }), 'Across the entire 18× token range, steady-state payback moves by only ', el('strong', { style: { color: 'var(--dom-fin)' }, text: '0.02 months' }), '. Inference cannot break this business case.'])
-          ]),
-          el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-2)' } }, [
-            el('span', { style: { color: 'var(--dom-cap)', fontWeight: 800 }, text: '•' }),
-            el('span.small', {}, [el('strong', { style: { color: 'var(--ink-strong)' }, text: 'Architectural Defense: ' }), '60% of claims (Green Lane) incur ', el('strong', { style: { color: 'var(--dom-cap)' }, text: '₹0 GenAI inference' }), ' via deterministic validation. The cheapest token is the one never run.'])
-          ])
-        ])),
+        'Prelude & Risk Architecture: AI inference rates can fluctuate and scale with claim volume. Rather than relying on a single point estimate, we stress-test token economics across an eighteen-fold range. Steady-state payback moves by only 0.02 months. Inference cost cannot break this business case at any plausible volume.'),
 
       el('div.g-4', { style: { marginBottom: 'var(--s-7)' } }, [
         UI.tile({ hero: true, accent: true, k: 'Inference, medium case', ref: 'Sheet 12 Part D',
@@ -153,16 +140,16 @@ const ViewTokens = (() => {
       ])
     ]);
 
-    /* ---- component table with explicit units ---- */
+    /* ---- component table ---- */
     mount($('#tkTable'), [UI.table(
-      [{ label: 'Component' }, { label: 'Low (Tokens)', n: true }, { label: 'Medium (Tokens)', n: true },
-       { label: 'High (Tokens)', n: true }, { label: 'Basis & Methodology' }],
+      [{ label: 'Component' }, { label: 'Low consumption', n: true }, { label: 'Medium consumption', n: true },
+       { label: 'High consumption', n: true }, { label: 'Basis' }],
       COMPONENTS.map(c => [
-        { node: el('span', { style: { fontWeight: 580 } }, [c.name, el('span.small.muted', { text: ` (${c.unit})` })]) },
-        fmt.n(c.tok(c.low)), fmt.n(c.tok(c.central)), fmt.n(c.tok(c.high)),
+        { node: el('span', { style: { fontWeight: 580 }, text: c.name }) },
+        fmt.n(c.low), fmt.n(c.central), fmt.n(c.high),
         { node: el('span.small.muted', { text: c.basis }) }
       ]).concat([
-        [{ node: el('span', { style: { fontWeight: 580 } }, ['Output Tokens (tokens)']) },
+        [{ node: el('span', { style: { fontWeight: 580 }, text: 'Output tokens' }) },
          fmt.n(OUTPUT.low), fmt.n(OUTPUT.central), fmt.n(OUTPUT.high),
          { node: el('span.small.muted', { text: 'ASSUMED. 300 is a structured JSON decision; 4,000 is a full prose explanation.' }) }],
         { total: true, cells: ['TOTAL INPUT TOKENS', fmt.n(totalIn('low')), fmt.n(totalIn('central')),

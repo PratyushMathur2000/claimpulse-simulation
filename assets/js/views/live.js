@@ -96,11 +96,8 @@ const ViewLive = (() => {
           ])
         ]),
         el('div.panel.rise.pad-0', { 'data-dom': 'cust' }, [
-          el('div', { style: { padding: 'var(--s-4) var(--s-6)', borderBottom: '1px solid var(--border)' } }, [
-            el('div.spread', {}, [
-              el('div.xsmall.muted', { style: { fontWeight: 700, textTransform: 'uppercase', letterSpacing: 'var(--tracking-caps)' }, text: 'Claimant & Loss Details' }),
-              el('div.xsmall.muted', { style: { fontWeight: 700, textTransform: 'uppercase', letterSpacing: 'var(--tracking-caps)' }, text: 'Trust Score (0–100) & Settlement' })
-            ])
+          el('div', { style: { padding: 'var(--s-6)' } }, [
+            el('div.small.muted', { text: 'Each claim gated, scored and routed by the same engine. Click any row to open it.' })
           ]),
           el('div', { id: 'lvFeed', style: { maxHeight: '560px', overflowY: 'auto' } })
         ])
@@ -120,72 +117,71 @@ const ViewLive = (() => {
 
   function start() {
     running = true;
-    const tick = () => {
-      if (!running) return;
-      step();
-      timer = setTimeout(tick, 1000 / (speed / 100));
-    };
+    $('#lvIcon').textContent = '■'; $('#lvLabel').textContent = 'Pause';
+    $('#lvDot').className = 'orb busy';
+    $('#lvStatus').textContent = 'Running';
     tick();
-    paint();
   }
-
   function stop() {
-    running = false;
-    clearTimeout(timer);
-    paint();
+    running = false; clearTimeout(timer);
+    if ($('#lvIcon')) {
+      $('#lvIcon').textContent = '▶'; $('#lvLabel').textContent = n ? 'Resume' : 'Start the book';
+      $('#lvDot').className = 'orb idle';
+      $('#lvStatus').textContent = n ? 'Paused' : 'Idle';
+    }
   }
 
-  function step() {
-    const claim = pool[pi % pool.length];
-    pi++;
-    const res = CPClaims.process(claim.claim.id);
-    feed.unshift({ c: res, at: Date.now() });
-    if (feed.length > 50) feed.pop();
+  function tick() {
+    if (!running) return;
+    const r = CPModel.run('base');
+    const realGapMs = (365 * 24 * 3600 * 1000) / r.claims;   // ms between claims, real time
+    const gapMs = Math.max(90, realGapMs / speed);
 
+    const c = pool[pi % pool.length]; pi++;
     n++;
-    lanes[res.lane]++;
-    touches += (res.touchesToday || 7) - (res.touches || 0);
-    days += (res.tatToday || 9.8) - (res.tat || 0);
-    benefit += res.benefit || 0;
-    if (res.modelCalls) calls += res.modelCalls;
-    if (res.gate && res.gate.hardFail) gateStops++;
-    if (res.capped) capped++;
+    lanes[c.lane]++;
+    touches += c.touchesSaved;
+    days += c.daysSaved;
+    calls += c.modelCalls;
+    if (c.skipped) gateStops++;
+    if (c.capped) capped++;
+    benefit += r.net / r.claims;
+    elapsedMs += realGapMs;
 
-    elapsedMs += (365 * 24 * 3600 * 1000) / CPModel.run('base').claims;
     series.push((lanes.G / n) * 100);
-    if (series.length > 60) series.shift();
+    if (series.length > 120) series.shift();
+
+    feed.unshift({ c, at: elapsedMs });
+    if (feed.length > 40) feed.pop();
 
     paint();
+    timer = setTimeout(tick, gapMs);
   }
 
   function paint() {
+    if (!$('#lvTiles')) return;
     const r = CPModel.run('base');
-    const t = Math.max(1, n);
+    const t = n || 1;
 
-    const ic = $('#lvIcon'), lb = $('#lvLabel'), dt = $('#lvDot'), st = $('#lvStatus');
-    if (ic) ic.textContent = running ? '■' : '▶';
-    if (lb) lb.textContent = running ? 'Pause the book' : n ? 'Resume the book' : 'Start the book';
-    if (dt) dt.className = 'orb ' + (running ? 'busy' : n ? 'idle' : 'idle');
-    if (st) st.textContent = running ? 'Streaming live claims…' : n ? 'Paused' : 'Idle · press start';
-
-    /* tiles */
     mount($('#lvTiles'), [el('div.cells.c-4', {
-      style: { border: '1px solid var(--hairline)', borderRadius: 'var(--r-3)' } }, [
-      el('div.cell-x', {}, [UI.metric({ dom: 'ops', size: 'sm', k: 'Claims processed',
-        v: fmt.n(n), unit: 'of ' + fmt.compact(r.claims),
-        d: 'Seeded book of ' + pool.length + ' real claims, looped.' })]),
-      el('div.cell-x', {}, [UI.metric({ dom: 'cap', size: 'sm', k: 'Green lane share',
-        v: n ? fmt.pct(lanes.G / t, 1) : '—',
-        d: 'Target ' + fmt.pct(CPModel.INPUTS.B03_green, 0) + '. Emergent from the claims themselves.' })]),
-      el('div.cell-x', {}, [UI.metric({ dom: 'ops', size: 'sm', k: 'Touches avoided',
-        v: fmt.compact(touches), unit: 'touches',
-        d: 'Against 7 touches on the same claims today.' })]),
-      el('div.cell-x', {}, [UI.metric({ dom: 'fin', size: 'sm', k: 'Net benefit accrued',
-        v: '₹' + fmt.cr(benefit / 1e7, 3), unit: '₹ Cr',
+      style: { border: '1px solid var(--hairline)', borderRadius: 'var(--r-4)',
+               background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
+      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'ops',
+        k: 'Claims settled', v: fmt.n(n), unit: 'claims',
+        d: 'Filed and routed since you pressed play.' })]),
+      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap',
+        k: 'Cleared straight-through', v: n ? fmt.pct(lanes.G / t, 0) : '—', unit: 'STP rate',
+        d: `${lanes.G} of ${n} on the green lane. The book design target is ${fmt.pct(CPModel.INPUTS.B03_green, 0)}.` })]),
+      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cust',
+        k: 'Claimant-days returned', v: fmt.n(days), unit: 'days',
+        d: 'Each claim returns the difference between 9.8 days and its own lane TAT.' })]),
+      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin',
+        k: 'Net benefit accrued', v: fmt.cr(benefit), unit: '₹ Cr',
         d: `Net annual benefit divided across ${fmt.compact(r.claims)} claims, accumulated one claim at a time.` })])
     ])]);
 
-    /* Benefit accruing */
+    /* Benefit accruing, drawn as it happens. A number that only ticks
+       reads as a counter; a line that climbs reads as a system. */
     if ($('#lvArea')) Charts.area($('#lvArea'), { points: series, height: 132,
       c1: 'var(--dom-cap)', c2: 'var(--dom-cap-2)', floor: CPModel.INPUTS.B03_green * 100,
       label: 'green-lane share, converging on the ' + fmt.pct(CPModel.INPUTS.B03_green, 0) + ' book design' });
@@ -232,24 +228,20 @@ const ViewLive = (() => {
       `<p>Early on the shares jump around, because ten claims cannot express a 65/25/10 design. By a few hundred they settle close to it — not because anything is being forced, but because the evidence distribution that produces those shares is the same one the book assumes.</p>
        <p>That is the honest version of a lane-mix claim: it is a property of the claims, not a setting on the dashboard.</p>`));
 
-    /* feed with colored trust pills and explicit columns */
-    mount($('#lvFeed'), feed.length ? feed.map(({ c, at }, i) => {
-      const isGateFail = c.trust.score === null;
-      const scoreTone = isGateFail ? 'r' : c.trust.score >= 82 ? 'g' : c.trust.score >= 55 ? 'a' : 'r';
-      const scoreText = isGateFail ? 'Gate Stop' : `${fmt.cr(c.trust.score, 1)} / 100`;
-
-      return el('a.feed-row' + (i === 0 ? '.pop' : ''), { href: '#/inspector?id=' + c.claim.id }, [
+    /* feed */
+    mount($('#lvFeed'), feed.length ? feed.map(({ c, at }, i) =>
+      el('a.feed-row' + (i === 0 ? '.pop' : ''), { href: '#/inspector?id=' + c.claim.id }, [
         el('span.lane-dot', { class: CPEngine.LANE_META[c.lane].cls }),
         el('div.grow', {}, [
           el('div.small', { style: { fontWeight: 600 }, text: c.claim.claimant }),
           el('div.xsmall.faint', { text: `${c.claim.vehicle.make} ${c.claim.vehicle.model} · ${c.claim.city}` })
         ]),
-        el('div', { style: { textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' } }, [
-          UI.dchip('Trust ' + scoreText, scoreTone),
-          el('div.xsmall.faint', { style: { fontWeight: 600 }, text: c.money.payable === null ? 'Investigation queue' : '₹' + fmt.n(c.money.payable) + ' payable' })
+        el('div', { style: { textAlign: 'right' } }, [
+          el('div.small.mono', { style: { fontWeight: 640 },
+            text: c.trust.score === null ? 'gate' : fmt.cr(c.trust.score, 1) }),
+          el('div.xsmall.faint', { text: c.money.payable === null ? 'rejected' : '₹' + fmt.n(c.money.payable) })
         ])
-      ]);
-    }) : [el('p.small.faint', { style: { padding: 'var(--s-6)' }, text: 'The feed fills as claims arrive.' })]);
+      ])) : [el('p.small.faint', { style: { padding: 'var(--s-6)' }, text: 'The feed fills as claims arrive.' })]);
   }
 
   function fmtElapsed(ms) {

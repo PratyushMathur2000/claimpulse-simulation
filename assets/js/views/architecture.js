@@ -271,68 +271,18 @@ const ViewArchitecture = (() => {
     bindNodes();
   }
 
-  function showNodePopup(nodeKey) {
-    selected = nodeKey;
-    const n = Pipeline.NODES[nodeKey] || Pipeline.NODES.gate;
-
-    const existing = document.getElementById('archNodePopupOverlay');
-    if (existing) existing.remove();
-
-    function closePopup() {
-      const elOverlay = document.getElementById('archNodePopupOverlay');
-      if (elOverlay) elOverlay.remove();
-      document.removeEventListener('keydown', onKey);
-    }
-    function onKey(e) {
-      if (e.key === 'Escape') closePopup();
-    }
-
-    const overlay = el('div.node-popup-overlay', { id: 'archNodePopupOverlay', role: 'dialog', 'aria-modal': 'true' }, [
-      el('div.node-popup-card', {}, [
-        el('button.node-popup-close', { type: 'button', 'aria-label': 'Close', onclick: closePopup }, [
-          el('span', { text: '✕' })
-        ]),
-        el('div.spread', { style: { paddingRight: 'var(--s-7)', marginBottom: 'var(--s-3)' } }, [
-          el('p.eyebrow', { style: { margin: 0, color: n.tone }, text: n.sub || 'Architecture Layer' }),
-          el('div.row', { style: { gap: 'var(--s-2)' } }, [
-            UI.dchip(n.genai ? 'genai' : 'deterministic', n.genai ? 'ai' : 'cap'),
-            n.weight ? UI.dchip(n.weight() + '% of trust', 'fin') : null
-          ])
-        ]),
-        el('h2', { style: { margin: '0 0 var(--s-3)', fontSize: 'var(--fs-lg)', color: 'var(--ink-strong)' }, text: n.label }),
-        el('p', { style: { fontSize: '14px', fontWeight: 650, color: 'var(--ink-strong)', fontStyle: 'italic', marginBottom: 'var(--s-4)', lineHeight: 1.4 },
-          text: '“' + n.q + '”' }),
-        el('p.small.muted', { style: { lineHeight: 'var(--lh-base)', fontSize: '13px' }, text: n.body }),
-        el('div.stack-3', { style: { margin: 'var(--s-5) 0', padding: 'var(--s-4)', background: 'var(--surface)', borderRadius: 'var(--r-2)', border: '1px solid var(--border)' } },
-          n.bullets.map(b => el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-3)' } }, [
-            el('span', { style: { color: n.tone, flex: '0 0 auto', fontWeight: 800, fontSize: '16px', lineHeight: '1' }, text: '•' }),
-            el('span.small', { style: { lineHeight: 'var(--lh-snug)' }, text: b })
-          ]))),
-        el('div.spread.wrap', { style: { fontSize: '12px', color: 'var(--ink-muted)', paddingTop: 'var(--s-3)', borderTop: '1px solid var(--border)' } }, [
-          el('span', {}, ['Type: ', el('strong', { style: { color: 'var(--ink)' }, text: n.build })]),
-          n.purpose ? el('span', { style: { fontStyle: 'italic' }, text: n.purpose }) : null
-        ])
-      ])
-    ]);
-
-    overlay.addEventListener('click', e => {
-      if (e.target === overlay) closePopup();
-    });
-    document.addEventListener('keydown', onKey);
-
-    document.body.appendChild(overlay);
-    drawPipe(res());
-    drawTab();
-  }
-
   function bindNodes() {
     $$('#archPipe [data-node]').forEach(n => {
       n.style.cursor = 'pointer';
       n.addEventListener('click', () => {
-        showNodePopup(n.dataset.node);
+        selected = n.dataset.node; tab = 'node';
+        $$('#lcTabs button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.k === 'node')));
+        drawPipe(res()); drawTab();
+        const b = $('#lcTabBody');
+        if (b) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
       });
       n.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showNodePopup(n.dataset.node); }
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); n.click(); }
       });
     });
   }

@@ -173,37 +173,13 @@ const Pipeline = (() => {
     const mx = x1 + (x2 - x1) / 2;
     const d = Math.abs(y1 - y2) < 1 ? `M${x1},${y1} H${x2 - 7}`
       : `M${x1},${y1} H${mx - 12} Q${mx},${y1} ${mx},${y1 + Math.sign(y2 - y1) * 12} V${y2 - Math.sign(y2 - y1) * 12} Q${mx},${y2} ${mx + 12},${y2} H${x2 - 7}`;
-
-    /* Base background track */
     s.appendChild(el('path', {
-      d, fill: 'none', stroke: opts.color || 'var(--border)',
-      'stroke-width': opts.width || 1.3, opacity: 0.5,
-      'data-edge-bg': from + '-' + to
+      d, fill: 'none', stroke: opts.color || 'var(--border-strong)',
+      'stroke-width': opts.width || 1.3,
+      class: opts.flow ? 'flowing' : '', 'data-edge': from + '-' + to
     }));
-
-    /* Continuous flowing telemetry line */
-    s.appendChild(el('path', {
-      d, fill: 'none', stroke: opts.color || 'var(--dom-ops)',
-      'stroke-width': (opts.width || 1.3) + 0.3,
-      class: 'pipe-flow-line' + (opts.flow ? ' active' : ''),
-      'data-edge': from + '-' + to
-    }));
-
-    /* Arrowhead */
     s.appendChild(el('path', { d: `M${x2 - 7},${y2 - 4} L${x2},${y2} L${x2 - 7},${y2 + 4} Z`,
       fill: opts.color || 'var(--border-strong)' }));
-
-    /* Looping data packet particle */
-    if (opts.particle !== false) {
-      const p = el('circle', { r: 3.2, fill: opts.color || 'var(--accent)', opacity: opts.flow ? 0.95 : 0.65 });
-      p.appendChild(el('animateMotion', {
-        dur: (opts.dur || 2.4) + 's',
-        repeatCount: 'indefinite',
-        path: d
-      }));
-      s.appendChild(p);
-    }
-
     return d;
   }
 
@@ -266,30 +242,23 @@ const Pipeline = (() => {
         text: n.genai ? 'TARGETED GENAI · BUY API' : (id === 'green' ? '₹0 GENAI TOKEN' : 'SPECIALISED ML + HUMAN') }));
     });
 
-    /* edges with continuous flow & particle animation */
-    edge(s, 'intake', 'gate', { flow: animate, dur: 1.8 });
-    ENG.forEach((id, i) => {
-      edge(s, 'gate', id, { color: 'var(--border-strong)', dur: 1.6 + i * 0.2 });
-      edge(s, id, 'fusion', { color: 'var(--border-strong)', dur: 1.8 + i * 0.15 });
+    /* edges */
+    edge(s, 'intake', 'gate', { flow: animate });
+    ENG.forEach(id => {
+      edge(s, 'gate', id, { color: 'var(--border)' });
+      edge(s, id, 'fusion', { color: 'var(--border)' });
     });
-    LANES.forEach((id, i) => edge(s, 'fusion', id, { color: NODES[id].tone, width: 1.6, flow: animate, dur: 1.5 + i * 0.3 }));
+    LANES.forEach(id => edge(s, 'fusion', id, { color: NODES[id].tone, width: 1.6, flow: animate }));
 
     /* the hard-fail bypass — leaves the gate, touches no engine */
     const g = nodeBox.gate, rl = nodeBox.red;
     const hfY = HF_Y, redCx = rl.x + rl.w / 2;
-    const hfPath = `M${g.x + g.w / 2},${g.y + g.h} V${hfY} H${redCx} V${rl.y + rl.h + 9}`;
     s.appendChild(el('path', {
-      d: hfPath,
-      fill: 'none', stroke: 'var(--lane-red)', 'stroke-width': 1.6,
-      class: 'pipe-flow-line gate-fail' + (animate ? ' active' : '') }));
+      d: `M${g.x + g.w / 2},${g.y + g.h} V${hfY} H${redCx} V${rl.y + rl.h + 9}`,
+      fill: 'none', stroke: 'var(--lane-red)', 'stroke-width': 1.5,
+      'stroke-dasharray': '5 4', class: animate ? 'flowing' : '' }));
     s.appendChild(el('path', { d: `M${redCx - 4},${rl.y + rl.h + 9} L${redCx},${rl.y + rl.h + 2} L${redCx + 4},${rl.y + rl.h + 9} Z`,
       fill: 'var(--lane-red)' }));
-
-    /* Hard fail particle */
-    const hfParticle = el('circle', { r: 3, fill: 'var(--lane-red)', opacity: 0.8 });
-    hfParticle.appendChild(el('animateMotion', { dur: '2.5s', repeatCount: 'indefinite', path: hfPath }));
-    s.appendChild(hfParticle);
-
     s.appendChild(el('text', { x: COL.intake + 4, y: hfY - 22, 'font-size': 11,
       'font-weight': 700, fill: 'var(--lane-red)', text: 'HARD FAIL' }));
     ['leaves the gate and touches no engine —', 'no model called, no token spent'].forEach((t, i) =>
@@ -310,8 +279,8 @@ const Pipeline = (() => {
     /* the travelling claim */
     if (animate) {
       const path = `M${nodeBox.intake.x + nodeBox.intake.w},${MID} H${nodeBox.gate.x}`;
-      const dot = el('circle', { r: 5.5, fill: 'var(--accent)', opacity: .95 });
-      dot.appendChild(el('animateMotion', { dur: '1.2s', repeatCount: 'indefinite', path }));
+      const dot = el('circle', { r: 5, fill: 'var(--accent)', opacity: .9 });
+      dot.appendChild(el('animateMotion', { dur: '1.4s', repeatCount: 'indefinite', path }));
       s.appendChild(dot);
     }
 
