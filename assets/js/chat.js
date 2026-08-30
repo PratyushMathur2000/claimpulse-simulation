@@ -319,12 +319,34 @@ const CPChat = (() => {
     isLoading = true;
     renderMessages();
 
+    // Extract live runtime context from dashboard & model
+    const activeScreen = (location.hash || '').replace(/^#\/?/, '').split('?')[0] || 'overview';
+    let liveModel = {};
+    try {
+      if (typeof CPModel !== 'undefined' && CPModel.run) {
+        const res = CPModel.run('base');
+        liveModel = {
+          net: (typeof CP !== 'undefined' && CP.fmt ? CP.fmt.cr(res.net) : res.net?.toFixed(2)),
+          gross: (typeof CP !== 'undefined' && CP.fmt ? CP.fmt.cr(res.gross) : res.gross?.toFixed(2)),
+          payback: (typeof CP !== 'undefined' && CP.fmt ? CP.fmt.n1(res.paybackKickoff) : res.paybackKickoff?.toFixed(1)),
+          npv3: (typeof CP !== 'undefined' && CP.fmt ? CP.fmt.cr(res.npv3) : res.npv3?.toFixed(2)),
+          fteReleased: (typeof CP !== 'undefined' && CP.fmt ? CP.fmt.n1(res.fteReleased) : res.fteReleased?.toFixed(1)),
+          tatBlended: (typeof CP !== 'undefined' && CP.fmt ? CP.fmt.cr(res.tatBlended) : res.tatBlended?.toFixed(2)),
+          combinedPP: (typeof CP !== 'undefined' && CP.fmt ? CP.fmt.cr(res.combinedPP) : res.combinedPP?.toFixed(3))
+        };
+      }
+    } catch (e) {}
+
     // Prepare history payload for /api/chat
     const apiPayload = {
       messages: messages.map(m => ({
         role: m.role === 'user' ? 'user' : 'model',
         content: m.content
-      }))
+      })),
+      clientContext: {
+        activeScreen,
+        liveModel
+      }
     };
 
     try {
