@@ -306,38 +306,63 @@ table.dtable thead th .arw { opacity: .5; margin-left: 3px; }
    ===================================================================== */
 .wsdrawer {
   position: fixed; top: var(--topbar-h); left: var(--rail-w); bottom: 0;
-  width: min(420px, calc(100vw - var(--rail-w))); z-index: 56; display: flex; flex-direction: column;
-  background: color-mix(in srgb, var(--surface) 95%, transparent);
-  -webkit-backdrop-filter: blur(28px) saturate(1.7);
-  backdrop-filter: blur(28px) saturate(1.7);
+  width: min(440px, calc(100vw - var(--rail-w))); z-index: 56; display: flex; flex-direction: column;
+  background: var(--surface-raised, #ffffff);
   border-right: 1px solid var(--border-strong, var(--border));
   box-shadow: 20px 0 50px -15px rgba(0,0,0,.35);
   transform: translateX(-100%);
-  transition: transform var(--t-slow) var(--ease-out), left var(--t-base) var(--ease);
+  visibility: hidden; pointer-events: none;
+  transition: transform var(--t-slow) var(--ease-out), visibility var(--t-slow), left var(--t-base) var(--ease);
+}
+:root[data-theme="dark"] .wsdrawer {
+  background: #0d1527;
+  border-right-color: rgba(255,255,255,0.12);
 }
 .shell[data-rail="collapsed"] .wsdrawer {
   left: var(--rail-w-collapsed);
-  width: min(420px, calc(100vw - var(--rail-w-collapsed)));
+  width: min(440px, calc(100vw - var(--rail-w-collapsed)));
 }
 @media (max-width: 900px) {
-  .wsdrawer { left: 0; width: min(400px, 92vw); }
+  .wsdrawer { left: 0; width: min(420px, 94vw); }
 }
-.wsdrawer.open { transform: translateX(0); }
+.wsdrawer.open {
+  transform: translateX(0);
+  visibility: visible; pointer-events: auto;
+}
 .wsdrawer .dr-head {
-  padding: var(--s-5) var(--s-6); border-bottom: 1px solid var(--hairline);
+  padding: var(--s-5) var(--s-6); border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
-  background: color-mix(in srgb, var(--surface) 75%, transparent);
+  background: var(--surface); flex: none;
 }
-.wsdrawer .dr-body { overflow-y: auto; padding: var(--s-6); flex: 1; }
+.wsdrawer .dr-body { overflow-y: auto; padding: var(--s-5) var(--s-6); flex: 1; display: flex; flex-direction: column; gap: var(--s-6); }
+.wsdrawer .dr-foot {
+  padding: var(--s-4) var(--s-6); border-top: 1px solid var(--border);
+  background: var(--surface); display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); flex: none;
+}
 .dr-scrim {
   position: fixed; top: var(--topbar-h); left: var(--rail-w); right: 0; bottom: 0;
   z-index: 54; background: color-mix(in srgb, var(--scrim) 80%, transparent);
   -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
-  opacity: 0; pointer-events: none; transition: opacity var(--t-base) var(--ease);
+  opacity: 0; visibility: hidden; pointer-events: none; transition: opacity var(--t-base) var(--ease), visibility var(--t-base);
 }
 .shell[data-rail="collapsed"] .dr-scrim { left: var(--rail-w-collapsed); }
 @media (max-width: 900px) { .dr-scrim { left: 0; } }
-.dr-scrim.open { opacity: 1; pointer-events: auto; }
+.dr-scrim.open { opacity: 1; visibility: visible; pointer-events: auto; }
+
+.lever-grp {
+  border: 1px solid var(--border); border-radius: var(--r-3);
+  background: color-mix(in srgb, var(--surface) 50%, transparent);
+  padding: var(--s-4) var(--s-5); display: flex; flex-direction: column; gap: var(--s-4);
+}
+.lever-grp-title {
+  font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase;
+  letter-spacing: var(--tracking-caps); color: var(--ink-muted);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.lever-limits {
+  display: flex; justify-content: space-between; font-size: 10.5px;
+  font-family: var(--ff-mono); color: var(--ink-faint); margin-top: -2px;
+}
 
 /* =====================================================================
    10 · MISC PRIMITIVES

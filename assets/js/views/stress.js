@@ -221,13 +221,20 @@ const ViewStress = (() => {
       el('aside.wsdrawer', { id: 'drawer', 'aria-label': 'Assumptions' }, [
         el('div.dr-head', {}, [
           el('div', {}, [
-            el('div', { style: { fontWeight: 660, fontSize: 'var(--fs-md)' }, text: 'Assumption Levers' }),
+            el('div', { style: { fontWeight: 700, fontSize: 'var(--fs-md)', color: 'var(--ink)' }, text: 'Assumption Levers & Controls' }),
             el('div.small.muted', { style: { marginTop: '2px' },
-              text: 'Twelve levers over the R6 engine. Tagged by tier.' })
+              text: '12 active financial & operational dials. Tagged by data tier.' })
           ]),
-          el('button.gbtn', { id: 'drClose', type: 'button', 'aria-label': 'Close', text: '✕' })
+          el('button.gbtn', { id: 'drClose', type: 'button', 'aria-label': 'Close', style: { fontSize: '15px', fontWeight: 700, padding: '4px 10px' }, text: '✕' })
         ]),
-        el('div.dr-body', { id: 'levers' })
+        el('div.dr-body', { id: 'levers' }),
+        el('div.dr-foot', {}, [
+          el('div', {}, [
+            el('div.xsmall.muted', { text: 'Simulated Net Annual Benefit' }),
+            el('div.mono', { id: 'drFootVal', style: { fontWeight: 800, fontSize: 'var(--fs-lg)', color: 'var(--dom-fin)' }, text: '₹30.86 Cr' })
+          ]),
+          el('button.gbtn', { id: 'drResetAllBtn', type: 'button', text: '↺ Reset Levers' })
+        ])
       ])
     ]);
 
@@ -239,6 +246,7 @@ const ViewStress = (() => {
       buildLevers(); update();
     });
     $('#resetBtn').addEventListener('click', () => { resetTo(plan); buildLevers(); update(); });
+    if ($('#drResetAllBtn')) $('#drResetAllBtn').addEventListener('click', () => { resetTo(plan); buildLevers(); update(); });
     $('#tblBtn').addEventListener('click', () => {
       const t = $('#bridgeTable'), c = $('#bridge');
       const showing = t.hasAttribute('hidden');
@@ -248,8 +256,9 @@ const ViewStress = (() => {
     });
 
     const openDr = on => {
-      $('#drawer').classList.toggle('open', on);
-      $('#drScrim').classList.toggle('open', on);
+      const d = $('#drawer'), s = $('#drScrim');
+      if (d) d.classList.toggle('open', on);
+      if (s) s.classList.toggle('open', on);
     };
     $('#leverToggleBtn').addEventListener('click', () => openDr(!$('#drawer').classList.contains('open')));
     $('#drClose').addEventListener('click', () => openDr(false));
@@ -264,42 +273,95 @@ const ViewStress = (() => {
     const d = document.getElementById('drawer');
     if (d && d.classList.contains('open')) {
       d.classList.remove('open');
-      document.getElementById('drScrim').classList.remove('open');
+      const sc = document.getElementById('drScrim');
+      if (sc) sc.classList.remove('open');
     }
   }
 
+  const LEVER_GROUPS = [
+    { title: 'Plan Strategy & Rollout', tier: 'Plan', keys: ['rollout', 'realY1', 'mkt'] },
+    { title: 'Tier 2 · Statutory & Benchmarks', tier: 'Tier 2', keys: ['green', 'leakage'] },
+    { title: 'Tier 3 · Operating Targets', tier: 'Tier 3', keys: ['detection', 'touchCost'] },
+    { title: 'Tier 4 · Workflow Map & Models', tier: 'Tier 4', keys: ['redeploy', 'touches', 'claim', 'friction', 'synthetic'] }
+  ];
+
   function buildLevers() {
     const host = CP.$('#levers');
-    mount(host, LEVERS.map(l => {
-      const wrap = el('div.lever', { 'data-key': l.key });
-      const input = el('input', {
-        type: 'range', min: l.min, max: l.max, step: l.step, value: state[l.key],
-        'aria-label': l.label
-      });
-      const val = el('span.lever-val', { text: l.fmtv(state[l.key]) });
-      const setPct = () => input.style.setProperty('--pct',
-        ((state[l.key] - l.min) / (l.max - l.min) * 100) + '%');
-      input.addEventListener('input', () => {
-        state[l.key] = parseFloat(input.value);
-        val.textContent = l.fmtv(state[l.key]);
-        wrap.setAttribute('data-moved', String(Math.abs(state[l.key] - l.def) > 1e-9));
-        setPct(); update();
-      });
-      setPct();
-      wrap.setAttribute('data-moved', String(Math.abs(state[l.key] - l.def) > 1e-9));
-      mount(wrap, [
-        el('div.lever-head', {}, [
-          el('span.lever-name', {}, [
-            l.label,
-            el('span.ref', { text: l.ref }),
-            l.flag ? el('span.badge.warn', { text: 'placeholder' }) : null
-          ]),
-          val
+    if (!host) return;
+
+    mount(host, LEVER_GROUPS.map(grp => {
+      const groupLevers = LEVERS.filter(l => grp.keys.includes(l.key));
+      return el('div.lever-grp', {}, [
+        el('div.lever-grp-title', {}, [
+          el('span', { text: grp.title }),
+          UI.dchip(grp.tier, grp.tier === 'Plan' ? 'fin' : grp.tier === 'Tier 2' ? 'cap' : grp.tier === 'Tier 3' ? 'ops' : 'risk')
         ]),
-        input,
-        el('div.lever-note', { text: l.note })
+        groupLevers.map(l => {
+          const wrap = el('div.lever', { 'data-key': l.key });
+          const input = el('input', {
+            type: 'range', min: l.min, max: l.max, step: l.step, value: state[l.key],
+            'aria-label': l.label
+          });
+          const val = el('span.lever-val', { text: l.fmtv(state[l.key]) });
+          const resetSingleBtn = el('button.gbtn', {
+            type: 'button', title: 'Reset to default (' + l.fmtv(l.def) + ')',
+            style: { padding: '1px 5px', fontSize: '11px', lineHeight: '1', display: 'none' },
+            text: '↺'
+          });
+
+          const setPct = () => {
+            const pct = ((state[l.key] - l.min) / (l.max - l.min) * 100);
+            input.style.setProperty('--pct', pct + '%');
+          };
+
+          const checkMoved = () => {
+            const isMoved = Math.abs(state[l.key] - l.def) > 1e-9;
+            wrap.setAttribute('data-moved', String(isMoved));
+            resetSingleBtn.style.display = isMoved ? 'inline-block' : 'none';
+          };
+
+          input.addEventListener('input', () => {
+            state[l.key] = parseFloat(input.value);
+            val.textContent = l.fmtv(state[l.key]);
+            checkMoved();
+            setPct();
+            update();
+          });
+
+          resetSingleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            state[l.key] = l.def;
+            input.value = l.def;
+            val.textContent = l.fmtv(l.def);
+            checkMoved();
+            setPct();
+            update();
+          });
+
+          setPct();
+          checkMoved();
+
+          mount(wrap, [
+            el('div.lever-head', {}, [
+              el('span.lever-name', {}, [
+                el('span', { text: l.label }),
+                l.flag ? el('span.badge.warn', { text: 'placeholder' }) : null
+              ]),
+              el('div.row', { style: { gap: 'var(--s-2)', alignItems: 'center' } }, [
+                resetSingleBtn,
+                val
+              ])
+            ]),
+            input,
+            el('div.lever-limits', {}, [
+              el('span', { text: l.fmtv(l.min) }),
+              el('span', { text: l.fmtv(l.max) })
+            ]),
+            el('div.lever-note', { text: l.note })
+          ]);
+          return wrap;
+        })
       ]);
-      return wrap;
     }));
   }
 
@@ -309,6 +371,10 @@ const ViewStress = (() => {
   function update() {
     const r = compute();
     const d = CPModel.run(plan, {});      // the plan's own default, for deltas
+
+    if (CP.$('#drFootVal')) {
+      CP.$('#drFootVal').textContent = '₹' + fmt.cr(r.net) + ' Cr';
+    }
 
     /* --- KPI strip: one panel, four cells, values that flash on change --- */
     const tiles = [
