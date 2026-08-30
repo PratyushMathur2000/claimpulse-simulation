@@ -137,9 +137,9 @@ const Charts = (() => {
       s.appendChild(p);
 
       // direct label — always, never a hover-only number
-      const labelY = grows ? top_ - 8 : top_ + h + 15;
+      const labelY = grows ? top_ - 8 : top_ + h + 14;
       s.appendChild(el('text', { class: 'lbl-value', x: cx + bw / 2, y: labelY,
-        'text-anchor': 'middle', 'font-size': 11.5,
+        'text-anchor': 'middle', 'font-size': 10, 'font-weight': 700,
         text: (g.kind === 'total' ? '' : (g.value >= 0 ? '+' : '−')) + fmt.cr(Math.abs(g.value)) }));
 
       // wrapped category label
@@ -151,8 +151,8 @@ const Charts = (() => {
       });
       if (cur) lines.push(cur);
       lines.slice(0, 3).forEach((ln, k) => {
-        s.appendChild(el('text', { class: 'lbl-axis', x: cx + bw / 2, y: m.t + ih + 18 + k * 12,
-          'text-anchor': 'middle', 'font-weight': g.kind === 'total' ? 650 : 400, text: ln }));
+        s.appendChild(el('text', { class: 'lbl-axis', x: cx + bw / 2, y: m.t + ih + 16 + k * 11,
+          'text-anchor': 'middle', 'font-size': 9.5, 'font-weight': g.kind === 'total' ? 650 : 400, text: ln }));
       });
 
       // hover
@@ -164,7 +164,7 @@ const Charts = (() => {
       s.appendChild(hit);
     });
 
-    s.appendChild(el('text', { class: 'lbl-axis', x: m.l, y: 14, text: unit }));
+    s.appendChild(el('text', { class: 'lbl-axis', x: m.l, y: 14, 'font-size': 9.5, text: unit }));
     return s;
   }
 

@@ -76,12 +76,20 @@ const ViewValue = (() => {
 
       UI.clus('Institutional Financial Metrics & RoIC Accretion', 'fin'),
       el('div.g-phi', { style: { alignItems: 'stretch' } }, [
-        el('div.panel.rise', { 'data-dom': 'fin' }, [
-          el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
-            text: 'Cumulative Net Cash Flow & Capital Payback Runway' }),
-          el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-            text: 'Build spent up front; benefit ramps on the realisation curve.' }),
-          el('div', { id: 'vlCash' })
+        el('div.panel.rise', { 'data-dom': 'fin', style: { display: 'flex', flexDirection: 'column', justifyContent: 'space-between' } }, [
+          el('div', {}, [
+            el('div.spread.wrap', { style: { marginBottom: 'var(--s-4)' } }, [
+              el('div', {}, [
+                el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' },
+                  text: 'Cumulative Net Cash Flow & Capital Payback Runway' }),
+                el('div.small.muted', { style: { marginTop: 'var(--s-1)' },
+                  text: 'Upfront build capex amortized against phased realization curve.' })
+              ]),
+              UI.dchip('12% WACC Discounted Basis', 'fin')
+            ]),
+            el('div', { id: 'vlCash' })
+          ]),
+          el('div', { id: 'vlCashMetrics', style: { marginTop: 'var(--s-4)' } })
         ]),
         el('div.panel.rise', { 'data-dom': 'risk' }, [
           el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
@@ -294,7 +302,22 @@ const ViewValue = (() => {
     }
     Charts.cashflow($('#vlCash'), { points: pts, buildCost: r.buildTotal,
       paybackMonths: r.paybackKickoff ? r.paybackKickoff - I.B27_buildMonths : null,
-      paybackLabel: r.paybackKickoff ? 'build repaid · ' + fmt.n1(r.paybackKickoff) + ' mo from kickoff' : null });
+      paybackLabel: r.paybackKickoff ? 'build repaid · ' + fmt.n1(r.paybackKickoff) + ' mo from kickoff' : null,
+      height: 250 });
+
+    mount($('#vlCashMetrics'), [el('div.cells.c-3', {
+      style: { border: '1px solid var(--hairline)', borderRadius: 'var(--r-3)',
+               background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
+      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin', size: 'sm',
+        k: 'Capital Payback', ref: 'FS-05', v: r.paybackKickoff ? fmt.n1(r.paybackKickoff) + ' mo' : '—',
+        d: 'From project kickoff, including 10-mo build.' })]),
+      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin', size: 'sm',
+        k: '3-Year NPV @ 12%', ref: 'FS-04', v: '₹' + fmt.cr(r.npv3) + ' Cr',
+        d: 'Net of ₹' + fmt.cr(r.buildTotal) + ' Cr upfront capex.' })]),
+      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap', size: 'sm',
+        k: 'Annual RoIC Yield', v: fmt.pct(r.net / r.buildTotal, 0),
+        d: 'Steady-state net cash yield on build investment.' })])
+    ])]);
 
     /* ---- open decisions ---- */
     mount($('#vlOpen'), [UI.dtable({
