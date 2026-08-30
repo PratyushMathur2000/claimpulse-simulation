@@ -615,10 +615,10 @@ Charts.contrib = function (host, parts) {
      The taper is the point: you see the collapse, you do not compute it
      from two numbers sitting side by side.
      ------------------------------------------------------------------- */
-  Charts.beam = function (host, { from, to, unit = '', fromLabel = 'today', toLabel = 'on ClaimPulse', c1, c2, height = 148 }) {
+  Charts.beam = function (host, { from, to, unit = '', fromLabel = 'today', toLabel = 'on ClaimPulse', c1, c2, height = 156 }) {
     const W = 620, H = height, s = svgOf(host, W, H);
-    const pad = 96, mid = H / 2;
-    const maxH = H * .52;
+    const pad = 96, mid = H / 2 + 6;
+    const maxH = H * .48;
     const hFrom = maxH, hTo = Math.max(maxH * (to / from), 10);
     const xa = pad, xb = W - pad, gap = 118;
     const fill = grad(s, c1 || 'var(--dom-risk)', c2 || 'var(--dom-cap)', 0);
@@ -640,18 +640,30 @@ Charts.contrib = function (host, parts) {
       s.appendChild(el('rect', { x: anch === 'end' ? x + gap - 8 : x - gap, y: mid - h / 2,
         width: 8, height: h, rx: 4, fill: c, style: 'filter:drop-shadow(0 0 10px ' + c + ')' }));
       s.appendChild(el('text', { x, y: mid - 4, 'text-anchor': 'middle',
-        'font-size': 30, 'font-weight': 700, fill: c, text: fmt.cr(v, 1) }));
+        'font-size': 32, 'font-weight': 780, fill: c, text: fmt.cr(v, 1) }));
       s.appendChild(el('text', { x, y: mid + 16, 'text-anchor': 'middle',
         'font-size': 11, 'font-weight': 600, fill: 'var(--ink-faint)', text: unit }));
-      s.appendChild(el('text', { x, y: mid + 40, 'text-anchor': 'middle', 'font-size': 10.5,
+      s.appendChild(el('text', { x, y: mid + 38, 'text-anchor': 'middle', 'font-size': 10.5,
         'font-weight': 700, fill: 'var(--ink-muted)',
         style: 'letter-spacing:.12em;text-transform:uppercase', text: lab }));
     });
 
+    /* Prominent central reduction badge */
     const cut = (from - to) / from;
-    s.appendChild(el('text', { x: W / 2, y: mid - maxH / 2 - 14, 'text-anchor': 'middle',
-      'font-size': 12.5, 'font-weight': 700, fill: 'var(--dom-cap)',
-      text: '▼ ' + fmt.pct(cut, 0) }));
+    const badgeG = el('g', { style: 'filter: drop-shadow(0 4px 10px rgba(0,0,0,0.12))' });
+    badgeG.appendChild(el('rect', {
+      x: W / 2 - 84, y: 8, width: 168, height: 32, rx: 16,
+      fill: 'color-mix(in srgb, var(--surface) 92%, transparent)',
+      stroke: 'var(--dom-cap)', 'stroke-width': 1.5
+    }));
+    badgeG.appendChild(el('text', {
+      x: W / 2, y: 29, 'text-anchor': 'middle',
+      'font-size': 15, 'font-weight': 800, fill: 'var(--dom-cap)',
+      'letter-spacing': '-0.02em',
+      text: '▼ ' + fmt.pct(cut, 0) + ' TAT COLLAPSE'
+    }));
+    s.appendChild(badgeG);
+
     return s;
   };
 

@@ -76,15 +76,27 @@ const ViewGarage = (() => {
 
       /* ---- the headline: bay time, which is the whole argument ---- */
       el('div.panel.hero.rise', { 'data-dom': 'cust' }, [
+        el('div.spread.wrap', { style: { marginBottom: 'var(--s-6)', paddingBottom: 'var(--s-4)', borderBottom: '1px solid var(--hairline)' } }, [
+          el('div', { style: { maxWidth: '58ch' } }, [
+            el('h2', { style: { margin: 0, fontSize: 'var(--fs-lg)', fontWeight: 680 },
+              text: 'Repair Bay Hold-Time Optimization (4.0 Days → 1.0 Day)' }),
+            el('p.small.muted', { style: { margin: 'var(--s-2) 0 0' },
+              text: 'Instant indicative repair bands delivered at First Notice of Loss (FNOL) eliminate physical surveyor wait times, freeing garage bays 3 days faster across the authorized network.' })
+          ]),
+          el('div.row.wrap', { style: { gap: 'var(--s-3)' } }, [
+            UI.dchip('3 Bay-Days Saved / Claim', 'cap'),
+            UI.dchip('J-07 Estimate Approval: 1.0d', 'ops')
+          ])
+        ]),
         el('div.g-phi', { style: { alignItems: 'center', gap: 'var(--s-7)' } }, [
           el('div', { id: 'gaBeam' }),
           el('div.cells.c-1', { style: { border: '1px solid var(--hairline)',
-            borderRadius: 'var(--r-4)' } }, [
+            borderRadius: 'var(--r-4)', background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
             el('div.cell-x', {}, [UI.metric({ dom: 'cap', size: 'sm', k: 'Portfolio bay-days saved',
-              ref: 'W-73', v: fmt.compact(r.claims * r.garageDaysSaved), unit: 'days/year',
+              ref: 'W-73', v: fmt.compact(r.claims * r.garageDaysSaved), unit: 'days / year',
               d: '3 days saved per job across ' + fmt.compact(r.claims) + ' on-platform claims. (' + fmt.n(jobs.length * r.garageDaysSaved) + ' days on demo desk)' })]),
-            el('div.cell-x', {}, [UI.metric({ dom: 'ops', size: 'sm', k: 'Estimate approval TAT',
-              ref: 'J-07', v: '1.0 day', unit: 'vs 4.0d today',
+            el('div.cell-x', {}, [UI.metric({ dom: 'ops', size: 'sm', k: 'Estimate approval turnaround',
+              ref: 'J-07', v: '1.0 day', unit: 'vs 4.0d legacy',
               d: 'Instant indicative band at FNOL frees repair bays 3 days faster.' })]),
             el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'risk', size: 'sm',
               k: 'Band compliance rate', v: fmt.pct(1 - (over(jobs)/jobs.length), 0), unit: 'in band',
@@ -125,8 +137,8 @@ const ViewGarage = (() => {
               ? el('span.small', { style: { color: 'var(--lane-amber)' }, text: 'watched by the fraud graph' })
               : el('span') }
           ],
-          rows: [{ code: 'all', name: 'All network garages', city: 'six locations', tier: 'Network',
-                   rating: 4.2, jobs: all.length, over: over(all), val: value(all) }]
+          rows: [{ code: 'all', name: 'All network garages', city: '11 locations across Pune & major auto hubs', tier: 'Network',
+                   rating: 4.5, jobs: all.length, over: over(all), val: value(all) }]
             .concat(list.map(x => ({ code: x.g.code, name: x.g.name, city: x.g.city,
               tier: x.g.tier, rating: x.g.rating, jobs: x.jobs.length,
               over: over(x.jobs), val: value(x.jobs) }))),
@@ -180,7 +192,7 @@ const ViewGarage = (() => {
     Charts.beam($('#gaBeam'), {
       from: CPModel.INPUTS.J06_garageToday, to: CPModel.INPUTS.J07_garageAfter,
       unit: 'days waiting', fromLabel: 'today', toLabel: 'on ClaimPulse',
-      c1: 'var(--dom-risk)', c2: 'var(--dom-cap)', height: 150
+      c1: 'var(--dom-risk)', c2: 'var(--dom-cap)', height: 156
     });
 
     $('#gaSort').addEventListener('click', e => {
@@ -210,18 +222,30 @@ const ViewGarage = (() => {
     mount($('#gaView'), [
 
       el('div.panel.hero.rise', { 'data-dom': 'ops' }, [
+        el('div.spread.wrap', { style: { marginBottom: 'var(--s-6)', paddingBottom: 'var(--s-4)', borderBottom: '1px solid var(--hairline)' } }, [
+          el('div', { style: { maxWidth: '58ch' } }, [
+            el('h2', { style: { margin: 0, fontSize: 'var(--fs-lg)', fontWeight: 680 },
+              text: 'Surveyor Physical Inspection Optimization' }),
+            el('p.small.muted', { style: { margin: 'var(--s-2) 0 0' },
+              text: 'Routine physical surveys are eliminated for claims below the ₹50,000 corridor where AI evidence is deterministic, refocusing licensed surveyors on complex structural losses and fraud ring forensics.' })
+          ]),
+          el('div.row.wrap', { style: { gap: 'var(--s-3)' } }, [
+            UI.dchip('72% Routine Visits Avoided', 'cap'),
+            UI.dchip('Corridor: Claims > ₹50,000 Retained', 'risk')
+          ])
+        ]),
         el('div.g-phi', { style: { alignItems: 'center', gap: 'var(--s-7)' } }, [
           el('div', { id: 'gaGauge' }),
           el('div.cells.c-1', { style: { border: '1px solid var(--hairline)',
-            borderRadius: 'var(--r-4)' } }, [
-            el('div.cell-x', {}, [UI.metric({ dom: 'cap', size: 'sm', k: 'Visits avoided a year',
-              ref: 'W-72', v: fmt.compact(r.visitsAvoided),
+            borderRadius: 'var(--r-4)', background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
+            el('div.cell-x', {}, [UI.metric({ dom: 'cap', size: 'sm', k: 'Routine visits avoided',
+              ref: 'W-72', v: fmt.compact(r.visitsAvoided), unit: 'visits / year (72%)',
               d: 'All below ₹50,000, where the evidence already resolved the claim.' })]),
-            el('div.cell-x', {}, [UI.metric({ dom: 'ops', size: 'sm', k: 'Still surveyed',
-              ref: 'W-71', v: fmt.compact(r.surveyAfter), unit: 'a year',
+            el('div.cell-x', {}, [UI.metric({ dom: 'ops', size: 'sm', k: 'Still surveyed (complex/large loss)',
+              ref: 'W-71', v: fmt.compact(r.surveyAfter), unit: 'visits / year',
               d: 'Red lane, large losses and disputed assessments. The work where judgement was always the point.' })]),
             el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cust', size: 'sm',
-              k: 'On this desk', v: fmt.n(need.length), unit: 'of ' + all.length,
+              k: 'On demo desk', v: fmt.n(need.length), unit: 'of ' + all.length + ' claims',
               d: 'Claims on the demo desk that still require a registered surveyor.' })])
           ])
         ])

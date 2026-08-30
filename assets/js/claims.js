@@ -48,6 +48,11 @@ const CPClaims = (() => {
     'G-3391': { code:'G-3391', name:'Rohini Crash Repairs',          city:'Rohini, Delhi',        tier:'Network',   rating:3.4 },
     'G-4412': { code:'G-4412', name:'Sector 62 Motor Care',          city:'Sector 62, Noida',     tier:'Preferred', rating:4.4 },
     'G-5530': { code:'G-5530', name:'Kothrud Bodyshop',              city:'Kothrud, Pune',        tier:'Network',   rating:4.2 },
+    'G-5541': { code:'G-5541', name:'Viman Nagar Auto Care',         city:'Viman Nagar, Pune',    tier:'Preferred', rating:4.8 },
+    'G-5542': { code:'G-5542', name:'Hinjawadi Tech Collision',      city:'Hinjawadi, Pune',      tier:'Preferred', rating:4.6 },
+    'G-5543': { code:'G-5543', name:'Wakad Multi-Brand Bodyshop',    city:'Wakad, Pune',          tier:'Network',   rating:4.3 },
+    'G-5544': { code:'G-5544', name:'Hadapsar Premier Motors',       city:'Hadapsar, Pune',       tier:'Network',   rating:4.4 },
+    'G-5545': { code:'G-5545', name:'Akurdi Auto Craft',             city:'Akurdi, PCMC Pune',    tier:'Preferred', rating:4.7 },
     'G-6621': { code:'G-6621', name:'Whitefield Auto Point',         city:'Whitefield, Bengaluru',tier:'Preferred', rating:4.5 }
   };
 
