@@ -147,6 +147,32 @@ All numbers are computed live in JavaScript from the audited **R6 Financial Mode
 - **Native SVG Chart Kit**: Handcrafted SVG charting (waterfall, cashflow, hbar, stack, tornado, bullet, meter, contrib) with zero external chart libraries.
 
 ---
+---
+
+## 🤖 Ask Finsighters — AI Project Assistant
+
+ClaimPulse features **Ask Finsighters**, an intelligent floating AI assistant anchored to the bottom-right of the interface.
+
+```
++-----------------------------------------------------------------------------------+
+|  💬 Ask Finsighters: "Why is labour saving zero in R6?"                            |
+|                                                                                   |
+|  "In the R6 Audited Model, labour savings are deliberately booked at ₹0           |
+|  (reference W-18) to adhere to a zero-layoff mandate. Instead, 175.9 FTE of       |
+|  capacity is repurposed into cross-selling and retention, generating ₹16.62 Cr." |
+|                                                                                   |
+|  [ 👉 Jump to TAT & Capacity Repurposing ]                                        |
+|  [ 📊 Excel: Sheet 3 (Workings) Row 56 · W-22a ]                                  |
++-----------------------------------------------------------------------------------+
+```
+
+### Key Capabilities
+- **Deep Grounding in Model R6**: Authoritative knowledge of all 17 sheets, 24 internal checks, 35 self-checks, pilot gate telemetry, and strategic deck arguments.
+- **Interactive Dashboard Navigation**: Dynamically embeds clickable action buttons (`[👉 Jump to Screen]`) that automatically switch the user's dashboard view.
+- **Audited Excel Coordinates**: Maps complex calculations directly to exact sheet names and cell coordinates (`W-15`, `W-18`, `W-22a`, `W-23a`, `W-35`, `B-29`).
+- **Serverless API Proxy (`api/chat.js`)**: The user's Google Gemini API key remains strictly on the server-side via Vercel Environment Variables (`GEMINI_API_KEY`), protected from client exposure and abuse with origin validation and domain-scoped guardrails.
+
+---
 
 ## 💻 Running Locally
 
