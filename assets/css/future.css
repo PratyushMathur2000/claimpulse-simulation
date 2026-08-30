@@ -105,16 +105,18 @@
 .metric .m-k {
   font-size: var(--fs-xs); letter-spacing: var(--tracking-caps);
   text-transform: uppercase; color: var(--ink-faint); font-weight: 600;
-  display: flex; align-items: center; gap: var(--s-3);
+  display: flex; align-items: flex-start; gap: var(--s-3);
+  min-height: 2.2em; line-height: 1.25;
 }
 .metric .m-v {
-  font-size: var(--fs-2xl); font-weight: 680; line-height: 1;
+  font-size: var(--fs-2xl); font-weight: 680; line-height: 1.1;
   letter-spacing: var(--tracking-tight);
   font-variant-numeric: tabular-nums;
   background: var(--m-grad, linear-gradient(135deg, var(--ink-strong) 0%, var(--ink) 100%));
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
   width: fit-content; max-width: 100%;
+  display: inline-flex; align-items: baseline;
 }
 .metric .m-v .u {
   font-size: var(--fs-sm); font-weight: 600; letter-spacing: 0;

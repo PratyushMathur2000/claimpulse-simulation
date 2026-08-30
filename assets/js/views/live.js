@@ -166,17 +166,17 @@ const ViewLive = (() => {
     mount($('#lvTiles'), [el('div.cells.c-4', {
       style: { border: '1px solid var(--hairline)', borderRadius: 'var(--r-4)',
                background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
-      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'ops', size: 'xl',
-        k: 'Claims settled', v: fmt.n(n),
+      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'ops',
+        k: 'Claims settled', v: fmt.n(n), unit: 'claims',
         d: 'Filed and routed since you pressed play.' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap',
-        k: 'Cleared with no human touch', v: n ? fmt.pct(lanes.G / t, 0) : '—',
+        k: 'Cleared straight-through', v: n ? fmt.pct(lanes.G / t, 0) : '—', unit: 'STP rate',
         d: `${lanes.G} of ${n} on the green lane. The book design target is ${fmt.pct(CPModel.INPUTS.B03_green, 0)}.` })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cust',
         k: 'Claimant-days returned', v: fmt.n(days), unit: 'days',
         d: 'Each claim returns the difference between 9.8 days and its own lane TAT.' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin',
-        k: 'Net benefit accrued', v: '₹' + fmt.cr(benefit), unit: 'Cr',
+        k: 'Net benefit accrued', v: fmt.cr(benefit), unit: '₹ Cr',
         d: `Net annual benefit divided across ${fmt.compact(r.claims)} claims, accumulated one claim at a time.` })])
     ])]);
 

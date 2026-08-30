@@ -126,7 +126,7 @@ const ViewValue = (() => {
     mount($('#vlBand'), [el('div.cells.c-5', {
       style: { border: '1px solid var(--hairline)', borderRadius: 'var(--r-4)',
                background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
-      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin', size: 'xl',
+      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin',
         k: 'Net annual benefit', ref: 'W-35', v: fmt.cr(r.net), unit: '₹ Cr',
         d: 'Steady state at ' + fmt.pct(r.rollout, 0) + ' rollout, net of run cost and marketing.' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin',

@@ -45,11 +45,12 @@
   font-size: var(--fs-xs); font-weight: 660;
   letter-spacing: var(--tracking-wide); text-transform: uppercase;
   color: var(--ink-faint);
-  display: flex; align-items: center; gap: var(--s-3);
+  display: flex; align-items: flex-start; gap: var(--s-3);
+  min-height: 2.2em; line-height: 1.25;
 }
 .tile .v {
   font-size: var(--fs-xl); font-weight: 700;
-  line-height: 1.05; letter-spacing: var(--tracking-tight);
+  line-height: 1.1; letter-spacing: var(--tracking-tight);
   color: var(--ink-strong);
   font-variant-numeric: tabular-nums;
   display: flex; align-items: baseline; gap: var(--s-3);

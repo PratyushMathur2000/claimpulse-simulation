@@ -14,19 +14,21 @@ const App = (() => {
   const { el, mount, $, $$, fmt } = CP;
 
   const ROUTES = [
-    { wing:'Simulation', id:'overview',     label:'Overview',              icon:'M3 12h4l3-8 4 16 3-8h4' },
-    { wing:'Simulation', id:'live',         label:'Live book',             icon:'M5 3l14 9-14 9V3z' },
-    { wing:'Simulation', id:'architecture', label:'Live claim',            icon:'M4 5h16M4 12h16M4 19h16' },
-    { wing:'Simulation', id:'tat',          label:'TAT and repurposing',   icon:'M12 7v5l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-    { wing:'Simulation', id:'tokens',       label:'Token economics',       icon:'M12 3v18M7 8h7a3 3 0 010 6H7' },
-    { wing:'Simulation', id:'stress',       label:'Financial stress test', icon:'M4 19V9m5 10V5m5 14v-7m5 7V8' },
-    { wing:'Simulation', id:'assumptions',  label:'Assumptions and sources',icon:'M6 3h9l5 5v13H6zM15 3v5h5' },
+    // --- DEMO WING (TOP) ---
+    { wing:'Demo', id:'command',  label:'Command centre',      icon:'M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z' },
+    { wing:'Demo', id:'inspector',label:'Claim inspector',      icon:'M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.35-4.35' },
+    { wing:'Demo', id:'customer', label:'Customer app',         icon:'M7 3h10v18H7zM11 18h2' },
+    { wing:'Demo', id:'garage',   label:'Garage and surveyor',  icon:'M3 12l2-6h14l2 6v7h-3v-2H6v2H3zM7 15h2M15 15h2' },
+    { wing:'Demo', id:'value',    label:'Value to management',  icon:'M4 19h16M7 16V9m5 7V5m5 11v-5' },
 
-    { wing:'Demo', id:'command',  label:'Command centre',  icon:'M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z' },
-    { wing:'Demo', id:'inspector',label:'Claim inspector',  icon:'M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.35-4.35' },
-    { wing:'Demo', id:'customer', label:'Customer app',     icon:'M7 3h10v18H7zM11 18h2' },
-    { wing:'Demo', id:'garage',   label:'Garage and surveyor', icon:'M3 12l2-6h14l2 6v7h-3v-2H6v2H3zM7 15h2M15 15h2' },
-    { wing:'Demo', id:'value',    label:'Value to management', icon:'M4 19h16M7 16V9m5 7V5m5 11v-5' }
+    // --- SIMULATION WING (BELOW) ---
+    { wing:'Simulation', id:'overview',     label:'Overview',               icon:'M3 12h4l3-8 4 16 3-8h4' },
+    { wing:'Simulation', id:'live',         label:'Live book',              icon:'M5 3l14 9-14 9V3z' },
+    { wing:'Simulation', id:'architecture', label:'Solution architecture',  icon:'M4 5h16M4 12h16M4 19h16' },
+    { wing:'Simulation', id:'tat',          label:'TAT and repurposing',    icon:'M12 7v5l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+    { wing:'Simulation', id:'tokens',       label:'Token economics',        icon:'M12 3v18M7 8h7a3 3 0 010 6H7' },
+    { wing:'Simulation', id:'stress',       label:'Financial stress test',  icon:'M4 19V9m5 10V5m5 14v-7m5 7V8' },
+    { wing:'Simulation', id:'assumptions',  label:'Assumptions and sources',icon:'M6 3h9l5 5v13H6zM15 3v5h5' }
   ];
 
   const VIEWS = {
@@ -52,7 +54,7 @@ const App = (() => {
 
   function buildRail() {
     const rail = $('#rail');
-    const wings = ['Simulation', 'Demo'];
+    const wings = ['Demo', 'Simulation'];
     mount(rail, [
       ...wings.map(w => el('div.rail-group', {}, [
         el('div.rail-label', {}, [el('span', { text: w })]),

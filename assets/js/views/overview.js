@@ -51,14 +51,14 @@ const ViewOverview = (() => {
           el('div.cells.c-1', { style: {
             border: '1px solid var(--hairline)', borderRadius: 'var(--r-4)',
             background: 'color-mix(in srgb, var(--surface) 34%, transparent)' } }, [
-            el('div.cell-x', {}, [UI.metric({ dom: 'fin', size: 'xl', k: 'Net annual benefit', ref: 'W-35',
+            el('div.cell-x', {}, [UI.metric({ dom: 'fin', k: 'Net annual benefit', ref: 'W-35',
               v: fmt.cr(r.net), unit: '₹ Cr',
               d: 'Steady state at 60% rollout, net of every annual run cost and of the marketing plan.' })]),
             el('div.cell-x', {}, [UI.metric({ dom: 'fin', k: 'Payback from kickoff', ref: 'FS-05',
               v: fmt.n1(r.paybackKickoff), unit: 'months',
               d: 'Including the ten-month build. The honest headline, not payback from go-live.' })]),
             el('div.cell-x', {}, [UI.metric({ dom: 'ops', k: 'Motor OD combined ratio', ref: 'W-43',
-              v: fmt.cr(r.combinedPP), unit: 'pp better',
+              v: fmt.cr(r.combinedPP), unit: 'pp delta',
               d: 'Loss plus expense movement against Motor OD earned premium.' })]),
             el('div.cell-x', { style: { borderBottom: 0 } }, [
               el('div.row', { style: { justifyContent: 'space-between', gap: 'var(--s-4)' } }, [
@@ -74,13 +74,13 @@ const ViewOverview = (() => {
       UI.clus('The book today · filed numbers', 'risk'),
       el('div.panel.rise.pad-0', { 'data-dom': 'risk' }, [
         UI.cells(4, [
-          UI.metric({ dom: 'risk', k: 'Group combined ratio', ref: 'K-01', v: fmt.pct(1.047, 1),
+          UI.metric({ dom: 'risk', k: 'Group combined ratio', ref: 'K-01', v: '104.7%', unit: 'filed',
             d: 'Q1 FY27, filed. Above 100% — every rupee of premium costs more than a rupee to service.' }),
           UI.metric({ dom: 'risk', k: 'Underwriting loss, annualised', ref: 'W-86', v: fmt.n(130 * 4), unit: '₹ Cr',
             d: 'Q1 FY27 filed, multiplied by four. Directional, and labelled as such.' }),
           UI.metric({ dom: 'risk', k: 'Claim turnaround', ref: 'B-09', v: fmt.cr(I.B09_tatToday, 1), unit: 'days',
             d: 'Seven manual handoffs and a physical survey on 55% of claims.' }),
-          UI.metric({ dom: 'risk', k: 'Cost to serve one claim', ref: 'B-02 × B-28', v: '₹' + fmt.n(costToServe),
+          UI.metric({ dom: 'risk', k: 'Cost to serve one claim', ref: 'B-02 × B-28', v: fmt.n(costToServe), unit: '₹ / claim',
             d: `${I.B02_touchesToday} manual touches at ₹${fmt.n(I.B28_baselineTouchCost)} each.` })
         ], { noBottom: true })
       ]),
@@ -98,10 +98,10 @@ const ViewOverview = (() => {
             v: fmt.cr(r.tatBlended), unit: 'days',
             d: `Platform TAT on the ${fmt.pct(r.rollout, 0)} rolled out, 9.8 days on the rest.` }),
           UI.metric({ dom: 'ops', size: 'sm', k: 'Manual touches per claim', ref: 'W-10',
-            v: fmt.cr(r.touchesAfter), unit: 'left', delta: '▼ ' + fmt.cr(r.touchesSaved), deltaGood: true,
+            v: fmt.cr(r.touchesAfter), unit: 'touches', delta: '▼ ' + fmt.cr(r.touchesSaved), deltaGood: true,
             d: 'Lane-weighted across 65% green, 25% amber, 10% red.' }),
           UI.metric({ dom: 'ops', size: 'sm', k: 'Adjuster throughput', ref: 'W-69',
-            v: fmt.x(r.throughput),
+            v: fmt.x(r.throughput), unit: 'capacity',
             d: 'The same team clears this multiple of claims. No one is asked to leave.' })
         ], { noBottom: true })
       ]),
