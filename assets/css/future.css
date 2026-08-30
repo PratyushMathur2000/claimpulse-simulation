@@ -659,16 +659,21 @@ table.dtable thead th .arw { opacity: .5; margin-left: 3px; }
    18 · TRI-LANE REAL-TIME THROUGHPUT & DOWNLOAD BUTTONS
    ===================================================================== */
 .lane-track {
-  display: flex; height: 36px; border-radius: var(--r-2);
+  display: flex; height: 38px; border-radius: var(--r-2);
   overflow: hidden; border: 1px solid var(--border);
   background: var(--surface); box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-  margin-top: var(--s-5);
+  margin-top: var(--s-3);
 }
 .lane-seg {
-  display: flex; align-items: center; justify-content: center; gap: var(--s-2);
-  color: #ffffff; font-weight: 700; font-size: 12px; font-family: var(--ff-mono);
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  color: #ffffff; font-weight: 700; font-size: 11.5px; font-family: var(--ff-sans);
   transition: opacity var(--t-fast) var(--ease), flex var(--t-base) var(--ease);
   cursor: pointer; position: relative; text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  padding: 0 8px; min-width: 0;
+}
+.lane-seg span {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .lane-seg:hover { opacity: 0.92; }
 .lane-seg.seg-g { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
@@ -676,22 +681,22 @@ table.dtable thead th .arw { opacity: .5; margin-left: 3px; }
 .lane-seg.seg-r { background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); }
 
 .dl-strip {
-  display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center;
+  display: flex; flex-direction: column; gap: var(--s-2); width: 100%;
 }
 .dl-btn {
   display: inline-flex; align-items: center; gap: var(--s-3);
-  padding: 6px 14px; border-radius: var(--r-2); font-size: 12.5px; font-weight: 600;
+  padding: 6px 12px; border-radius: var(--r-2); font-size: 12px; font-weight: 600;
   color: var(--ink); background: var(--surface); border: 1px solid var(--border);
   text-decoration: none; transition: all var(--t-fast) var(--ease);
-  box-shadow: var(--shadow-1);
+  box-shadow: var(--shadow-1); width: 100%; box-sizing: border-box;
 }
 .dl-btn:hover {
-  background: var(--surface-raised); border-color: var(--border-strong);
+  background: var(--surface-raised); border-color: var(--accent);
   color: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow-2);
 }
 .dl-btn .fmt-badge {
   font-size: 10px; font-weight: 800; font-family: var(--ff-mono);
-  padding: 2px 5px; border-radius: 4px; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 4px; text-transform: uppercase; flex: none;
 }
 .dl-btn.xls .fmt-badge { background: rgba(16, 185, 129, 0.15); color: #10B981; }
 .dl-btn.pdf .fmt-badge { background: rgba(239, 68, 68, 0.15); color: #EF4444; }

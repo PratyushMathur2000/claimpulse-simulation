@@ -63,18 +63,18 @@ const App = (() => {
             [icon(r.icon), el('span', { text: r.label })]))
       ])),
       el('div.rail-foot', {}, [
-        el('div.rail-downloads', { style: { display: 'flex', gap: 'var(--s-2)', marginBottom: 'var(--s-3)' } }, [
-          el('a.dl-btn.xls', { href: 'downloads/ClaimPulse_Investor_Dashboard_R6.xlsx', download: 'ClaimPulse_Investor_Dashboard_R6.xlsx', title: 'Download Financial Bible Excel', style: { flex: '1', justifyContent: 'center', padding: '5px 4px', fontSize: '11px' } }, [
+        el('div.rail-downloads', { style: { display: 'flex', flexDirection: 'column', gap: 'var(--s-2)', marginBottom: 'var(--s-4)', width: '100%' } }, [
+          el('a.dl-btn.xls', { href: 'downloads/ClaimPulse_Investor_Dashboard_R6.xlsx', download: 'ClaimPulse_Investor_Dashboard_R6.xlsx', title: 'Download Financial Bible Excel' }, [
             el('span.fmt-badge', { text: 'XLSX' }),
-            el('span', { text: 'Model' })
+            el('span', { text: 'Excel Model (R6)' })
           ]),
-          el('a.dl-btn.pdf', { href: 'downloads/ClaimPulse_Executive_Report.pdf', download: 'ClaimPulse_Executive_Report.pdf', title: 'Download Executive Report PDF', style: { flex: '1', justifyContent: 'center', padding: '5px 4px', fontSize: '11px' } }, [
+          el('a.dl-btn.pdf', { href: 'downloads/ClaimPulse_Executive_Report.pdf', download: 'ClaimPulse_Executive_Report.pdf', title: 'Download Executive Report PDF' }, [
             el('span.fmt-badge', { text: 'PDF' }),
-            el('span', { text: 'Report' })
+            el('span', { text: 'Executive Report' })
           ]),
-          el('a.dl-btn.ppt', { href: 'downloads/ClaimPulse_SemiFinal_Deck.pptx', download: 'ClaimPulse_SemiFinal_Deck.pptx', title: 'Download Pitch Deck PPTX', style: { flex: '1', justifyContent: 'center', padding: '5px 4px', fontSize: '11px' } }, [
+          el('a.dl-btn.ppt', { href: 'downloads/ClaimPulse_SemiFinal_Deck.pptx', download: 'ClaimPulse_SemiFinal_Deck.pptx', title: 'Download Pitch Deck PPTX' }, [
             el('span.fmt-badge', { text: 'PPTX' }),
-            el('span', { text: 'Deck' })
+            el('span', { text: 'Semi-Final Deck' })
           ])
         ]),
         el('div.theme-toggle', { id: 'themeToggle', role: 'group', 'aria-label': 'Colour theme' }, [
