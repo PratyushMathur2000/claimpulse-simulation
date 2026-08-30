@@ -775,3 +775,190 @@ table.dtable thead th .arw { opacity: .5; margin-left: 3px; }
   transform: scale(1.08);
 }
 
+/* =====================================================================
+   TAT & Repurposing: Stakeholder Dual-Track & Growth Flywheel Flowchart
+   ===================================================================== */
+.stakeholder-chain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--s-4);
+  margin-top: var(--s-3);
+}
+.stakeholder-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--r-3);
+  padding: var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  transition: all var(--t-fast) var(--ease);
+}
+.stakeholder-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-2);
+}
+.stakeholder-card .card-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.badge-pill {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+  display: inline-block;
+  width: fit-content;
+}
+.badge-pill.ops { background: rgba(16, 185, 129, 0.14); color: var(--dom-ops); }
+.badge-pill.cust { background: rgba(59, 130, 246, 0.14); color: var(--dom-cust); }
+.badge-pill.cap { background: rgba(139, 92, 246, 0.14); color: var(--dom-cap); }
+.badge-pill.risk { background: rgba(239, 68, 68, 0.14); color: var(--dom-risk); }
+
+.compare-bar-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  margin: var(--s-1) 0;
+}
+.compare-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.compare-row .meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 11.5px;
+}
+.compare-row .meta-row .label { color: var(--ink-muted); font-weight: 550; }
+.compare-row .meta-row .val { font-weight: 750; font-family: var(--ff-mono); font-size: 11px; }
+.compare-row .meta-row .val.risk { color: var(--dom-risk); }
+.compare-row .meta-row .val.cap { color: var(--dom-cap); }
+
+.bar-track {
+  height: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bar-fill.risk { background: linear-gradient(90deg, #EF4444 0%, #DC2626 100%); }
+.bar-fill.cap { background: linear-gradient(90deg, #10B981 0%, #059669 100%); }
+
+.impact-pill {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  padding: var(--s-3);
+  border-radius: var(--r-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+.impact-pill.success {
+  border-left: 3px solid var(--dom-cap);
+}
+.impact-pill .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+/* Growth & Repurposing Flywheel */
+.growth-flywheel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  width: 100%;
+}
+.flywheel-flow-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--s-3);
+  position: relative;
+}
+.flywheel-step-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--r-3);
+  padding: var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  position: relative;
+  transition: all var(--t-fast) var(--ease);
+}
+.flywheel-step-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+}
+.flywheel-step-card .step-tag {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.flywheel-step-card h4 {
+  margin: 0;
+  font-size: var(--fs-base);
+  color: var(--ink-strong);
+}
+.flywheel-step-card .stat-val {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  font-family: var(--ff-mono);
+  color: var(--accent);
+}
+.flywheel-step-card .stat-val.gold { color: #D97706; }
+.flywheel-step-card .stat-val.green { color: #10B981; }
+.flywheel-step-card .stat-val.blue { color: #2563EB; }
+
+.hunt-farm-split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--s-4);
+}
+.hunt-box, .farm-box {
+  border-radius: var(--r-3);
+  padding: var(--s-4);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.hunt-box {
+  background: color-mix(in srgb, var(--d1) 5%, var(--surface-raised));
+  border-color: color-mix(in srgb, var(--d1) 30%, var(--border));
+}
+.farm-box {
+  background: color-mix(in srgb, var(--dom-cust) 5%, var(--surface-raised));
+  border-color: color-mix(in srgb, var(--dom-cust) 30%, var(--border));
+}
+.channel-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.channel-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2);
+  font-size: 11.5px;
+}
+.channel-item .name { font-weight: 600; color: var(--ink-strong); }
+.channel-item .amt { font-family: var(--ff-mono); font-weight: 750; color: var(--accent); }
+

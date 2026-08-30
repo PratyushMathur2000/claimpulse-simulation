@@ -213,29 +213,164 @@ const ViewTat = (() => {
       height: 270
     });
 
-    /* ---------------- surveyor and garage comparative metrics ---------------- */
-    Charts.gaugebar($('#tatGauge'), { rows: [
-      { label: 'Physical surveys today (55%)', value: r.surveyToday, max: r.surveyToday * 1.1,
-        display: fmt.compact(r.surveyToday) + ' visits', c1: 'var(--dom-risk)', c2: 'var(--dom-risk-2)' },
-      { label: 'Physical surveys after (10%)', value: r.surveyAfter, max: r.surveyToday * 1.1,
-        display: fmt.compact(r.surveyAfter) + ' visits', c1: 'var(--dom-cap)', c2: 'var(--dom-cap-2)' },
-      { label: 'Surveys eliminated (82% cut)', value: r.visitsAvoided, max: r.surveyToday * 1.1,
-        display: fmt.compact(r.visitsAvoided) + ' saved', c1: 'var(--dom-ops)', c2: 'var(--dom-ops-2)' },
-      { label: 'Garage bay wait, today', value: I.J06_garageToday, max: I.J06_garageToday * 1.1,
-        display: I.J06_garageToday + ' days', c1: 'var(--dom-risk)', c2: 'var(--dom-risk-2)' },
-      { label: 'Garage bay wait, after', value: I.J07_garageAfter, max: I.J06_garageToday * 1.1,
-        display: I.J07_garageAfter + ' day (3d saved)', c1: 'var(--dom-cap)', c2: 'var(--dom-cap-2)' }
-    ]});
+    /* ---------------- surveyor and garage intuitive dual-card comparison ---------------- */
+    const sgHost = $('#tatGauge');
+    if (sgHost) {
+      sgHost.innerHTML = '';
+      mount(sgHost, [
+        el('div.stakeholder-chain-grid', {}, [
+          // CARD 1: SURVEYOR NETWORK
+          el('div.stakeholder-card', {}, [
+            el('div.card-head', {}, [
+              el('span.badge-pill.ops', { text: 'STAKEHOLDER 01 · SURVEYORS' }),
+              el('h4', { style: { marginTop: 'var(--s-2)', marginBottom: '2px', fontSize: 'var(--fs-base)' }, text: 'Licensed Surveyor Network' }),
+              el('p.small.muted', { style: { margin: 0 }, text: 'IRDAI Statutory ₹50,000 Cap Alignment' })
+            ]),
+            el('div.compare-bar-group', {}, [
+              el('div.compare-row', {}, [
+                el('div.meta-row', {}, [
+                  el('span.label', { text: 'Today (Universal 55% Survey)' }),
+                  el('span.val.risk', { text: fmt.compact(r.surveyToday) + ' visits (55%)' })
+                ]),
+                el('div.bar-track', {}, [el('div.bar-fill.risk', { style: { width: '100%' } })])
+              ]),
+              el('div.compare-row', {}, [
+                el('div.meta-row', {}, [
+                  el('span.label', { text: 'On ClaimPulse (Elevated >₹50k)' }),
+                  el('span.val.cap', { text: fmt.compact(r.surveyAfter) + ' visits (10%)' })
+                ]),
+                el('div.bar-track', {}, [el('div.bar-fill.cap', { style: { width: `${(r.surveyAfter / r.surveyToday) * 100}%` } })])
+              ])
+            ]),
+            el('div.impact-pill.success', {}, [
+              el('span.icon', { text: '⚡' }),
+              el('div', {}, [
+                el('div', { style: { fontWeight: 700, color: 'var(--ink-strong)' }, text: `${fmt.compact(r.visitsAvoided)} physical surveys eliminated (−81.9%)` }),
+                el('div.xsmall.muted', { style: { marginTop: '2px' }, text: 'Below ₹50,000 corridor, live 360° video evidence suffices. Surveyors move up into complex structural damage and fraud forensics.' })
+              ])
+            ])
+          ]),
 
-    /* ---------------- marketing channel split (Hunt vs Farm) ---------------- */
-    Charts.hbar($('#tatMkt'), { items: [
-      { label: 'HUNT · 4,650 Showrooms (Dealer Kit)', value: mkt.kit * 0.4013 / 1e7, color: 'var(--d1)' },
-      { label: 'HUNT · 2,790 Used-Car Dealers (Kit)', value: mkt.kit * 0.5556 / 1e7, color: 'var(--d3)' },
-      { label: 'HUNT · 1,300 Garages (Network Kit)', value: mkt.kit * 0.0431 / 1e7, color: 'var(--d6)' },
-      { label: 'HUNT · Digital & Campaign Acquisition', value: mkt.digital / 1e7, color: 'var(--d4)' },
-      { label: 'FARM · Renewal Retention Benefit (W-27)', value: r.lines.renewal, color: 'var(--dom-cust)',
-        note: '1.5% conversion lift on policyholders with 2-day claims experience = ₹7.20 Cr incremental premium.' }
-    ], compact: true, unit: '₹ Cr' });
+          // CARD 2: GARAGE NETWORK
+          el('div.stakeholder-card', {}, [
+            el('div.card-head', {}, [
+              el('span.badge-pill.cust', { text: 'STAKEHOLDER 02 · GARAGES' }),
+              el('h4', { style: { marginTop: 'var(--s-2)', marginBottom: '2px', fontSize: 'var(--fs-base)' }, text: '1,300+ Cashless Garages' }),
+              el('p.small.muted', { style: { margin: 0 }, text: 'Bay Velocity & Key-to-Key Cycle' })
+            ]),
+            el('div.compare-bar-group', {}, [
+              el('div.compare-row', {}, [
+                el('div.meta-row', {}, [
+                  el('span.label', { text: 'Today (Surveyor Inspection Wait)' }),
+                  el('span.val.risk', { text: `${I.J06_garageToday} days bay idle` })
+                ]),
+                el('div.bar-track', {}, [el('div.bar-fill.risk', { style: { width: '100%' } })])
+              ]),
+              el('div.compare-row', {}, [
+                el('div.meta-row', {}, [
+                  el('span.label', { text: 'On ClaimPulse (Instant FNOL Match)' }),
+                  el('span.val.cap', { text: `${I.J07_garageAfter} day (−75% idle)` })
+                ]),
+                el('div.bar-track', {}, [el('div.bar-fill.cap', { style: { width: `${(I.J07_garageAfter / I.J06_garageToday) * 100}%` } })])
+              ])
+            ]),
+            el('div.impact-pill.success', {}, [
+              el('span.icon', { text: '🏎️' }),
+              el('div', {}, [
+                el('div', { style: { fontWeight: 700, color: 'var(--ink-strong)' }, text: `${r.garageDaysSaved} days saved per repair job across panel` }),
+                el('div.xsmall.muted', { style: { marginTop: '2px' }, text: 'Instant damage band delivered at first notification. A freed bay is an earning bay, making garages prioritize Bajaj policyholders.' })
+              ])
+            ])
+          ])
+        ])
+      ]);
+    }
+
+    /* ---------------- marketing & saved funds growth flywheel ---------------- */
+    const mktHost = $('#tatMkt');
+    if (mktHost) {
+      mktHost.innerHTML = '';
+      mount(mktHost, [
+        el('div.growth-flywheel', {}, [
+          // STAGE FLOW ROW
+          el('div.flywheel-flow-row', {}, [
+            el('div.flywheel-step-card', {}, [
+              el('span.step-tag', { text: 'STEP 1 · EFFICIENCY SAVINGS' }),
+              el('h4', { text: 'Repurposed Fund Pool' }),
+              el('div.stat-val.gold', { text: '₹23.82 Cr' }),
+              el('p.xsmall.muted', { text: '175.9 FTE capacity released + 74k surveys eliminated generates productive gross value.' })
+            ]),
+            el('div.flywheel-step-card', {}, [
+              el('span.step-tag', { text: 'STEP 2 · RE-INVESTMENT' }),
+              el('h4', { text: 'Self-Funded Growth' }),
+              el('div.stat-val.blue', { text: `₹${fmt.cr(Math.abs(r.lines.marketingCost))} Cr` }),
+              el('p.xsmall.muted', { text: 'Marketing budget funded directly from operational savings — zero new equity required.' })
+            ]),
+            el('div.flywheel-step-card', {}, [
+              el('span.step-tag', { text: 'STEP 3 · REVENUE RETURN' }),
+              el('h4', { text: 'Renewal Retention (Farm)' }),
+              el('div.stat-val.green', { text: `₹${fmt.cr(r.lines.renewal)} Cr` }),
+              el('p.xsmall.muted', { text: '1.5% renewal conversion lift on 2-day claim experience self-repays the entire plan.' })
+            ])
+          ]),
+
+          // HUNT & FARM DUAL ENGINE BREAKDOWN
+          el('div.hunt-farm-split', {}, [
+            // THE HUNT
+            el('div.hunt-box', {}, [
+              el('div.spread', {}, [
+                el('span.badge-pill.ops', { text: 'THE HUNT · NEW CUSTOMER ACQUISITION' }),
+                el('span.small.bold', { style: { color: 'var(--d1)' }, text: `₹${fmt.cr(mkt.totalCr)} Cr Plan` })
+              ]),
+              el('p.small.muted', { style: { margin: 0 }, text: 'Equipping dealerships and distribution partners with the 2-Day Green Lane claim settlement guarantee:' }),
+              el('div.channel-list', {}, [
+                el('div.channel-item', {}, [
+                  el('span.name', { text: '4,650 Showrooms (Dealer Kit)' }),
+                  el('span.amt', { text: `₹${fmt.cr(mkt.kit * 0.4013 / 1e7)} Cr` })
+                ]),
+                el('div.channel-item', {}, [
+                  el('span.name', { text: '2,790 Used-Car Lots (Dealer Kit)' }),
+                  el('span.amt', { text: `₹${fmt.cr(mkt.kit * 0.5556 / 1e7)} Cr` })
+                ]),
+                el('div.channel-item', {}, [
+                  el('span.name', { text: '1,300 Network Garages (Kits)' }),
+                  el('span.amt', { text: `₹${fmt.cr(mkt.kit * 0.0431 / 1e7)} Cr` })
+                ]),
+                el('div.channel-item', {}, [
+                  el('span.name', { text: 'Digital, Campaign & Media Acquisition' }),
+                  el('span.amt', { text: `₹${fmt.cr(mkt.digital / 1e7)} Cr` })
+                ])
+              ])
+            ]),
+
+            // THE FARM
+            el('div.farm-box', {}, [
+              el('div.spread', {}, [
+                el('span.badge-pill.cust', { text: 'THE FARM · RENEWAL RETENTION & LTV' }),
+                el('span.small.bold', { style: { color: 'var(--dom-cust)' }, text: `₹${fmt.cr(r.lines.renewal)} Cr GWP` })
+              ]),
+              el('p.small.muted', { style: { margin: 0 }, text: 'Repurposed adjuster capacity proactively engages claimants with high-touch recovery calls:' }),
+              el('div.stack-3', { style: { marginTop: 'var(--s-2)' } }, [
+                el('div.impact-pill.success', {}, [
+                  el('span.icon', { text: '🔄' }),
+                  el('div', {}, [
+                    el('strong', { text: '1.5% Conversion Uplift on Renewals' }),
+                    el('div.xsmall.muted', { text: 'Policyholders experiencing rapid 2-day resolution exhibit 1.5 pp higher renewal rate, generating ₹7.20 Cr incremental annual premium (W-27).' })
+                  ])
+                ]),
+                el('div.impact-pill.success', {}, [
+                  el('span.icon', { text: '📈' }),
+                  el('div', {}, [
+                    el('strong', { text: 'Compounding Portfolio Quality' }),
+                    el('div.xsmall.muted', { text: 'Retaining verified honest drivers improves the book loss ratio while reducing blended customer acquisition cost (CAC).' })
+                  ])
+                ])
+              ])
+            ])
+          ])
+        ])
+      ]);
+    }
   }
 
   return { render };
