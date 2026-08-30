@@ -194,57 +194,48 @@ const ViewTat = (() => {
       ])
     ]);
 
-    /* ---------------- TAT build-up ---------------- */
-    mount($('#tatSteps'), [UI.dtable({
-      cols: [
-        { key: 'step', label: 'Step',
-          tip: x => ({ title: x.step, rows: [['Workbook ref', x.ref], ['', x.how]] }),
-          render: x => el('span', {}, [
-            el('span', { style: { fontWeight: 620 } }, [x.step]),
-            el('div.sub', { text: x.how })
-          ])
-        },
-        { key: 'days', label: 'Days', n: true, render: x => el('span', {
-          style: { fontWeight: x.total ? 700 : 600, color: x.total ? 'var(--dom-cap)' : 'var(--ink)' },
-          text: x.days }) }
-      ],
-      rows: [
-        { step: 'Claim TAT today', ref: 'B-09', days: fmt.cr(I.B09_tatToday, 2),
-          how: 'Industry-typical 7 to 10+ days.' },
-        { step: 'Lane-weighted on the platform', ref: 'W-12', days: fmt.cr(r.tatPlatform, 2),
-          how: `${fmt.pct(I.B03_green,0)}×${I.B10_tatGreen}d + ${fmt.pct(I.B04_amber,0)}×${I.B11_tatAmber}d + ${fmt.pct(I.B05_red,0)}×${I.B12_tatRed}d` },
-        { step: '…after live-capture friction', ref: 'W-14', days: fmt.cr(r.tatFriction, 2),
-          how: `${fmt.pct(I.B20_friction, 0)} of claims drop green → amber because live capture was not possible.` },
-        { step: 'Blended across the whole book', ref: 'W-15', days: fmt.cr(r.tatBlended, 2),
-          how: `Platform TAT on ${fmt.pct(r.rollout, 0)} of the book, 9.8 days on the rest.` },
-        { step: 'TAT REDUCTION', ref: 'W-16', days: fmt.cr(r.tatCut, 2), total: true,
-          how: fmt.pct(r.tatCutPct, 1) + ' faster across the whole Motor OD book.' }
-      ]
-    })]);
+    /* ---------------- TAT build-up Waterfall ---------------- */
+    const tatDiffGreen = -(I.B09_tatToday - I.B10_tatGreen) * I.B03_green;
+    const tatDiffAmber = -(I.B09_tatToday - I.B11_tatAmber) * I.B04_amber;
+    const tatFrictionDelta = r.tatFriction - r.tatPlatform;
+    const tatBlendDelta = r.tatBlended - r.tatFriction;
 
-    /* ---------------- surveyor and garage ---------------- */
+    Charts.waterfall($('#tatSteps'), {
+      items: [
+        { label: 'Today (Baseline)', value: I.B09_tatToday, kind: 'total', note: '9.80 days baseline' },
+        { label: 'Straight-Through (60%)', value: tatDiffGreen, kind: 'sub', note: '0.5d auto-settle on Green corridor' },
+        { label: 'Assisted Review (30%)', value: tatDiffAmber, kind: 'sub', note: '3.5d on Amber pre-assembled dossier' },
+        { label: 'Live Capture Friction (8%)', value: tatFrictionDelta, kind: 'add', note: 'W-14 drop from green to amber' },
+        { label: 'Off-Platform Blend (40%)', value: tatBlendDelta, kind: 'add', note: 'Weighted across 60% addressable rollout' },
+        { label: 'BLENDED TARGET TAT', value: r.tatBlended, kind: 'total', note: `${fmt.cr(r.tatBlended, 2)} days (${fmt.pct(r.tatCutPct, 1)} cut)` }
+      ],
+      unit: 'days',
+      height: 270
+    });
+
+    /* ---------------- surveyor and garage comparative metrics ---------------- */
     Charts.gaugebar($('#tatGauge'), { rows: [
-      { label: 'Claims surveyed today', value: r.surveyToday, max: r.surveyToday * 1.1,
-        display: fmt.compact(r.surveyToday), c1: 'var(--dom-risk)', c2: 'var(--dom-risk-2)' },
-      { label: 'Surveyed on ClaimPulse', value: r.surveyAfter, max: r.surveyToday * 1.1,
-        display: fmt.compact(r.surveyAfter), c1: 'var(--dom-cap)', c2: 'var(--dom-cap-2)' },
-      { label: 'Visits avoided', value: r.visitsAvoided, max: r.surveyToday * 1.1,
-        display: fmt.compact(r.visitsAvoided), c1: 'var(--dom-ops)', c2: 'var(--dom-ops-2)' },
-      { label: 'Garage wait, today', value: I.J06_garageToday, max: I.J06_garageToday * 1.1,
+      { label: 'Physical surveys today (55%)', value: r.surveyToday, max: r.surveyToday * 1.1,
+        display: fmt.compact(r.surveyToday) + ' visits', c1: 'var(--dom-risk)', c2: 'var(--dom-risk-2)' },
+      { label: 'Physical surveys after (10%)', value: r.surveyAfter, max: r.surveyToday * 1.1,
+        display: fmt.compact(r.surveyAfter) + ' visits', c1: 'var(--dom-cap)', c2: 'var(--dom-cap-2)' },
+      { label: 'Surveys eliminated (82% cut)', value: r.visitsAvoided, max: r.surveyToday * 1.1,
+        display: fmt.compact(r.visitsAvoided) + ' saved', c1: 'var(--dom-ops)', c2: 'var(--dom-ops-2)' },
+      { label: 'Garage bay wait, today', value: I.J06_garageToday, max: I.J06_garageToday * 1.1,
         display: I.J06_garageToday + ' days', c1: 'var(--dom-risk)', c2: 'var(--dom-risk-2)' },
-      { label: 'Garage wait, after', value: I.J07_garageAfter, max: I.J06_garageToday * 1.1,
-        display: I.J07_garageAfter + ' day', c1: 'var(--dom-cap)', c2: 'var(--dom-cap-2)' }
+      { label: 'Garage bay wait, after', value: I.J07_garageAfter, max: I.J06_garageToday * 1.1,
+        display: I.J07_garageAfter + ' day (3d saved)', c1: 'var(--dom-cap)', c2: 'var(--dom-cap-2)' }
     ]});
 
-    /* ---------------- marketing channel split ---------------- */
+    /* ---------------- marketing channel split (Hunt vs Farm) ---------------- */
     Charts.hbar($('#tatMkt'), { items: [
-      { label: 'Dealer kit — showrooms', value: mkt.kit * 0.4013 / 1e7, color: 'var(--d1)' },
-      { label: 'Dealer kit — used-car', value: mkt.kit * 0.5556 / 1e7, color: 'var(--d3)' },
-      { label: 'Dealer kit — garages', value: mkt.kit * 0.0431 / 1e7, color: 'var(--d6)' },
-      { label: 'Digital, campaign, event', value: mkt.digital / 1e7, color: 'var(--d4)' },
-      { label: 'Dealer commission (excluded)', value: 0.0001, color: 'var(--border-strong)',
-        note: 'Excluded by default under B-30: Hunt & Farm treats panel commission as a pre-existing network cost, not incremental spend.' }
-    ], compact: true });
+      { label: 'HUNT · 4,650 Showrooms (Dealer Kit)', value: mkt.kit * 0.4013 / 1e7, color: 'var(--d1)' },
+      { label: 'HUNT · 2,790 Used-Car Dealers (Kit)', value: mkt.kit * 0.5556 / 1e7, color: 'var(--d3)' },
+      { label: 'HUNT · 1,300 Garages (Network Kit)', value: mkt.kit * 0.0431 / 1e7, color: 'var(--d6)' },
+      { label: 'HUNT · Digital & Campaign Acquisition', value: mkt.digital / 1e7, color: 'var(--d4)' },
+      { label: 'FARM · Renewal Retention Benefit (W-27)', value: r.lines.renewal, color: 'var(--dom-cust)',
+        note: '1.5% conversion lift on policyholders with 2-day claims experience = ₹7.20 Cr incremental premium.' }
+    ], compact: true, unit: '₹ Cr' });
   }
 
   return { render };

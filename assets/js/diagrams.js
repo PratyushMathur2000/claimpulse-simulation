@@ -248,13 +248,10 @@ const Diagrams = (() => {
         g.addEventListener('mouseleave', tip.hide);
         s.appendChild(g);
 
-        /* A white number on a mid-tone gradient sits near the 3:1 line,
-           so it carries its own dark outline rather than relying on the
-           fill underneath it. */
-        if (w > 34) g.appendChild(el('text', { x: x + w / 2, y: y0 + 48, 'font-size': 10.5,
-          'text-anchor': 'middle', fill: st.manual ? '#fff' : 'var(--ink)', 'font-weight': 700,
-          stroke: st.manual ? 'rgba(0,0,0,.34)' : 'none', 'stroke-width': st.manual ? 2.4 : 0,
-          'paint-order': 'stroke fill', text: fmt.cr(st.days, 1) }));
+        if (w > 28) g.appendChild(el('text', { x: x + w / 2, y: y0 + 48, 'font-size': 11,
+          'text-anchor': 'middle', fill: '#FFFFFF', 'font-weight': 800,
+          stroke: 'rgba(0,0,0,.65)', 'stroke-width': 2.2,
+          'paint-order': 'stroke fill', text: fmt.cr(st.days, 1) + 'd' }));
 
         /* Labels alternate above and below so short segments still read. */
         const above = i % 2 === 1;

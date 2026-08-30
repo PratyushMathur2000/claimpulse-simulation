@@ -497,23 +497,24 @@ Charts.meter = function (host, { score, floors, height = 74 }) {
 
   if (score === null || score === undefined) {
     s.appendChild(el('text', { x: W / 2, y: m.t + bh + 26, 'text-anchor': 'middle',
-      'font-size': 12, 'font-weight': 640, fill: 'var(--ink-faint)',
-      text: 'no score — the gate stopped this claim before anything was computed' }));
+      'font-size': 12, 'font-weight': 640, fill: 'var(--lane-red)',
+      text: 'GATE STOPPED · Hard contradiction stopped claim before model scoring' }));
     return s;
   }
   const px = x(score);
+  const scoreColor = score >= floors.green ? 'var(--lane-green)' : score >= floors.amber ? 'var(--lane-amber)' : 'var(--lane-red)';
   s.appendChild(el('path', { d: `M${px - 7},${m.t - 2} L${px},${m.t + 7} L${px + 7},${m.t - 2} Z`,
-    fill: 'var(--ink-strong)' }));
-  s.appendChild(el('rect', { x: px - 1.25, y: m.t, width: 2.5, height: bh, fill: 'var(--ink-strong)' }));
+    fill: scoreColor }));
+  s.appendChild(el('rect', { x: px - 1.25, y: m.t, width: 2.5, height: bh, fill: scoreColor }));
   s.appendChild(el('text', { x: px, y: m.t + bh + 24, 'text-anchor': 'middle',
-    'font-size': 15, 'font-weight': 700, fill: 'var(--ink-strong)', text: fmt.cr(score, 1) }));
+    'font-size': 15, 'font-weight': 800, fill: scoreColor, text: `Trust Score: ${fmt.cr(score, 1)} / 100` }));
   return s;
 };
 
 /* Contribution bar — five weighted parts summing to the headline */
 Charts.contrib = function (host, parts) {
   const { el, clear, fmt, tip } = CP;
-  const W = 560, H = 30;
+  const W = 560, H = 32;
   clear(host);
   const s = el('svg.chart', { viewBox: `0 0 ${W} ${H}`, width: '100%' });
   host.appendChild(s);
@@ -529,12 +530,12 @@ Charts.contrib = function (host, parts) {
       fill: COLORS[p.key], opacity: .18 }));
     g.appendChild(el('path', { d: Charts.barPath(x, 0, Math.max(w * earned, 1), H, 4,
       i === 0 ? 'left' : 'up'), fill: COLORS[p.key] }));
-    if (w > 46) g.appendChild(el('text', { x: x + w / 2, y: H / 2 + 4, 'text-anchor': 'middle',
-      'font-size': 10.5, 'font-weight': 700, fill: 'var(--ink-invert)',
+    if (w > 36) g.appendChild(el('text', { x: x + w / 2, y: H / 2 + 4.5, 'text-anchor': 'middle',
+      'font-size': 11, 'font-weight': 800, fill: '#FFFFFF',
       text: fmt.cr(p.contribution, 1) }));
     g.addEventListener('mousemove', e => tip.show(e.clientX, e.clientY, p.label,
       [['Sub-score', fmt.cr(p.raw, 1) + ' / 100'], ['Weight', p.w + '%'],
-       ['Contribution', fmt.cr(p.contribution, 1)]]));
+       ['Contribution', fmt.cr(p.contribution, 1) + ' pts']]));
     g.addEventListener('mouseleave', tip.hide);
     s.appendChild(g);
     x += w + 2;
@@ -831,6 +832,74 @@ Charts.contrib = function (host, parts) {
       s.appendChild(el('text', { x: W - 76, y: y + 14, 'font-size': 12.5, 'font-weight': 700,
         fill: 'var(--ink-strong)', text: r.display !== undefined ? r.display : fmt.cr(r.value) }));
     });
+    return s;
+  };
+
+  /* -------------------------------------------------------------------
+     DONUT · an interactive pie/donut chart with legend and center summary
+     ------------------------------------------------------------------- */
+  Charts.donut = function (host, { slices, height = 250, hole = 0.62, unit = '₹ Cr' }) {
+    const { el, clear, fmt, tip } = CP;
+    const W = 520, H = height;
+    clear(host);
+    const s = el('svg.chart', { viewBox: `0 0 ${W} ${H}`, width: '100%', preserveAspectRatio: 'xMidYMid meet' });
+    host.appendChild(s);
+
+    const cx = 135, cy = H / 2, r = Math.min(cx - 16, cy - 16), rIn = r * hole;
+    const total = slices.reduce((sum, sl) => sum + sl.value, 0);
+
+    let start = -Math.PI / 2;
+    slices.forEach((sl, i) => {
+      const angle = (sl.value / total) * 2 * Math.PI;
+      const end = start + angle;
+      
+      const x1 = cx + r * Math.cos(start), y1 = cy + r * Math.sin(start);
+      const x2 = cx + r * Math.cos(end),   y2 = cy + r * Math.sin(end);
+      const ix1 = cx + rIn * Math.cos(end),   iy1 = cy + rIn * Math.sin(end);
+      const ix2 = cx + rIn * Math.cos(start), iy2 = cy + rIn * Math.sin(start);
+
+      const large = angle > Math.PI ? 1 : 0;
+      const d = `M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} L ${ix1} ${iy1} A ${rIn} ${rIn} 0 ${large} 0 ${ix2} ${iy2} Z`;
+
+      const path = el('path.hot', {
+        d, fill: sl.color || `var(--d${(i % 8) + 1})`,
+        stroke: 'var(--surface-raised)', 'stroke-width': 1.5,
+        style: 'transition: all 0.2s ease;'
+      });
+
+      path.addEventListener('mousemove', e => tip.show(e.clientX, e.clientY, sl.label, [
+        ['Amount', `₹${fmt.cr(sl.value, 2)} Cr`],
+        ['Share', fmt.pct(sl.value / total, 1)],
+        ['Context', sl.d || 'Annual run cost component']
+      ]));
+      path.addEventListener('mouseleave', tip.hide);
+      s.appendChild(path);
+
+      start = end;
+    });
+
+    // Center text
+    s.appendChild(el('text', { x: cx, y: cy - 6, 'text-anchor': 'middle', 'font-size': 9.5, 'font-weight': 700, fill: 'var(--ink-muted)', 'letter-spacing': '.05em', text: 'TOTAL RUN' }));
+    s.appendChild(el('text', { x: cx, y: cy + 15, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 800, fill: 'var(--ink-strong)', text: '₹' + fmt.cr(total, 2) + ' Cr' }));
+
+    // Legend on the right side
+    const lx = 270, ly = 24, rowH = 34;
+    slices.forEach((sl, i) => {
+      const y = ly + i * rowH;
+      const g = el('g.hot');
+      g.appendChild(el('circle', { cx: lx, cy: y + 4, r: 5, fill: sl.color || `var(--d${(i % 8) + 1})` }));
+      g.appendChild(el('text', { x: lx + 14, y: y + 5, 'font-size': 11.5, 'font-weight': 650, fill: 'var(--ink-strong)', text: sl.label }));
+      g.appendChild(el('text', { x: lx + 14, y: y + 19, 'font-size': 10.5, fill: 'var(--ink-muted)', text: `₹${fmt.cr(sl.value, 2)} Cr · ${fmt.pct(sl.value / total, 1)}` }));
+      
+      g.addEventListener('mousemove', e => tip.show(e.clientX, e.clientY, sl.label, [
+        ['Amount', `₹${fmt.cr(sl.value, 2)} Cr`],
+        ['Share', fmt.pct(sl.value / total, 1)],
+        ['Context', sl.d || 'Annual run cost component']
+      ]));
+      g.addEventListener('mouseleave', tip.hide);
+      s.appendChild(g);
+    });
+
     return s;
   };
 })();
