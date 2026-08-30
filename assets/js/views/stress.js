@@ -159,20 +159,24 @@ const ViewStress = (() => {
       /* ---- the scenario header: state, plan, control panel trigger on right ---- */
       el('div.panel.hero.rise', { 'data-dom': 'fin' }, [
         el('div.spread.wrap', { style: { alignItems: 'flex-start', gap: 'var(--s-6)' } }, [
-          el('div', { style: { minWidth: 0, maxWidth: '54ch' } }, [
+          el('div', { style: { minWidth: 0, maxWidth: '56ch' } }, [
             el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · financial stress test' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
               'Move any assumption. ', el('span.grad-ink', { text: 'The whole model recomputes.' })
             ]),
-            el('div', { id: 'stressScen', style: { marginTop: 'var(--s-4)', minWidth: 0 } })
+            el('p.lede', { style: { marginTop: 'var(--s-4)', color: 'var(--ink-muted)' },
+              text: 'Every lever writes into the R6 financial engine, live-recomputing gross benefits, annual run costs, and investor return metrics.' })
           ]),
-          el('div.stack-3', { style: { alignItems: 'flex-end', gap: 'var(--s-3)' } }, [
-            el('button.btn.accent', { id: 'leverToggleBtn', type: 'button',
-              style: { display: 'inline-flex', alignItems: 'center', gap: 'var(--s-3)', boxShadow: '0 4px 14px -3px var(--accent-glow)' } }, [
-              el('span', { text: '⚙ Control Panel' }),
-              el('span.badge.neutral', { id: 'drCountBadge', text: 'Base Plan' })
+          el('div.stack-4', { style: { alignItems: 'flex-end', minWidth: 0 } }, [
+            el('div.row.wrap', { style: { gap: 'var(--s-3)', alignItems: 'center' } }, [
+              el('button.btn.accent', { id: 'leverToggleBtn', type: 'button',
+                style: { display: 'inline-flex', alignItems: 'center', gap: 'var(--s-3)', boxShadow: '0 4px 14px -3px var(--accent-glow)' } }, [
+                el('span', { text: '⚙ Control Panel' }),
+                el('span.badge.neutral', { id: 'drCountBadge', text: 'Base Plan' })
+              ]),
+              el('button.gbtn', { id: 'resetBtn', type: 'button', text: '↺ reset all' })
             ]),
-            el('button.gbtn', { id: 'resetBtn', type: 'button', text: '↺ reset all' })
+            el('div', { id: 'stressScen', style: { minWidth: 0 } })
           ])
         ]),
         el('div', { id: 'kpis', style: { marginTop: 'var(--s-6)' } })
