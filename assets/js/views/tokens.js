@@ -171,12 +171,15 @@ const ViewTokens = (() => {
 
     /* ---- delivery paths ---- */
     Charts.hbar($('#tkPaths'), { items: [
-      { label: 'Mid-tier, HIGH consumption', value: rsPerClaim('high'), color: 'var(--d8)' },
-      { label: 'Mid-tier, MEDIUM consumption', value: rsPerClaim('central'), color: 'var(--d1)' },
-      { label: 'Mid-tier, LOW consumption', value: rsPerClaim('low'), color: 'var(--d3)' },
-      { label: 'Economy + batching, MEDIUM', value: rsPerClaim('central', true, true), color: 'var(--d6)' }
-    ], unit: '₹ per claim', height: 230 });
-    $('#tkPaths').appendChild(UI.disc('Economic batching & cost hierarchy', `<p>The most expensive path costs ${UI.money(highCr)} a year against ${UI.money(r.runCost)} of run cost and ${UI.money(r.net)} of net benefit. The cheapest batched path costs only ${fmt.cr(rsPerClaim('central', true, true) * r.claims / 1e7, 3)} Cr/year.</p>`));
+      { label: 'Mid-tier, HIGH consumption', value: rsPerClaim('high'), color: 'var(--d8)',
+        note: 'High volume OCR, full multi-page policy reasoning & narrative settlement reasoning' },
+      { label: 'Mid-tier, MEDIUM consumption', value: rsPerClaim('central'), color: 'var(--d1)',
+        note: 'Baseline central assumption across standard 40-sec live video claims' },
+      { label: 'Mid-tier, LOW consumption', value: rsPerClaim('low'), color: 'var(--d3)',
+        note: 'Lightweight CV validation with structured JSON decision output' },
+      { label: 'Economy + batching, MEDIUM', value: rsPerClaim('central', true, true), color: 'var(--d6)',
+        note: 'Asynchronous 10-min micro-batched processing on economy model tier (50% discount)' }
+    ], unit: '₹ per claim', height: 260 });
     $('#tkPaths').appendChild(UI.disc('Economic batching & cost hierarchy', `<p>The most expensive path costs ${UI.money(highCr)} a year against ${UI.money(r.runCost)} of run cost and ${UI.money(r.net)} of net benefit. The cheapest batched path costs only ${fmt.cr(rsPerClaim('central', true, true) * r.claims / 1e7, 3)} Cr/year.</p>`));
 
     /* ---- breakeven ---- */
@@ -220,7 +223,7 @@ const ViewTokens = (() => {
         note: 'Compute only. A floor — excludes serving, engineering, infrastructure & model maintenance.' },
       { label: 'BUY · 5-year API NPV (Commodity LLM)', value: 0.2396, color: 'var(--d1)',
         note: 'With published price deflation applied across the 5-year operating window.' }
-    ], unit: '₹ Cr', height: 180 });
+    ], unit: '₹ Cr', height: 200 });
     $('#tkBvB').appendChild(UI.disc('Why volume does not decide this', '<p> Both options scale linearly with claims, so there is no crossover volume — doubling claims doubles both. What would flip it is efficiency: self-hosting wins below <strong>77 provisioned GPU-seconds per claim</strong>, and E-01 currently assumes 648. That gap, 8.4× over breakeven, is the honest reason the answer is "buy the commodity layer, self-host the moat".</p>'));
   }
 

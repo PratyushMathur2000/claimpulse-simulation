@@ -258,33 +258,46 @@ const Charts = (() => {
      rather than a pie, because comparing angles is guesswork.
      ===================================================================== */
   function hbar(host, { items, unit = '₹ Cr', colorBy = 'series', height, valueFmt, compact = false }) {
-    const vf = valueFmt || (v => fmt.cr(v));
-    const rowH = compact ? 26 : 30, W = compact ? 480 : 760;
-    const m = compact ? { t: 8, r: 58, b: 8, l: 166 } : { t: 8, r: 92, b: 8, l: 224 };
+    const vf = valueFmt || (v => (unit.includes('₹') ? (unit.includes('claim') ? '₹' + fmt.cr(v, 2) : '₹' + fmt.cr(v, 2) + ' Cr') : fmt.cr(v) + ' ' + unit));
+    const W = compact ? 520 : 780;
+    const m = compact ? { t: 10, r: 90, b: 10, l: 200 } : { t: 14, r: 140, b: 14, l: 270 };
+    const rowH = height ? Math.floor((height - m.t - m.b) / items.length) : (compact ? 34 : 46);
     const H = height || (m.t + m.b + items.length * rowH);
+    const barH = Math.max(16, Math.min(28, Math.floor(rowH * 0.54)));
     const iw = W - m.l - m.r;
     const max = niceMax(Math.max(...items.map(i => i.value)));
     const s = svg(host, W, H);
 
     items.forEach((it, i) => {
-      const y = m.t + i * rowH + (rowH - 16) / 2;
-      const w = Math.max((it.value / max) * iw, 1.5);
+      const y = m.t + i * rowH + (rowH - barH) / 2;
+      const w = Math.max((it.value / max) * iw, 2);
       const color = it.color || (colorBy === 'series' ? seriesVar(i) : 'var(--d1)');
 
-      s.appendChild(el('text', { class: 'lbl-axis', x: m.l - 12, y: y + 12,
-        'text-anchor': 'end', 'font-size': 11.5, fill: 'var(--ink-muted)',
-        text: it.label.length > (compact ? 26 : 34) ? it.label.slice(0, (compact ? 25 : 33)) + '…' : it.label }));
-
-      s.appendChild(el('path.series', {
-        d: barPath(m.l, y, w, 16, END_R, 'right'), fill: color, opacity: .92
+      // Background track
+      s.appendChild(el('rect', {
+        x: m.l, y, width: iw, height: barH, rx: 6,
+        fill: 'var(--grid-2)'
       }));
 
-      s.appendChild(el('text', { class: 'lbl-value', x: m.l + w + 10, y: y + 12,
-        'font-size': 11.5, text: vf(it.value) + (it.share !== undefined ? `  ·  ${fmt.pct(it.share, 0)}` : '') }));
+      // Label on the left
+      s.appendChild(el('text', { class: 'lbl-axis', x: m.l - 14, y: y + barH / 2 + 4.5,
+        'text-anchor': 'end', 'font-size': compact ? 11.5 : 12.5, 'font-weight': 600, fill: 'var(--ink)',
+        text: it.label }));
+
+      // Filled active bar
+      s.appendChild(el('rect.series', {
+        x: m.l, y, width: w, height: barH, rx: 6, fill: color, opacity: .95,
+        style: 'filter:drop-shadow(0 2px 7px color-mix(in srgb, ' + color + ' 45%, transparent))'
+      }));
+
+      // Value label on the right of the bar
+      s.appendChild(el('text', { class: 'lbl-value', x: m.l + w + 12, y: y + barH / 2 + 4.5,
+        'font-size': compact ? 12 : 13, 'font-weight': 800, fill: 'var(--ink-strong)',
+        text: vf(it.value) + (it.share !== undefined ? ` · ${fmt.pct(it.share, 0)}` : '') }));
 
       const hit = el('rect.hit', { x: 0, y: m.t + i * rowH, width: W, height: rowH });
       hit.addEventListener('mousemove', e => tip.show(e.clientX, e.clientY, it.label,
-        [[unit, vf(it.value)], ...(it.share !== undefined ? [['Share', fmt.pct(it.share, 1)]] : []),
+        [[unit || 'Value', vf(it.value)], ...(it.share !== undefined ? [['Share', fmt.pct(it.share, 1)]] : []),
          ...(it.note ? [['', it.note]] : [])]));
       hit.addEventListener('mouseleave', tip.hide);
       s.appendChild(hit);
