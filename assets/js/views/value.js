@@ -306,7 +306,7 @@ const ViewValue = (() => {
     Charts.cashflow($('#vlCash'), { points: pts, buildCost: r.buildTotal,
       paybackMonths: r.paybackKickoff ? r.paybackKickoff - I.B27_buildMonths : null,
       paybackLabel: r.paybackKickoff ? 'build repaid · ' + fmt.n1(r.paybackKickoff) + ' mo from kickoff' : null,
-      height: 250 });
+      height: 340 });
 
     mount($('#vlCashMetrics'), [el('div.cells.c-3', {
       style: { border: '1px solid var(--hairline)', borderRadius: 'var(--r-3)',
