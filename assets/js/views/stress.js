@@ -182,22 +182,12 @@ const ViewStress = (() => {
         el('div', { id: 'kpis', style: { marginTop: 'var(--s-6)' } })
       ]),
 
-      /* ---- the charts, 2-column layout ---- */
+      /* ---- the charts, full width ---- */
       UI.clus('Annual Operating Alpha Breakdown (Benefit Waterfall)', 'fin',
         el('button.gbtn', { id: 'tblBtn', type: 'button', text: 'table view' })),
-      el('div.g-phi', { style: { alignItems: 'stretch' } }, [
-        el('div.panel.rise', { 'data-dom': 'fin' }, [
-          el('div', { id: 'bridge' }),
-          el('div', { id: 'bridgeTable', hidden: 'hidden' })
-        ]),
-        el('div.panel.rise', { 'data-dom': 'fin', style: { display: 'flex', flexDirection: 'column', justifyContent: 'space-between' } }, [
-          el('div', {}, [
-            el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' }, text: 'P&L Value Realization Ledger' }),
-            el('div.small.muted', { style: { marginBottom: 'var(--s-4)' }, text: 'Sheet 3 Part II: Full P&L lines under active scenario levers.' }),
-            el('div', { id: 'bridgeSummary' })
-          ]),
-          el('div', { id: 'bridgeFooterCells', style: { marginTop: 'var(--s-4)' } })
-        ])
+      el('div.panel.rise', { 'data-dom': 'fin' }, [
+        el('div', { id: 'bridge' }),
+        el('div', { id: 'bridgeTable', hidden: 'hidden' })
       ]),
 
       el('div.g-phi', { style: { marginTop: 'var(--s-6)', alignItems: 'stretch' } }, [
@@ -476,33 +466,8 @@ const ViewStress = (() => {
     Charts.waterfall(CP.$('#bridge'), {
       items: seq.map(i => i.label === 'NET ANNUAL BENEFIT' ? { ...i, kind:'total' } : i),
       unit: '₹ Cr',
-      width: 520,
-      height: 290
+      height: 320
     });
-
-    mount(CP.$('#bridgeSummary'), [UI.dtable({
-      cols: [
-        { key: 'l', label: 'Benefit Driver' },
-        { key: 'v', label: 'Value (₹ Cr)', n: true, render: x => el('span', {
-          style: { fontWeight: 700, color: x.kind === 'sub' ? 'var(--neg)' : x.kind === 'total' ? 'var(--dom-fin)' : 'var(--dom-cap)' },
-          text: (x.kind === 'total' ? '' : (x.value >= 0 ? '+₹' : '−₹')) + fmt.cr(Math.abs(x.value)) + (x.kind === 'total' ? ' Cr' : '') }) }
-      ],
-      rows: [
-        { l: 'Fraud Avoided (Graph & Gate)', value: L.fraudGraph + L.fraudGate, kind: 'add' },
-        { l: 'Synthetic Media Defense', value: L.synthetic, kind: 'add' },
-        { l: 'Released Capacity (Redeployed)', value: L.capacity, kind: 'add' },
-        { l: 'Renewal Retention (BFDL)', value: L.renewal, kind: 'add' },
-        { l: 'Live Capture Friction & Mktg', value: L.frictionCost + L.marketingCost, kind: 'sub' },
-        { l: 'Annual Infrastructure Run Cost', value: -r.runCost, kind: 'sub' },
-        { l: 'Net Annual Operating Alpha', value: r.net, kind: 'total' }
-      ]
-    })]);
-
-    mount(CP.$('#bridgeFooterCells'), [el('div.cells.c-2', {
-      style: { border: '1px solid var(--hairline)', borderRadius: 'var(--r-3)' } }, [
-      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin', size: 'sm', k: 'Net P&L Alpha', ref: 'W-35', v: fmt.cr(r.net), unit: '₹ Cr' })]),
-      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap', size: 'sm', k: 'Combined Ratio', ref: 'W-43', v: fmt.cr(r.combinedPP), unit: 'pp' })])
-    ])]);
 
     /* table view — the relief rule, and the accessible fallback */
     mount(CP.$('#bridgeTable'), [el('div.tbl-wrap', {}, [
