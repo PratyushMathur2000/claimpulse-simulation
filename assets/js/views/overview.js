@@ -128,14 +128,26 @@ const ViewOverview = (() => {
       ]),
 
       /* ================= WHO BOOKS IT ================= */
-      UI.clus('Who books each rupee (₹ Cr)', 'fin'),
-      el('div.panel.rise', { 'data-dom': 'fin' }, [
-        el('div.spread.wrap', { style: { marginBottom: 'var(--s-5)' } }, [
-          el('div.small.muted', { text: 'Sheet 3 Part I. The split reconciles to net annual benefit with zero mathematical leakage.' }),
-          UI.dchip('W-60 = 0 (Zero Leakage Proof)', 'fin')
+      UI.clus('Inter-Entity P&L Reconciliation & Stakeholder Attribution', 'fin'),
+      el('div.g-phi', { style: { alignItems: 'stretch' } }, [
+        el('div.panel.rise', { 'data-dom': 'fin' }, [
+          el('div.spread.wrap', { style: { marginBottom: 'var(--s-4)' } }, [
+            el('div', {}, [
+              el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' }, text: 'Stakeholder Benefit Waterfall (₹ Cr)' }),
+              el('div.small.muted', { style: { marginTop: 'var(--s-2)' }, text: 'Net contribution by Bajaj underwriting, operations, and distribution.' })
+            ]),
+            UI.dchip('W-60 = 0', 'fin')
+          ]),
+          el('div', { id: 'ovStake' })
         ]),
-        el('div', { id: 'ovStake' }),
-        el('div', { id: 'ovRecon', style: { marginTop: 'var(--s-5)' } })
+        el('div.panel.rise', { 'data-dom': 'fin', style: { display: 'flex', flexDirection: 'column', justifyContent: 'space-between' } }, [
+          el('div', {}, [
+            el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' }, text: 'Inter-Entity Value Realization Ledger' }),
+            el('div.small.muted', { style: { marginBottom: 'var(--s-4)' }, text: 'Sheet 3 Part I: Formal balance-sheet attribution across operating entities.' }),
+            el('div', { id: 'ovStakeTbl' })
+          ]),
+          el('div', { id: 'ovRecon', style: { marginTop: 'var(--s-4)' } })
+        ])
       ]),
 
       el('div', { style: { marginTop: 'var(--s-6)' } }, [
@@ -201,22 +213,42 @@ const ViewOverview = (() => {
 
     /* A waterfall, not four bars — because one of the four stakeholder
        lines is negative, and a bar chart cannot say that honestly. */
-    Charts.waterfall($('#ovStake'), { height: 320, unit: '₹ Cr', items: [
-      { label: 'BGeneral Underwriting', value: r.stake.underwriting, kind: 'add',
-        note: 'All three fraud lines (Loss Ratio benefit). W-57.' },
-      { label: 'BGeneral Claims Ops', value: r.stake.claimsOps, kind: 'add',
-        note: 'Released capacity, less friction cost. W-56.' },
-      { label: 'BFDL Distribution', value: r.stake.bfdl, kind: r.stake.bfdl < 0 ? 'sub' : 'add',
-        note: 'Renewal retention less marketing investment. W-58.' },
-      { label: 'Platform Run Cost', value: -Math.abs(r.stake.runCost), kind: 'sub',
-        note: 'Software infrastructure & GPU compute overhead. W-59.' },
-      { label: 'NET ANNUAL BENEFIT', value: r.net, kind: 'total', note: 'W-35 Steady state.' }
-    ]});
+    Charts.waterfall($('#ovStake'), {
+      width: 520,
+      height: 310,
+      unit: '₹ Cr',
+      items: [
+        { label: 'BGeneral Underwriting', value: r.stake.underwriting, kind: 'add',
+          note: 'All three fraud lines (Loss Ratio benefit). W-57.' },
+        { label: 'BGeneral Claims Ops', value: r.stake.claimsOps, kind: 'add',
+          note: 'Released capacity, less friction cost. W-56.' },
+        { label: 'BFDL Distribution', value: r.stake.bfdl, kind: r.stake.bfdl < 0 ? 'sub' : 'add',
+          note: 'Renewal retention less marketing investment. W-58.' },
+        { label: 'Platform Run Cost', value: -Math.abs(r.stake.runCost), kind: 'sub',
+          note: 'Software infrastructure & GPU compute overhead. W-59.' },
+        { label: 'NET ANNUAL BENEFIT', value: r.net, kind: 'total', note: 'W-35 Steady state.' }
+      ]
+    });
 
-    mount($('#ovRecon'), [UI.disc('Why is W-60 exactly ₹0.000 Cr?',
+    mount($('#ovStakeTbl'), [UI.dtable({
+      cols: [
+        { key: 'w', label: 'Operating Entity', tip: x => ({ title: x.w, rows: [['Workbook ref', x.r], ['Contribution', fmt.cr(x.v) + ' ₹ Cr']] }) },
+        { key: 'v', label: 'Impact (₹ Cr)', n: true, render: x => el('span', {
+          style: { fontWeight: 700, color: x.v < 0 ? 'var(--neg)' : 'var(--dom-cap)' },
+          text: (x.v > 0 ? '+₹' : '−₹') + fmt.cr(Math.abs(x.v)) + ' Cr' }) }
+      ],
+      rows: [
+        { w: 'BGeneral Underwriting (Loss Ratio)', v: r.stake.underwriting, r: 'W-57' },
+        { w: 'BGeneral Claims Ops (Productive Capacity)', v: r.stake.claimsOps, r: 'W-56' },
+        { w: 'BFDL Distribution (Renewal Alpha)', v: r.stake.bfdl, r: 'W-58' },
+        { w: 'Platform Run Cost (Software & Compute)', v: r.stake.runCost, r: 'W-59' }
+      ]
+    })]);
+
+    mount($('#ovRecon'), [UI.disc('Mathematical Zero-Sum Residual Proof (W-60 = ₹0.000 Cr)',
       `<p><strong>${UI.money(r.stake.underwriting)}</strong> (Underwriting) + <strong>${UI.money(r.stake.claimsOps)}</strong> (Operations) + <strong>${UI.money(r.stake.bfdl)}</strong> (Distribution) − <strong>${UI.money(Math.abs(r.stake.runCost))}</strong> (Run Cost) = <strong>${UI.money(r.net)}</strong> (Net P&amp;L Benefit).</p>
-       <p>The check at <strong>W-60 returns ₹0.000 Cr</strong>. This is the mathematical zero-sum residual proof demonstrating that 100% of value generated across stakeholders reconciles back to the corporate bottom line without leakage or double-counting.</p>`,
-      { chip: 'W-60 = 0' })]);
+       <p>The reconciliation audit check at <strong>W-60 returns exactly ₹0.000 Cr</strong>, proving 100% mathematical zero-leakage attribution across corporate entities.</p>`,
+      { chip: 'W-60 = 0 (Zero Leakage)' })]);
   }
 
   return { render };
