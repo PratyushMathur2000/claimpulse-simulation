@@ -79,34 +79,46 @@ const ViewTat = (() => {
         el('div', { id: 'tatChainCells', style: { marginTop: 'var(--s-6)' } })
       ]),
 
-      /* ================= THE ARITHMETIC ================= */
-      el('div.g-phi', { style: { marginTop: 'var(--s-6)', alignItems: 'stretch' } }, [
-        el('div.panel.rise', { 'data-dom': 'ops' }, [
-          el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
-            text: 'Turnaround Latency Compression Bridge (Waterfall)' }),
-          el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-            text: 'Lane-weighted cycle time build-up reflecting conservative live-capture friction and portfolio rollout blending.' }),
-          el('div', { id: 'tatSteps' })
-        ]),
-        el('div.panel.rise', { 'data-dom': 'cust' }, [
-          el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
-            text: 'Ecosystem Stakeholder Alignment: Garages & Licensed Surveyors' }),
-          el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-            text: 'Synchronizing cashless repair velocity with IRDAI statutory surveyor mandates (>₹50,000 corridor).' }),
-          el('div', { id: 'tatGauge' }),
-          el('div.cells.c-2', { style: { marginTop: 'var(--s-5)',
-            border: '1px solid var(--hairline)', borderRadius: 'var(--r-3)' } }, [
-            el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap', size: 'sm',
-              k: 'Days back to the network', ref: 'W-73', v: String(r.garageDaysSaved), unit: 'per job',
-              d: 'A bay held for an unapproved job earns nothing. Three days a job, across the whole panel.' })]),
-            el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'ops', size: 'sm',
-              k: 'Surveyors move up, not out', v: fmt.pct(r.visitsAvoided / r.surveyToday, 0), unit: 'of visits',
-              d: 'The visits avoided are all below ₹50,000, where the evidence already resolved the claim. Above the corridor a registered surveyor is still required.' })])
+      /* ================= TURNAROUND LATENCY BRIDGE ================= */
+      UI.clus('Turnaround Latency Compression Bridge', 'ops'),
+      el('div.panel.rise', { 'data-dom': 'ops' }, [
+        el('div.spread.wrap', { style: { marginBottom: 'var(--s-4)', paddingBottom: 'var(--s-3)', borderBottom: '1px solid var(--hairline)' } }, [
+          el('div', {}, [
+            el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' },
+              text: 'Turnaround Latency Compression Bridge (9.80 Days → 5.46 Days Blended Target)' }),
+            el('div.small.muted', { style: { marginTop: 'var(--s-1)' },
+              text: 'Lane-weighted cycle time build-up reflecting conservative live-capture friction (W-14) and 60% addressable rollout blending.' })
           ]),
-          el('div', { style: { marginTop: 'var(--s-5)' } }, [
-            UI.disc('The mechanism, not the wish',
-              '<p>The repair cost engine returns an indicative band at first notification rather than after a physical inspection. That is why the garage waits one day instead of four — a bay freed is a bay earning.</p>')
-          ])
+          UI.dchip('44.3% Blended TAT Cut', 'ops')
+        ]),
+        el('div', { id: 'tatSteps' })
+      ]),
+
+      /* ================= ECOSYSTEM STAKEHOLDERS ================= */
+      UI.clus('Ecosystem Stakeholder Alignment: Garages & Licensed Surveyors', 'cust'),
+      el('div.panel.rise', { 'data-dom': 'cust' }, [
+        el('div.spread.wrap', { style: { marginBottom: 'var(--s-5)' } }, [
+          el('div', {}, [
+            el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' },
+              text: 'Harmonizing Repair Bay Velocity with Statutory Surveyor Mandates' }),
+            el('div.small.muted', { style: { marginTop: 'var(--s-1)' },
+              text: 'Instant repair cost bands free garage bays 3 days faster; licensed surveyors elevate to complex forensic cases (>₹50,000 corridor).' })
+          ]),
+          UI.dchip('Statutory Alignment', 'cap')
+        ]),
+        el('div', { id: 'tatGauge' }),
+        el('div.cells.c-2', { style: { marginTop: 'var(--s-6)',
+          border: '1px solid var(--hairline)', borderRadius: 'var(--r-3)' } }, [
+          el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap', size: 'sm',
+            k: 'Days back to the network', ref: 'W-73', v: String(r.garageDaysSaved), unit: 'per job',
+            d: 'A bay held for an unapproved job earns nothing. Three days a job, across the whole panel.' })]),
+          el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'ops', size: 'sm',
+            k: 'Surveyors move up, not out', v: fmt.pct(r.visitsAvoided / r.surveyToday, 0), unit: 'of visits',
+            d: 'The visits avoided are all below ₹50,000, where the evidence already resolved the claim. Above the corridor a registered surveyor is still required.' })])
+        ]),
+        el('div', { style: { marginTop: 'var(--s-5)' } }, [
+          UI.disc('The mechanism, not the wish',
+            '<p>The repair cost engine returns an indicative band at first notification rather than after a physical inspection. That is why the garage waits one day instead of four — a bay freed is a bay earning.</p>')
         ])
       ]),
 
@@ -210,7 +222,10 @@ const ViewTat = (() => {
         { label: 'BLENDED TARGET TAT', value: r.tatBlended, kind: 'total', note: `${fmt.cr(r.tatBlended, 2)} days (${fmt.pct(r.tatCutPct, 1)} cut)` }
       ],
       unit: 'days',
-      height: 270
+      width: 900,
+      height: 220,
+      barWidth: 46,
+      margin: { t: 26, r: 24, b: 54, l: 48 }
     });
 
     /* ---------------- surveyor and garage intuitive dual-card comparison ---------------- */

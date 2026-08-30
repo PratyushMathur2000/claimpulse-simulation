@@ -86,9 +86,9 @@ const Charts = (() => {
      slots that sit under 3:1 never have to carry meaning by colour alone.
      items: [{ label, value, kind: 'add'|'sub'|'total', note }]
      ===================================================================== */
-  function waterfall(host, { items, unit = '₹ Cr', height = 340 }) {
-    const W = 900, H = height;
-    const m = { t: 30, r: 18, b: 74, l: 52 };
+  function waterfall(host, { items, unit = '₹ Cr', height = 340, width = 900, barWidth, margin }) {
+    const W = width, H = height;
+    const m = margin || { t: 30, r: 18, b: 74, l: 52 };
     const iw = W - m.l - m.r, ih = H - m.t - m.b;
 
     // running extent
@@ -102,7 +102,7 @@ const Charts = (() => {
     });
     const top = niceMax(hi), bot = lo < 0 ? -niceMax(-lo) : 0;
     const y = v => m.t + ih - ((v - bot) / (top - bot)) * ih;
-    const bw = Math.min(62, (iw / items.length) - 14);
+    const bw = barWidth || Math.min(62, (iw / items.length) - 14);
     const step = iw / items.length;
 
     const s = svg(host, W, H);
