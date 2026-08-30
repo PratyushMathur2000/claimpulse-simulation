@@ -14,7 +14,7 @@ const UI = (() => {
       el('div.spread.wrap', {}, [
         el('div', {}, [
           typeof title === 'string' ? el('h1', { text: title }) : title,
-          lede ? el('p.lede', { style: { marginTop: 'var(--s-4)' }, text: lede }) : null
+          lede ? (typeof lede === 'string' ? el('p.lede', { style: { marginTop: 'var(--s-4)' }, text: lede }) : lede) : null
         ]),
         aside || null
       ])
