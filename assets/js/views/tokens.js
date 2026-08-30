@@ -31,13 +31,13 @@ const ViewTokens = (() => {
       basis: 'DERIVED. 40 seconds is E-01\'s own stated derivation. Video is 263 tokens/second (M-21, vendor-published).' },
     { name: 'Photo tiles',                  low: 4,    central: 8,    high: 20,
       unit: 'tiles', tok: v => v * RATES.image,
-      basis: 'Rate DERIVED at 258 tokens per 768×768 tile (M-22). Count per claim ASSUMED.' },
+      basis: 'Rate DERIVED at 258 tokens per 768×768 tile (M-22). Count per claim ASSUMED' },
     { name: 'Policy wording tokens',        low: 0,    central: 8000, high: 40000,
       unit: 'tok', tok: v => v,
-      basis: 'ASSUMED. Zero if wordings are parsed offline once per product; 40,000 if a full wording is sent raw on every claim.' },
+      basis: 'ASSUMED. Zero if wordings are parsed offline once per product; 40,000 if a full wording is sent raw on every claim' },
     { name: 'Claim text and documents',     low: 300,  central: 1500, high: 4000,
       unit: 'tok', tok: v => v,
-      basis: 'ASSUMED. 300 is a structured intake form; 4,000 is free text plus attachments.' },
+      basis: 'ASSUMED. 300 is a structured intake form; 4,000 is free text plus attachments' },
     { name: 'System prompt',                low: 1000, central: 3000, high: 8000,
       unit: 'tok', tok: v => v,
       basis: 'ASSUMED. Cacheable at roughly 90% off (M-20).' }
@@ -80,13 +80,13 @@ const ViewTokens = (() => {
     };
 
     mount(host, [
-      UI.head('Simulation · Bounded Unit Economics & AI Inference Risk',
+      UI.head('AI Inference Costs and Unit Economics',
         el('h1', {}, ['Bounded Unit Economics: ',
-          el('span.grad-ink', { text: 'Stress-testing inference parameters across an 18× range leaves payback unchanged.' })]),
+          el('span.grad-ink', { text: 'Stress-testing inference parameters across an 18× range leaves payback unchanged' })]),
         el('div.stack-2', { style: { marginTop: 'var(--s-3)' } }, [
           el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-2)' } }, [
             el('span', { style: { color: 'var(--accent)', fontWeight: 800 }, text: '•' }),
-            el('span.small', { html: '<strong>AI Inference Scalability:</strong> Token consumption scales linearly with claim volume, strictly governed by deterministic pre-filters prior to any model invocation.' })
+            el('span.small', { html: '<strong>AI Inference Scalability:</strong> Token consumption scales linearly with claim volume, strictly governed by deterministic pre-filters prior to any model invocation' })
           ]),
           el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-2)' } }, [
             el('span', { style: { color: 'var(--accent)', fontWeight: 800 }, text: '•' }),
@@ -94,52 +94,52 @@ const ViewTokens = (() => {
           ]),
           el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-2)' } }, [
             el('span', { style: { color: 'var(--accent)', fontWeight: 800 }, text: '•' }),
-            el('span.small', { html: '<strong>Architectural Moat Strategy:</strong> Self-hosting the proprietary fraud-graph and zero-trust capture moat while consuming commodity language APIs yields <strong>₹2.70 Cr</strong> in 5-year NPV savings.' })
+            el('span.small', { html: '<strong>Architectural Moat Strategy:</strong> Self-hosting the proprietary fraud-graph and zero-trust capture moat while consuming commodity language APIs yields <strong>₹2.70 Cr</strong> in 5-year NPV savings' })
           ])
         ])),
 
       el('div.g-4', { style: { marginBottom: 'var(--s-7)' } }, [
         UI.tile({ hero: true, accent: true, k: 'Inference, medium case', ref: 'Sheet 12 Part D',
           v: '₹' + fmt.cr(central), unit: 'per claim',
-          d: `${fmt.n(totalIn('central'))} input tokens on the blended mid-tier rate card.` }),
+          d: `${fmt.n(totalIn('central'))} input tokens on the blended mid-tier rate card` }),
         UI.tile({ hero: true, k: 'Annual inference cost', ref: '',
           v: fmt.cr(centralCr), unit: '₹ Cr',
-          d: `Against ${UI.money(r.runCost)} of total annual run cost.` }),
+          d: `Against ${UI.money(r.runCost)} of total annual run cost` }),
         UI.tile({ hero: true, k: 'Share of run cost', ref: '',
           v: fmt.pct(centralCr / r.runCost, 1), unit: '',
-          d: 'Even the high consumption case stays under a tenth of run cost.' }),
+          d: 'Even the high consumption case stays under a tenth of run cost' }),
         UI.tile({ hero: true, warm: true, k: 'Payback swing, low → high', ref: '',
           v: fmt.cr(Math.abs(payback('high') - payback('low')), 3), unit: 'months',
-          d: 'Across an 18× token range. Proves complete cost resilience.' })
+          d: 'Across an 18× token range. Proves complete cost resilience' })
       ]),
 
-      UI.card('Parametric Unit Economics & Inference Bounds Table', 'Vendor-published enterprise rate cards (Sheet 1 Table M) stress-tested across low, medium, and high token consumption scenarios.', [
+      UI.card('AI Cost Assumptions Table', 'Stress-testing vendor rate cards across low, medium, and high usage scenarios', [
         el('div', { id: 'tkTable' })
       ]),
 
       el('div.stack-6', { style: { marginTop: 'var(--s-6)' } }, [
-        UI.card('Unit Cost Sensitivity Across Four Model Delivery Tiers', 'Comparative inference unit economics: Evaluates frontier vs. economy models with asynchronous micro-batching discounts.', [
+        UI.card('Cost per Claim by AI Model Tier', 'Comparing frontier and economy models with batching discounts', [
           el('div', { id: 'tkPaths' })
         ]),
-        UI.card('Inference Cost Breakeven & Tolerance Threshold Analysis', 'Sheet 12 Part D: Quantifies the extreme inference workload required to consume incremental shares of net annual benefit.', [
+        UI.card('AI Cost Breakeven Analysis', 'Workloads required to consume a given share of the annual benefit', [
           el('div', { id: 'tkBreak' })
         ])
       ]),
 
-      UI.card('Nine Architectural Design Decisions Suppressing Compute Overhead', 'Deterministic-first heuristics and edge caching that minimize GPU compute overhead. The most cost-efficient token is the one never evaluated.', [
+      UI.card('9 Ways We Suppress AI Compute Costs', 'Deterministic heuristics and edge caching that minimize GPU compute overhead', [
         el('div', { id: 'tkDecisions' })
       ]),
 
-      UI.card('Build vs. Buy Capital Allocation: GenAI Layer (5-Year NPV Analysis)', 'Sheet 13: Strict 5-year NPV comparison evaluating self-hosted GPU clusters vs. enterprise cloud APIs for commodity language reasoning.', [
+      UI.card('Build vs Buy: The AI Layer', '5-year NPV comparison of self-hosting vs buying commodity language APIs', [
         el('div', { id: 'tkBvB' }),
         el('div', { id: 'tkBvBKPIs', style: { marginTop: 'var(--s-5)' } })
       ]),
 
       el('div', { style: { marginTop: 'var(--s-6)' } }, [
         UI.limits([
-          '<strong>Per-claim token volumes are estimated, not measured.</strong> The rate card is vendor-verified; the volumes are not. `countTokens` instrumentation over a pilot sample collapses Part D to a single column — that is pilot gate 2.',
-          '<strong>The in-house GPU line and the API line are not like-for-like.</strong> The in-house row prices the vision workload; the API rows price the text-and-reasoning workload. Sheet 13 narrows the comparison properly.',
-          '<strong>We self-host the moat and buy the commodity language models.</strong> DPDP and data residency require self-hosting the Capture Integrity Gate and fraud graph. Buying document/policy processing saves ₹2.70 Cr over five years.'
+          '<strong>Per-claim token volumes are estimated, not measured.</strong> The rate card is vendor-verified; the volumes are not. `countTokens` instrumentation over a pilot sample collapses Part D to a single column — that is pilot gate 2',
+          '<strong>The in-house GPU line and the API line are not like-for-like.</strong> The in-house row prices the vision workload; the API rows price the text-and-reasoning workload. Sheet 13 narrows the comparison properly',
+          '<strong>We self-host the moat and buy the commodity language models.</strong> DPDP and data residency require self-hosting the Capture Integrity Gate and fraud graph. Buying document/policy processing saves ₹2.70 Cr over five years'
         ])
       ])
     ]);
@@ -155,7 +155,7 @@ const ViewTokens = (() => {
       ]).concat([
         [{ node: el('span', { style: { fontWeight: 580 }, text: 'Output tokens' }) },
          fmt.n(OUTPUT.low), fmt.n(OUTPUT.central), fmt.n(OUTPUT.high),
-         { node: el('span.small.muted', { text: 'ASSUMED. 300 is a structured JSON decision; 4,000 is a full prose explanation.' }) }],
+         { node: el('span.small.muted', { text: 'ASSUMED. 300 is a structured JSON decision; 4,000 is a full prose explanation' }) }],
         { total: true, cells: ['TOTAL INPUT TOKENS', fmt.n(totalIn('low')), fmt.n(totalIn('central')),
           fmt.n(totalIn('high')), fmt.x(totalIn('high') / totalIn('low'), 1) + ' span between low and high'] }
       ]))]);
@@ -211,22 +211,22 @@ const ViewTokens = (() => {
     /* ---- build vs buy ---- */
     Charts.hbar($('#tkBvB'), { items: [
       { label: 'BUILD · 5-year compute NPV (Floor)', value: 2.938, color: 'var(--d8)',
-        note: 'Compute only. A floor — excludes serving, engineering, infrastructure & model maintenance.' },
+        note: 'Compute only. A floor — excludes serving, engineering, infrastructure & model maintenance' },
       { label: 'BUY · 5-year API NPV (Commodity LLM)', value: 0.2396, color: 'var(--d1)',
-        note: 'With published price deflation applied across the 5-year operating window.' }
+        note: 'With published price deflation applied across the 5-year operating window' }
     ], unit: '₹ Cr', height: 160 });
     mount($('#tkBvBKPIs'), [el('div.cells.c-3', {
       style: { border: '1px solid var(--hairline)', borderRadius: 'var(--r-3)',
                background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin', size: 'sm',
         k: '5-Year NPV, BUY', ref: 'T-07', v: '₹' + fmt.cr(0.2396) + ' Cr',
-        d: 'Total incremental cost of the API route, with published price deflation applied.' })]),
+        d: 'Total incremental cost of the API route, with published price deflation applied' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'risk', size: 'sm',
         k: '5-Year NPV, BUILD', ref: 'T-08', v: '₹' + fmt.cr(2.938) + ' Cr',
-        d: 'Compute only. Excludes serving, engineering and upgrades — a conservative floor.' })]),
+        d: 'Compute only. Excludes serving, engineering and upgrades — a conservative floor' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap', size: 'sm',
         k: 'Advantage to BUY', ref: 'T-09', v: '₹' + fmt.cr(2.698) + ' Cr',
-        d: 'Self-hosting loses on compute alone, before a single engineer is hired.' })])
+        d: 'Self-hosting loses on compute alone, before a single engineer is hired' })])
     ])]);
     $('#tkBvB').appendChild(UI.disc('Why volume does not decide this', '<p> Both options scale linearly with claims, so there is no crossover volume — doubling claims doubles both. What would flip it is efficiency: self-hosting wins below <strong>77 provisioned GPU-seconds per claim</strong>, and E-01 currently assumes 648. That gap, 8.4× over breakeven, is the honest reason the answer is "buy the commodity layer, self-host the moat".</p>'));
   }

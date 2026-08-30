@@ -30,7 +30,7 @@ const ViewInspector = (() => {
         el('div', {}, [
           el('p.eyebrow', { style: { margin: 0 }, text: 'Forensic Dossier · Explainable AI (XAI) & Audit Ledger' }),
           el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-            'Forensic Claim Dossier: ', el('span.grad-ink', { text: 'Evidentiary decomposition & trust audit.' })
+            'Forensic Claim Dossier: ', el('span.grad-ink', { text: 'Evidentiary decomposition & trust audit' })
           ])
         ]),
         el('a.gbtn', { href: '#/command', text: '← the command centre' })
@@ -106,7 +106,7 @@ const ViewInspector = (() => {
       rows,
       selected: c => c.claim.id === sel,
       onRow: c => { sel = c.claim.id; drawList(); drawRecord(); },
-      empty: 'No claim matches that.'
+      empty: 'No claim matches that'
     })]);
   }
 
@@ -142,15 +142,15 @@ const ViewInspector = (() => {
           el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin', size: 'sm',
             k: R.skipped ? 'Claimed' : 'Payable',
             v: '₹' + fmt.n(R.skipped ? R.money.claimed : R.money.payable),
-            d: R.skipped ? 'Nothing is paid until the investigation closes.' : 'After the band, depreciation and the deductible.' })]),
+            d: R.skipped ? 'Nothing is paid until the investigation closes.' : 'After the band, depreciation and the deductible' })]),
           el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'ops', size: 'sm',
             k: 'Turnaround', v: fmt.cr(R.tat, 1), unit: 'days',
             delta: '▼ ' + fmt.cr(R.daysSaved, 1) + ' d', deltaGood: true,
-            d: 'Against 9.8 days on the legacy process.' })]),
+            d: 'Against 9.8 days on the legacy process' })]),
           el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap', size: 'sm',
             k: 'Manual touches', v: String(R.touches),
             delta: '▼ ' + fmt.cr(R.touchesSaved, 1), deltaGood: true,
-            d: 'Against seven on the same claim today.' })]),
+            d: 'Against seven on the same claim today' })]),
           el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cust', size: 'sm',
             k: 'Surveyor', v: R.surveyor.required ? 'yes' : 'no',
             d: R.surveyor.basis })])
@@ -174,7 +174,7 @@ const ViewInspector = (() => {
       /* ---- the machinery, collapsed ---- */
       el('div.panel', { 'data-dom': 'ops' }, [
         el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-          text: 'Technical Evidentiary Ledger: Zero-Trust EXIF, Document OCR, CV Localization, and Syndicate Graph Signals.' }),
+          text: 'Technical Evidentiary Ledger: Zero-Trust EXIF, Document OCR, CV Localization, and Syndicate Graph Signals' }),
         el('div', { id: 'insTech' })
       ]),
 
@@ -182,7 +182,7 @@ const ViewInspector = (() => {
       R.skipped ? null : el('div.panel', { 'data-dom': 'fin' }, [
         el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' }, text: 'Adjudicated Settlement & Loss Calculation Matrix' }),
         el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-          text: 'Assessed against the band the repair engine returned at first notification.' }),
+          text: 'Assessed against the band the repair engine returned at first notification' }),
         el('div', { id: 'insSettle' })
       ])
     ]);
@@ -257,7 +257,7 @@ const ViewInspector = (() => {
 
     if (R.skipped) {
       secs.push(el('div.small.muted', { style: { marginTop: 'var(--s-5)' },
-        text: 'Engines 01 to 05 were never executed. There is no document parse, no damage assessment, no fraud score, no repair band and no policy retrieval to show, because none of them ran. That is the architecture working, not a gap in the record.' }));
+        text: 'Engines 01 to 05 were never executed. There is no document parse, no damage assessment, no fraud score, no repair band and no policy retrieval to show, because none of them ran. That is the architecture working, not a gap in the record' }));
       mount(host, secs);
       return;
     }

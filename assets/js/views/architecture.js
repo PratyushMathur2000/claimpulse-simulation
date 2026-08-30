@@ -62,7 +62,7 @@ const ViewArchitecture = (() => {
           el('div', { style: { minWidth: 0 } }, [
             el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · Zero-Trust Multi-Modal Decision Engine' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-              'Zero-Trust Forensic Pipeline: ', el('span.grad-ink', { text: 'Watch parallel neural engines adjudicate live claims.' })
+              'Zero-Trust Forensic Pipeline: ', el('span.grad-ink', { text: 'Watch parallel neural engines adjudicate live claims' })
             ]),
             el('div.row', { id: 'lcStatus', style: { marginTop: 'var(--s-4)' } })
           ]),
@@ -92,7 +92,7 @@ const ViewArchitecture = (() => {
           el('div', {}, [
             el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' }, text: 'Nine-Layer End-to-End Enterprise Architecture' }),
             el('div.small.muted', { style: { marginTop: 'var(--s-2)' },
-              text: 'Hardware-attested intake, deterministic Gate 00, five parallel inference engines, Bayesian trust fusion, and tri-lane triage.' })
+              text: 'Hardware-attested intake, deterministic Gate 00, five parallel inference engines, Bayesian trust fusion, and tri-lane triage' })
           ]),
           el('div.row.wrap', {}, [
             UI.dchip('Deterministic First', 'cap'), UI.dchip('Targeted GenAI', 'ai')
@@ -104,7 +104,7 @@ const ViewArchitecture = (() => {
       ]),
 
       /* ============ THE DECISION ENVIRONMENT ============ */
-      UI.clus('Unified Decision & Governance Environment', 'ai'),
+      UI.clus('Unified Decision and Governance', 'ai'),
       el('div.panel.rise.pad-0', { 'data-dom': 'ai' }, [
         el('div', { style: { padding: 'var(--s-6) var(--s-6) 0' } }, [
           el('div.tabstrip', { id: 'lcTabs' }, [
@@ -121,9 +121,9 @@ const ViewArchitecture = (() => {
 
       el('div', { style: { marginTop: 'var(--s-6)' } }, [
         UI.limits([
-          '<strong>The Trust Score floors are our calibration, not a workbook input.</strong> The workbook sets how many claims land in each lane; 82 and 55 decide which ones. They would be re-fitted against real claims in the pilot.',
-          '<strong>Nothing above ₹50,000 auto-settles</strong>, however clean. That is the IRDAI corridor, and it caps the green lane by law rather than by choice.',
-          '<strong>ClaimPulse never auto-declines.</strong> Where the wording excludes a loss the claim goes to a person — a repudiation carries consequences an engine should not sign.'
+          '<strong>The Trust Score floors are our calibration, not a workbook input.</strong> The workbook sets how many claims land in each lane; 82 and 55 decide which ones. They would be re-fitted against real claims in the pilot',
+          '<strong>Nothing above ₹50,000 auto-settles</strong>, however clean. That is the IRDAI corridor, and it caps the green lane by law rather than by choice',
+          '<strong>ClaimPulse never auto-declines.</strong> Where the wording excludes a loss the claim goes to a person — a repudiation carries consequences an engine should not sign'
         ])
       ])
     ]);
@@ -198,14 +198,14 @@ const ViewArchitecture = (() => {
       style: { border: '1px solid var(--hairline)', borderRadius: 'var(--r-3)',
                background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
       el('div.cell-x', {}, [UI.metric({ size: 'sm', dom: 'ops', k: 'Claim', v: c.id,
-        d: c.story || 'A claim from the seeded book.' })]),
+        d: c.story || 'A claim from the seeded book' })]),
       el('div.cell-x', {}, [UI.metric({ size: 'sm', k: 'Vehicle', v: c.vehicle.model,
         d: c.vehicle.reg + ' · ' + c.claimant + ' · ' + c.city })]),
       el('div.cell-x', {}, [UI.metric({ size: 'sm', k: 'Cause of loss', v: c.cause,
-        d: 'What the claimant reported at first notification.' })]),
+        d: 'What the claimant reported at first notification' })]),
       el('div.cell-x', {}, [UI.metric({ size: 'sm', dom: 'fin', k: 'Garage estimate',
         v: '₹' + fmt.n(c.repair.garageEstimate),
-        d: 'What the network garage has quoted for the repair.' })])
+        d: 'What the network garage has quoted for the repair' })])
     ])]);
   }
 
@@ -383,10 +383,10 @@ const ViewArchitecture = (() => {
               k: R.skipped ? 'Claimed, pending investigation' : 'Payable',
               v: '₹' + fmt.n(R.skipped ? R.money.claimed : R.money.payable) })
           ])
-        ]) : el('div.small.muted', { text: 'Run the claim and the verdict lands here.' }),
+        ]) : el('div.small.muted', { text: 'Run the claim and the verdict lands here' }),
         el('div.small.muted', { style: { fontWeight: 640, color: 'var(--ink)' },
           text: 'Why the ordering matters' }),
-        el('div.small.muted', { text: 'Gate 00 runs before any engine. A forged or re-captured frame is rejected at the cheapest possible moment — no model call, no token, no inference bill.' }),
+        el('div.small.muted', { text: 'Gate 00 runs before any engine. A forged or re-captured frame is rejected at the cheapest possible moment — no model call, no token, no inference bill' }),
         el('div', { id: 'lcMini' })
       ])
     ]);
@@ -419,11 +419,11 @@ const ViewArchitecture = (() => {
     const ran = at(2) && !R.skipped;
     if (!ran) return el('div.small.muted', {
       text: R.skipped ? 'Engine 05 never ran. Gate 00 rejected the evidence, so no policy wording was retrieved and no generative call was made.'
-                      : 'The policy engine has not been reached yet. Run the claim.' });
+                      : 'The policy engine has not been reached yet. Run the claim' });
     const p = R.policy;
     return el('div.g-phi', {}, [
       el('div.stack-5', {}, [
-        el('div.small.muted', { text: 'Clauses retrieved against this loss, in the order the retriever ranked them.' }),
+        el('div.small.muted', { text: 'Clauses retrieved against this loss, in the order the retriever ranked them' }),
         ...p.clauses.map(c => el('div.clause', {
           style: c.status === 'EXCLUDED' ? { borderLeftColor: 'var(--lane-red)',
             background: 'color-mix(in srgb, var(--lane-red) 8%, transparent)' } : {} }, [
@@ -438,7 +438,7 @@ const ViewArchitecture = (() => {
           d: p.detail }),
         el('div.small.muted', { text: p.fail
           ? 'An exclusion was found. ClaimPulse does not auto-decline: the claim escalates to a person, because a repudiation is a signature with consequences.'
-          : 'Cover, add-ons and the depreciation schedule all resolve against the actual wording rather than a summary of it.' }),
+          : 'Cover, add-ons and the depreciation schedule all resolve against the actual wording rather than a summary of it' }),
         UI.disc('Why RAG rather than a fine-tuned model',
           '<p>Policy wording changes by product, by endorsement and by state. Retrieval means a wording change is a document upload, not a retraining cycle — and every answer can be traced back to the clause it came from, which is what an audit needs.</p>'),
         UI.disc('What the model never sees',
@@ -449,8 +449,8 @@ const ViewArchitecture = (() => {
 
   function tabTrust(R) {
     if (R.skipped) return el('div.small.muted', {
-      text: 'No Trust Score exists for this claim. Gate 00 rejected the evidence before fusion, so there was nothing to fuse.' });
-    if (!at(3)) return el('div.small.muted', { text: 'Fusion has not been reached yet. Run the claim.' });
+      text: 'No Trust Score exists for this claim. Gate 00 rejected the evidence before fusion, so there was nothing to fuse' });
+    if (!at(3)) return el('div.small.muted', { text: 'Fusion has not been reached yet. Run the claim' });
     const w = el('div', {}, [
       el('div', { id: 'lcMeter' }),
       el('div', { id: 'lcContrib', style: { marginTop: 'var(--s-6)' } }),
@@ -476,11 +476,11 @@ const ViewArchitecture = (() => {
       UI.cells(3, [
         UI.metric({ dom: 'ai', size: 'sm', k: 'Generative calls made', v: String(calls),
           d: calls === 0 ? 'None. This claim resolved on deterministic checks and specialised ML alone.'
-                         : 'One targeted call, on a dossier the other engines had already assembled.' }),
+                         : 'One targeted call, on a dossier the other engines had already assembled' }),
         UI.metric({ dom: 'fin', size: 'sm', k: 'Manual touches', v: String(R.touches),
-          d: 'Against seven on the same claim today.' }),
+          d: 'Against seven on the same claim today' }),
         UI.metric({ dom: 'ops', size: 'sm', k: 'Turnaround', v: fmt.cr(R.tat, 1), unit: 'days',
-          d: 'Against 9.8 days today.' })
+          d: 'Against 9.8 days today' })
       ], { noBottom: true }),
       el('div', { style: { marginTop: 'var(--s-6)' } }, [
         UI.disc('Where this lands in the P&L',

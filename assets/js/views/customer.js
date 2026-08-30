@@ -14,13 +14,13 @@ const ViewCustomer = (() => {
   const { el, mount, fmt, $ } = CP;
 
   const SHOTS = [
-    { n: 'Front three-quarter', guide: 'Stand about 3 m back. Fit the whole vehicle inside the frame.',
+    { n: 'Front three-quarter', guide: 'Stand about 3 m back. Fit the whole vehicle inside the frame',
       reads: 'Vehicle identity · make, model and colour matched to the policy' },
-    { n: 'The damage',          guide: 'Move in close. Fill the frame with the damaged area.',
+    { n: 'The damage',          guide: 'Move in close. Fill the frame with the damaged area',
       reads: 'Damage extent · panels, depth and whether it fits the reported cause' },
-    { n: 'Chassis plate',       guide: 'Open the bonnet. Frame the chassis plate squarely.',
+    { n: 'Chassis plate',       guide: 'Open the bonnet. Frame the chassis plate squarely',
       reads: 'Registration and VIN · resolved against VAHAN' },
-    { n: 'Odometer',            guide: 'Ignition on. Capture the odometer and dash cluster.',
+    { n: 'Odometer',            guide: 'Ignition on. Capture the odometer and dash cluster',
       reads: 'Odometer · usage sense-checked against the policy record' }
   ];
 
@@ -49,7 +49,7 @@ const ViewCustomer = (() => {
           el('p.eyebrow', { style: { margin: 0 }, text: 'Policyholder Interface · Zero-Trust Hardware-Attested FNOL' }),
           el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
             'Zero-Trust Roadside Intake: ',
-            el('span.grad-ink', { text: 'Sub-minute evidentiary verification & STP settlement.' })
+            el('span.grad-ink', { text: 'Sub-minute evidentiary verification & STP settlement' })
           ])
         ]),
         el('div.row', {}, [
@@ -101,7 +101,7 @@ const ViewCustomer = (() => {
                 el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' },
                   text: 'Live Telemetry & Evidentiary Knowledge Graph' }),
                 el('div.small.muted', { style: { marginTop: 'var(--s-2)' },
-                  text: 'Progressive extraction of policy parameters, VAHAN records, and damage keyframes.' })
+                  text: 'Progressive extraction of policy parameters, VAHAN records, and damage keyframes' })
               ]),
               el('span.dchip', { id: 'cuProgChip', 'data-dom': 'ai', text: '0%' })
             ]),
@@ -157,7 +157,7 @@ const ViewCustomer = (() => {
     switch (step) {
       case 0:
         B.push(el('div.phone-title', { text: 'Welcome back, Priya' }),
-          el('div.phone-sub', { text: 'Signed in with the policy on your Bajaj account. We already know your vehicle, your cover and your garage preferences — so we will not ask for any of it.' }),
+          el('div.phone-sub', { text: 'Signed in with the policy on your Bajaj account. We already know your vehicle, your cover and your garage preferences — so we will not ask for any of it' }),
           el('div.phone-field', {}, [el('div.lab', { text: 'Policy' }), el('div.val', { text: c.policy.no })]),
           el('div.phone-field', {}, [el('div.lab', { text: 'Cover' }), el('div.val', { text: 'Own Damage · zero-depreciation add-on' })]));
         mount(foot, nav(null, 'Start a claim'));
@@ -165,7 +165,7 @@ const ViewCustomer = (() => {
 
       case 1:
         B.push(el('div.phone-title', { text: 'Which vehicle?' }),
-          el('div.phone-sub', { text: 'Three cars on this policy — and three different journeys from here. Pick one and the engine routes it on its own evidence.' }),
+          el('div.phone-sub', { text: 'Three cars on this policy — and three different journeys from here. Pick one and the engine routes it on its own evidence' }),
           ...CARS().map(({ res: rr, tag }) => {
             const on = rr.claim.id === claim().claim.id;
             const f = el('div.phone-field', {
@@ -178,13 +178,13 @@ const ViewCustomer = (() => {
             f.addEventListener('click', () => { pickId = rr.claim.id; shot = 0; draw(); });
             return f;
           }),
-          el('div.phone-sub', { text: 'Registration is confirmed against VAHAN in the background. If it does not resolve, we ask here rather than three days later.' }));
+          el('div.phone-sub', { text: 'Registration is confirmed against VAHAN in the background. If it does not resolve, we ask here rather than three days later' }));
         mount(foot, nav(null, 'Continue'));
         break;
 
       case 2:
         B.push(el('div.phone-title', { text: 'What happened?' }),
-          el('div.phone-sub', { text: 'Pick the closest description. A directed form rather than a free-text box — it is faster for you, and it removes an entire extraction step for us.' }),
+          el('div.phone-sub', { text: 'Pick the closest description. A directed form rather than a free-text box — it is faster for you, and it removes an entire extraction step for us' }),
           ...['Parked-vehicle damage', 'Collision with another vehicle', 'Hit an object or kerb',
               'Weather or falling debris', 'Theft or attempted theft']
             .map(t => el('div.phone-field', {
@@ -196,10 +196,10 @@ const ViewCustomer = (() => {
       case 3:
         B.push(el('div.phone-title', { text: 'Where and when?' }),
           el('div.phone-field', {}, [el('div.lab', { text: 'Location' }),
-            el('div.val', { text: c.city }), el('div.phone-sub', { style: { marginTop: '4px' }, text: 'Taken from your handset. You can move the pin.' })]),
+            el('div.val', { text: c.city }), el('div.phone-sub', { style: { marginTop: '4px' }, text: 'Taken from your handset. You can move the pin' })]),
           el('div.phone-field', {}, [el('div.lab', { text: 'When' }),
             el('div.val', { text: 'Today, 08:40' })]),
-          el('div.phone-sub', { text: 'Both are recorded now so the capture that follows can be checked against them. If the photographs were taken somewhere else, or before this, the gate will say so.' }));
+          el('div.phone-sub', { text: 'Both are recorded now so the capture that follows can be checked against them. If the photographs were taken somewhere else, or before this, the gate will say so' }));
         mount(foot, nav(null, 'Continue to capture'));
         break;
 
@@ -235,7 +235,7 @@ const ViewCustomer = (() => {
 
       case 5:
         B.push(el('div.phone-title', { text: 'Checking your evidence' }),
-          el('div.phone-sub', { text: 'This takes seconds, not days. You can close the app — we will message you.' }),
+          el('div.phone-sub', { text: 'This takes seconds, not days. You can close the app — we will message you' }),
           ...[['Capture integrity', 'six checks on the raw frames'],
               ['Documents and VAHAN', 'registration, chassis, odometer'],
               ['Damage assessment', `${res.cv.parts.length} panels identified`],
@@ -257,21 +257,21 @@ const ViewCustomer = (() => {
            are asked to do next, is different in each lane. */
         const O = {
           G: { icon: '✓', tone: 'var(--lane-green)', title: 'Approved',
-               sub: 'Settled without a single manual review.',
+               sub: 'Settled without a single manual review',
                next: ['Money reaches your account within 24 hours',
                       'Your garage already has the approval',
                       'Nothing further is needed from you'] },
           A: { icon: '◐', tone: 'var(--lane-amber)', title: 'Almost there',
                sub: res.capped
                  ? 'Everything checked out. Because the amount is above ₹50,000, a registered surveyor has to confirm it — that is a regulatory requirement, not a doubt about your claim.'
-                 : 'Your claim needs one quick human review before we can settle it.',
+                 : 'Your claim needs one quick human review before we can settle it',
                next: ['A surveyor visit is being booked now',
                       'You will get the slot on this screen, not by phone',
                       'Expected decision in about ' + fmt.cr(res.tat, 1) + ' days'] },
           R: { icon: '!', tone: 'var(--lane-red)', title: 'We need to look more closely',
                sub: res.skipped
                  ? 'The photographs could not be verified. This usually means they were not taken live in the app — please re-capture them from the vehicle.'
-                 : 'Your claim needs additional verification before we can decide.',
+                 : 'Your claim needs additional verification before we can decide',
                next: res.skipped
                  ? ['Re-open the claim and capture the four shots live',
                     'Photographs from your camera roll cannot be verified',
@@ -316,7 +316,7 @@ const ViewCustomer = (() => {
             ])
           ])),
           el('div.phone-sub', { style: { marginTop: 'var(--s-3)' },
-            text: 'Status is pushed to you. The average claimant checks a status page 2.5 times before giving up and calling — this removes the reason to check at all.' }));
+            text: 'Status is pushed to you. The average claimant checks a status page 2.5 times before giving up and calling — this removes the reason to check at all' }));
         mount(foot, [
           el('button.phone-ghost', { type: 'button', text: 'Back', onclick: () => { step--; draw(); } }),
           el('button.phone-cta', { type: 'button', style: { flex: '1 1 auto' }, text: 'Start again',
@@ -388,20 +388,20 @@ const ViewCustomer = (() => {
   function drawBehind() {
     const res = claim();
     const notes = [
-      ['Sign in', 'The policy, the vehicle and the cover are already known. Every question we do not ask is a step that cannot go wrong.'],
-      ['Vehicle', 'Registration resolves against VAHAN now. A mismatch surfaces here, not after three days of document chase.'],
-      ['What happened', 'Decision 1 on the token-economics screen. A directed form removes an entire extraction step — there is no prose to parse, so the parsing call never happens.'],
-      ['Where and when', 'These two values become the reference the capture is checked against. Gate 00 compares the EXIF timestamp and GPS of every frame to what was declared here.'],
-      ['Live capture', 'The SDK writes and signs EXIF, timestamp and GPS at the moment of capture. Four guided shots, no gallery, no retries from the camera roll. This is the moat, and it carries ' + UI.money(CPModel.run('base').build.gate) + ' of build cost.'],
+      ['Sign in', 'The policy, the vehicle and the cover are already known. Every question we do not ask is a step that cannot go wrong'],
+      ['Vehicle', 'Registration resolves against VAHAN now. A mismatch surfaces here, not after three days of document chase'],
+      ['What happened', 'Decision 1 on the token-economics screen. A directed form removes an entire extraction step — there is no prose to parse, so the parsing call never happens'],
+      ['Where and when', 'These two values become the reference the capture is checked against. Gate 00 compares the EXIF timestamp and GPS of every frame to what was declared here'],
+      ['Live capture', 'The SDK writes and signs EXIF, timestamp and GPS at the moment of capture. Four guided shots, no gallery, no retries from the camera roll. This is the moat, and it carries ' + UI.money(CPModel.run('base').build.gate) + ' of build cost'],
       ['Analysis', `Gate 00 first, on the raw frames. Then the engines. The green lane clears on deterministic checks and specialised ML — ${res.modelCalls === 0 ? 'this claim needed no generative call at all' : 'this claim needed one generative call'}.`],
-      ['Outcome', `Trust Score ${res.trust.score} against a green floor of ${CPEngine.GREEN_FLOOR}, and ₹${fmt.n(res.money.payable)} sits inside the ₹50,000 IRDAI corridor — so it may auto-settle. One rupee more and it could not, however clean it is.`],
-      ['Tracker', 'W-62. Across the book this is ' + fmt.compact(CPModel.run('base').claimantDays) + ' claimant-days returned a year.']
+      ['Outcome', `Trust Score ${res.trust.score} against a green floor of ${CPEngine.GREEN_FLOOR}, and ₹${fmt.n(res.money.payable)} sits inside the ₹50,000 IRDAI corridor — so it may auto-settle. One rupee more and it could not, however clean it is`],
+      ['Tracker', 'W-62. Across the book this is ' + fmt.compact(CPModel.run('base').claimantDays) + ' claimant-days returned a year']
     ];
     const [t, d] = notes[step];
     mount($('#cuBehind'), [
       el('p.eyebrow', { style: { margin: 0 }, text: 'Behind that screen · ' + t }),
       el('p', { class: 'small', style: { marginTop: 'var(--s-4)' }, text: d }),
-      step === 4 ? UI.callout('<strong>Look for the gallery button.</strong> There isn\'t one.', 'warn') : null,
+      step === 4 ? UI.callout('<strong>Look for the gallery button.</strong> There isn\'t one', 'warn') : null,
       step === 6 ? UI.facts([
         ['Trust Score', fmt.cr(res.trust.score, 1), '0–100'],
         ['Lane', 'GREEN · auto-settle', 'B-03'],

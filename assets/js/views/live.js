@@ -50,7 +50,7 @@ const ViewLive = (() => {
           el('div', { style: { minWidth: 0 } }, [
             el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · live book' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-              'The book, ', el('span.grad-ink', { text: 'running.' })
+              'The book, ', el('span.grad-ink', { text: 'running' })
             ]),
             el('div.row', { style: { marginTop: 'var(--s-4)' } }, [
               el('span.orb.idle', { id: 'lvDot' }),
@@ -73,7 +73,7 @@ const ViewLive = (() => {
         el('div', { id: 'lvTiles', style: { marginTop: 'var(--s-6)' } }),
         el('div', { id: 'lvArea', style: { marginTop: 'var(--s-5)', maxWidth: '760px' } }),
         el('div.xsmall', { style: { color: 'var(--ink-faint)', marginTop: 'var(--s-4)' },
-          text: `At the Base plan the book files one Motor OD claim every ${fmt.n1(secondsPerClaim / 60)} minutes. Speed is a multiplier on real time — it is not a throughput claim.` })
+          text: `At the Base plan the book files one Motor OD claim every ${fmt.n1(secondsPerClaim / 60)} minutes. Speed is a multiplier on real time — it is not a throughput claim` })
       ]),
 
       UI.clus('Claims arriving', 'ops'),
@@ -83,7 +83,7 @@ const ViewLive = (() => {
             el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
               text: 'Lane mix, as it settles' }),
             el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-              text: 'Nobody is dealing these into piles — the evidence decides each one.' }),
+              text: 'Nobody is dealing these into piles — the evidence decides each one' }),
             el('div', { id: 'lvLanes' }),
             el('div', { id: 'lvLaneTbl', style: { marginTop: 'var(--s-5)' } })
           ]),
@@ -91,7 +91,7 @@ const ViewLive = (() => {
             el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
               text: 'What has accumulated' }),
             el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-              text: 'The annual figures are these, multiplied by time.' }),
+              text: 'The annual figures are these, multiplied by time' }),
             el('div', { id: 'lvAcc' })
           ])
         ]),
@@ -171,16 +171,16 @@ const ViewLive = (() => {
                background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'ops',
         k: 'Claims settled', v: fmt.n(n), unit: 'claims',
-        d: 'Filed and routed since you pressed play.' })]),
+        d: 'Filed and routed since you pressed play' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap',
         k: 'Cleared straight-through', v: n ? fmt.pct(lanes.G / t, 0) : '—', unit: 'STP rate',
         d: `${lanes.G} of ${n} on the green lane. The book design target is ${fmt.pct(CPModel.INPUTS.B03_green, 0)}.` })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cust',
         k: 'Claimant-days returned', v: fmt.n(days), unit: 'days',
-        d: 'Each claim returns the difference between 9.8 days and its own lane TAT.' })]),
+        d: 'Each claim returns the difference between 9.8 days and its own lane TAT' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin',
         k: 'Net benefit accrued', v: fmt.cr(benefit), unit: '₹ Cr',
-        d: `Net annual benefit divided across ${fmt.compact(r.claims)} claims, accumulated one claim at a time.` })])
+        d: `Net annual benefit divided across ${fmt.compact(r.claims)} claims, accumulated one claim at a time` })])
     ])]);
 
     /* Benefit accruing, drawn as it happens. A number that only ticks
@@ -208,7 +208,7 @@ const ViewLive = (() => {
             { node: UI.laneChip(k) }, fmt.pct(v / t, 1), fmt.pct(d, 0)
           ]))]);
     } else {
-      mount($('#lvLanes'), [el('p.small.faint', { text: 'Nothing has arrived yet.' })]);
+      mount($('#lvLanes'), [el('p.small.faint', { text: 'Nothing has arrived yet' })]);
       mount($('#lvLaneTbl'), []);
     }
 
@@ -245,7 +245,7 @@ const ViewLive = (() => {
           el('div.xsmall', { style: { fontWeight: 600, color: c.money.payable === null ? 'var(--ink-faint)' : 'var(--ink-strong)' },
             text: c.money.payable === null ? 'Rejected at Gate 00' : '₹' + fmt.n(c.money.payable) })
         ])
-      ])) : [el('p.small.faint', { style: { padding: 'var(--s-6)' }, text: 'The feed fills as claims arrive.' })]);
+      ])) : [el('p.small.faint', { style: { padding: 'var(--s-6)' }, text: 'The feed fills as claims arrive' })]);
   }
 
   function fmtElapsed(ms) {

@@ -35,52 +35,52 @@ const ViewStress = (() => {
 
     { key:'touches', label:'Manual touches per claim, today', ref:'B-02', tier:'TIER 4',
       min:3, max:10, step:0.5, def:7, fmtv:v=>fmt.n1(v),
-      note:'Workflow-mapped, not filed. The single largest driver of the capacity line.',
+      note:'Workflow-mapped, not filed. The single largest driver of the capacity line',
       apply:(o,v)=>{ o.B02_touchesToday = v; } },
 
     { key:'touchCost', label:'Cost per manual touch', ref:'C-02', tier:'TIER 4',
       min:83, max:400, step:1, def:250, fmtv:v=>'₹'+fmt.n(v),
-      note:'BPO transaction pricing. ₹83 is the in-house rate the downside test uses.',
+      note:'BPO transaction pricing. ₹83 is the in-house rate the downside test uses',
       apply:(o,v)=>{ o.touchCost = v; } },
 
     { key:'redeploy', label:'Redeployment realisation', ref:'B-29', tier:'TIER 4', flag:true,
       min:0, max:1, step:0.05, def:0.70, fmtv:v=>fmt.pct(v,0),
-      note:'PLACEHOLDER. The share of released capacity that becomes real output. Headcount is not cut, so 0% means the capacity line disappears entirely.',
+      note:'PLACEHOLDER. The share of released capacity that becomes real output. Headcount is not cut, so 0% means the capacity line disappears entirely',
       apply:(o,v)=>{ o.B29_redeployRealisation = v; } },
 
     { key:'detection', label:'Fraud detection rate, target', ref:'B-14', tier:'TARGET',
       min:0.62, max:0.98, step:0.01, def:0.90, fmtv:v=>fmt.pct(v,0),
-      note:'62% is today\'s rule-based engine — at that value the entire fraud benefit is zero.',
+      note:'62% is today\'s rule-based engine — at that value the entire fraud benefit is zero',
       apply:(o,v)=>{ o.B14_detTarget = v; } },
 
     { key:'leakage', label:'Fraud leakage pool', ref:'B-17', tier:'TIER 2',
       min:0.005, max:0.06, step:0.0025, def:0.0315, fmtv:v=>fmt.pct(v,2),
-      note:'Share of claims value lost to fraud and duplicates. A life-and-health benchmark used as a motor proxy.',
+      note:'Share of claims value lost to fraud and duplicates. A life-and-health benchmark used as a motor proxy',
       apply:(o,v)=>{ o.B17_leakage = v; } },
 
     { key:'synthetic', label:'Synthetic-media incidence', ref:'B-18', tier:'TIER 4',
       min:0, max:0.03, step:0.0025, def:0.01, fmtv:v=>fmt.pct(v,2),
-      note:'A new vector, so no published incidence exists. This is the line nobody else defends against.',
+      note:'A new vector, so no published incidence exists. This is the line nobody else defends against',
       apply:(o,v)=>{ o.B18_synthIncidence = v; } },
 
     { key:'claim', label:'Average claim size', ref:'B-01', tier:'TIER 4',
       min:25000, max:85000, step:1000, def:45000, fmtv:v=>'₹'+fmt.n(v/1000)+'k',
-      note:'Sets the claim count. A LOWER figure means more claims and more benefit, so the default is conservative.',
+      note:'Sets the claim count. A LOWER figure means more claims and more benefit, so the default is conservative',
       apply:(o,v)=>{ o.B01_avgClaim = v; } },
 
     { key:'friction', label:'Live-capture friction', ref:'B-20', tier:'TIER 4',
       min:0, max:0.25, step:0.01, def:0.08, fmtv:v=>fmt.pct(v,0),
-      note:'Honest claimants who cannot use live capture and drop green to amber. The cost of our own hard rule.',
+      note:'Honest claimants who cannot use live capture and drop green to amber. The cost of our own hard rule',
       apply:(o,v)=>{ o.B20_friction = v; } },
 
     { key:'mkt', label:'Marketing investment', ref:'W-23a', tier:'Plan',
       min:0, max:2, step:0.1, def:1, fmtv:v=>fmt.x(v,1),
-      note:'Scales the whole Hunt & Farm plan. 1.0× is the plan as costed, ₹8.88 Cr at full rollout.',
+      note:'Scales the whole Hunt & Farm plan. 1.0× is the plan as costed, ₹8.88 Cr at full rollout',
       apply:(o,v)=>{ o.MKT_SCALE = v; } },
 
     { key:'realY1', label:'Benefit realisation, Year 1', ref:'B-24', tier:'Plan',
       min:0.1, max:1, step:0.05, def:0.45, fmtv:v=>fmt.pct(v,0),
-      note:'How much of steady-state benefit lands in the first year. Drives payback from kickoff.',
+      note:'How much of steady-state benefit lands in the first year. Drives payback from kickoff',
       apply:(o,v)=>{ o.B24_realisationY1 = v; } }
   ];
 
@@ -162,10 +162,10 @@ const ViewStress = (() => {
           el('div', { style: { minWidth: 0, maxWidth: '56ch' } }, [
             el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · Multi-Parametric Financial Stress Test' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-              'Macroeconomic & Stress Engine: ', el('span.grad-ink', { text: 'Dynamic sensitivity across 12 levers recomputes the financial thesis.' })
+              'Macroeconomic & Stress Engine: ', el('span.grad-ink', { text: 'Dynamic sensitivity across 12 levers recomputes the financial thesis' })
             ]),
             el('p.lede', { style: { marginTop: 'var(--s-4)', color: 'var(--ink-muted)' },
-              text: 'Every operational parameter feeds dynamically into the R6 financial engine, live-recomputing underwriting margin expansion, combined ratio impact, cash-flow breakeven curves, and shareholder IRR.' })
+              text: 'Every operational parameter feeds dynamically into the R6 financial engine, live-recomputing underwriting margin expansion, combined ratio impact, cash-flow breakeven curves, and shareholder IRR' })
           ]),
           el('div.stack-4', { style: { alignItems: 'flex-end', minWidth: 0 } }, [
             el('div.row.wrap', { style: { gap: 'var(--s-3)', alignItems: 'center' } }, [
@@ -183,7 +183,7 @@ const ViewStress = (() => {
       ]),
 
       /* ---- the charts, full width ---- */
-      UI.clus('Annual Operating Alpha Breakdown (Benefit Waterfall)', 'fin',
+      UI.clus('Annual Benefit Breakdown', 'fin',
         el('button.gbtn', { id: 'tblBtn', type: 'button', text: 'table view' })),
       el('div.panel.rise', { 'data-dom': 'fin' }, [
         el('div', { id: 'bridge' }),
@@ -195,22 +195,22 @@ const ViewStress = (() => {
           el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
             text: 'Cumulative Net Cash Flow & Capital Payback Runway' }),
           el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-            text: 'Upfront capital deployment amortized against phased benefit realization (B-24 to B-26). The dashed line marks the institutional breakeven threshold.' }),
+            text: 'Upfront capital deployment amortized against phased benefit realization (B-24 to B-26). The dashed line marks the institutional breakeven threshold' }),
           el('div', { id: 'cash' })
         ]),
         el('div.panel.rise', { 'data-dom': 'ops' }, [
           el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
             text: 'Annual Operating Expenditure: Fixed Floor vs. Elastic Volume Scaling' }),
           el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-            text: '₹4.24 Cr fixed infrastructure floor (cybersecurity, software, governance) plus volume-variable API inference scaling.' }),
+            text: '₹4.24 Cr fixed infrastructure floor (cybersecurity, software, governance) plus volume-variable API inference scaling' }),
           el('div', { id: 'runcost' })
         ])
       ]),
 
-      UI.clus('Assumption Sensitivity & Key Value Drivers (Tornado Analysis)', 'risk'),
+      UI.clus('Key Value Drivers Sensitivity', 'risk'),
       el('div.panel.rise', { 'data-dom': 'risk' }, [
         el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-          text: 'Each bar represents the model re-run with that individual assumption swung between bounded limits while holding all other parameters constant. Proves model resilience and ranks core drivers by impact.' }),
+          text: 'Each bar represents the model re-run with that individual assumption swung between bounded limits while holding all other parameters constant. Proves model resilience and ranks core drivers by impact' }),
         el('div', { id: 'tornado' })
       ]),
 
@@ -223,7 +223,7 @@ const ViewStress = (() => {
           el('div', {}, [
             el('div', { style: { fontWeight: 700, fontSize: 'var(--fs-md)', color: 'var(--ink)' }, text: 'Control Panel' }),
             el('div.small.muted', { style: { marginTop: '2px' },
-              text: 'Master scenario presets & 12 financial / operating dials.' })
+              text: 'Master scenario presets & 12 financial / operating dials' })
           ]),
           el('button.gbtn', { id: 'drClose', type: 'button', 'aria-label': 'Close', style: { fontSize: '15px', fontWeight: 700, padding: '4px 10px' }, text: '✕' })
         ]),
@@ -393,15 +393,15 @@ const ViewStress = (() => {
     /* --- KPI strip: one panel, four cells, values that flash on change --- */
     const tiles = [
       { k:'Net annual benefit', ref:'W-35', v: fmt.cr(r.net), unit:'₹ Cr', dom:'fin', size:'xl',
-        base: d.net, now: r.net, d:'Gross benefit less annual run cost, steady state.' },
+        base: d.net, now: r.net, d:'Gross benefit less annual run cost, steady state' },
       { k:'Payback from kickoff', ref:'FS-05', v: r.paybackKickoff ? fmt.n1(r.paybackKickoff) : '—', unit:'months',
         dom:'ops', base: d.paybackKickoff, now: r.paybackKickoff, invert:true,
-        d:'Includes the ten-month build window. The honest headline.' },
+        d:'Includes the ten-month build window. The honest headline' },
       { k:'3-year NPV at 12%', ref:'FS-04', v: fmt.cr(r.npv3), unit:'₹ Cr', dom:'fin',
-        base: d.npv3, now: r.npv3, d:'Discounted at the WACC, net of the build.' },
+        base: d.npv3, now: r.npv3, d:'Discounted at the WACC, net of the build' },
       { k:'Combined ratio, Motor OD', ref:'W-43', v: fmt.cr(r.combinedPP), unit:'pp', dom:'cap',
         base: d.combinedPP, now: r.combinedPP,
-        d:'Loss plus expense. Excludes capacity — headcount does not fall.' }
+        d:'Loss plus expense. Excludes capacity — headcount does not fall' }
     ];
     mount(CP.$('#kpis'), [el('div.cells.c-4', {
       style: { border: '1px solid var(--hairline)', borderRadius: 'var(--r-4)',
@@ -443,7 +443,7 @@ const ViewStress = (() => {
               el('span.xsmall', { style: { fontWeight: 700, color: 'var(--dom-cust)' },
                 text: l.fmtv(state[l.key]) })
             ])).concat(off.length > 5 ? [el('div.xsmall.muted', { text: '+' + (off.length - 5) + ' more' })] : []))
-          : el('div.xsmall.muted', { text: 'Open the Control Panel to stress any of the twelve levers.' })
+          : el('div.xsmall.muted', { text: 'Open the Control Panel to stress any of the twelve levers' })
       ])
     ]);
 
@@ -526,7 +526,7 @@ const ViewStress = (() => {
     mount(CP.$('#verdict'), [
       el('div.callout' + (survives ? '' : '.neg'), { html: survives
         ? `<strong>At this setting the case still clears.</strong> Net annual benefit is ₹${fmt.cr(r.net)} Cr, three-year NPV is ₹${fmt.cr(r.npv3)} Cr and the build repays ${r.paybackKickoff ? 'in ' + fmt.n1(r.paybackKickoff) + ' months from kickoff' : 'beyond the three-year window'}. Capacity is booked at ${fmt.pct(state.redeploy,0)} realisation — it is redeployed output, not a headcount cut, so it never touches the expense ratio.`
-        : `<strong>At this setting the case does not clear.</strong> Net annual benefit is ₹${fmt.cr(r.net)} Cr and three-year NPV is ₹${fmt.cr(r.npv3)} Cr. This is the honest answer for these inputs — the levers are not bounded to keep the case alive.` })
+        : `<strong>At this setting the case does not clear.</strong> Net annual benefit is ₹${fmt.cr(r.net)} Cr and three-year NPV is ₹${fmt.cr(r.npv3)} Cr. This is the honest answer for these inputs — the levers are not bounded to keep the case alive` })
     ]);
   }
 

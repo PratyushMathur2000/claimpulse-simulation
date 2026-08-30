@@ -30,7 +30,7 @@ const ViewValue = (() => {
           el('div', { style: { minWidth: 0, maxWidth: '50ch' } }, [
             el('p.eyebrow', { style: { margin: 0 }, text: 'Executive Committee · Investment Thesis & Value Realization' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-              'Strategic Value Realization: ', el('span.grad-ink', { text: 'Delivering ₹53.01 Cr in net operating alpha & 4.4-mo payback.' })
+              'Strategic Value Realization: ', el('span.grad-ink', { text: 'Delivering ₹53.01 Cr in net operating alpha & 4.4-mo payback' })
             ])
           ]),
           el('div.seg.accent', { id: 'vlPlan' }, ['conservative', 'base', 'aggressive'].map(p =>
@@ -40,10 +40,10 @@ const ViewValue = (() => {
         el('div', { id: 'vlBand', style: { marginTop: 'var(--s-6)' } })
       ]),
 
-      UI.clus('Operational Cycle Transformation & Velocity Gains', 'ops'),
+      UI.clus('Speed and Efficiency Gains', 'ops'),
       el('div.panel.rise', { 'data-dom': 'ops' }, [el('div', { id: 'vlChanged' })]),
 
-      UI.clus('Net Financial Alpha & Inter-Entity Value Attribution', 'fin'),
+      UI.clus('Financial Value Generation', 'fin'),
       el('div.panel.rise', { 'data-dom': 'fin' }, [
         el('div.spread.wrap', { style: { marginBottom: 'var(--s-4)', paddingBottom: 'var(--s-3)', borderBottom: '1px solid var(--hairline)' } }, [
           el('div', {}, [
@@ -63,21 +63,21 @@ const ViewValue = (() => {
         ])
       ]),
 
-      UI.clus('Ratio Movement: Loss Ratio Compression vs. Expense Ratio De-leveraging', 'fin'),
+      UI.clus('Loss and Expense Ratio Impact', 'fin'),
       el('div.panel.rise', { 'data-dom': 'fin' }, [
         el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-          text: 'The distinction the finance function will make first.' }),
+          text: 'The distinction the finance function will make first' }),
         el('div', { id: 'vlRatio' }),
         el('div', { id: 'vlStake', style: { marginTop: 'var(--s-6)' } })
       ]),
 
-      UI.clus('Human Capital Reallocation: 175.9 FTE Capacity Redeployment', 'cap'),
+      UI.clus('Workforce Capacity Redeployment', 'cap'),
       el('div.panel.rise', { 'data-dom': 'cap' }, [el('div', { id: 'vlCap' })]),
 
-      UI.clus('Enterprise-Scale Operational Metrics', 'ops'),
+      UI.clus('Operational Metrics', 'ops'),
       el('div.panel.rise.pad-0', { 'data-dom': 'ops' }, [el('div', { id: 'vlOps' })]),
 
-      UI.clus('Institutional Financial Metrics & RoIC Accretion', 'fin'),
+      UI.clus('Financial Metrics and Returns', 'fin'),
       el('div.g-phi', { style: { alignItems: 'stretch' } }, [
         el('div.panel.rise', { 'data-dom': 'fin', style: { display: 'flex', flexDirection: 'column', justifyContent: 'space-between' } }, [
           el('div', {}, [
@@ -86,7 +86,7 @@ const ViewValue = (() => {
                 el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' },
                   text: 'Cumulative Net Cash Flow & Capital Payback Runway' }),
                 el('div.small.muted', { style: { marginTop: 'var(--s-1)' },
-                  text: 'Upfront build capex amortized against phased realization curve.' })
+                  text: 'Upfront build capex amortized against phased realization curve' })
               ]),
               UI.dchip('12% WACC Discounted Basis', 'fin')
             ]),
@@ -98,23 +98,23 @@ const ViewValue = (() => {
           el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
             text: 'Core Governance Principles & Decision Boundaries' }),
           el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-            text: 'The four decisions that are not ours to make.' }),
+            text: 'The four decisions that are not ours to make' }),
           el('div', { id: 'vlOpen' })
         ])
       ]),
 
-      UI.clus('Strategic Rollout Sensitivity: Phased Scenario Expansion', 'ai'),
+      UI.clus('Impact by Rollout Phase', 'ai'),
       el('div.panel.rise', { 'data-dom': 'ai' }, [
         el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-          text: 'The same engine at three rollouts. Nothing here is a separate model — only C-01 and the touch cost move.' }),
+          text: 'The same engine at three rollouts. Nothing here is a separate model — only C-01 and the touch cost move' }),
         el('div', { id: 'vlPlans' })
       ]),
 
       el('div', { style: { marginTop: 'var(--s-6)' } }, [
         UI.limits([
-          '<strong>This is a decision paper, not a forecast.</strong> Every figure is the R6 model at the stated plan; move any assumption on the stress screen and these numbers move with it.',
-          '<strong>No headcount reduction is claimed anywhere in it.</strong> The capacity line is redeployed output at a 70% realisation rate, booked outside both ratios.',
-          '<strong>The marketing plan is carried at full cost</strong> against a renewal line smaller than itself, because the acquisition benefit is real and we cannot size it.'
+          '<strong>This is a decision paper, not a forecast.</strong> Every figure is the R6 model at the stated plan; move any assumption on the stress screen and these numbers move with it',
+          '<strong>No headcount reduction is claimed anywhere in it.</strong> The capacity line is redeployed output at a 70% realisation rate, booked outside both ratios',
+          '<strong>The marketing plan is carried at full cost</strong> against a renewal line smaller than itself, because the acquisition benefit is real and we cannot size it'
         ])
       ])
     ]);
@@ -139,19 +139,19 @@ const ViewValue = (() => {
                background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin',
         k: 'Net annual benefit', ref: 'W-35', v: fmt.cr(r.net), unit: '₹ Cr',
-        d: 'Steady state at ' + fmt.pct(r.rollout, 0) + ' rollout, net of run cost and marketing.' })]),
+        d: 'Steady state at ' + fmt.pct(r.rollout, 0) + ' rollout, net of run cost and marketing' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin',
         k: 'Payback', ref: 'FS-05', v: r.paybackKickoff ? fmt.n1(r.paybackKickoff) : '—', unit: 'months',
-        d: 'From kickoff, including the ten-month build.' })]),
+        d: 'From kickoff, including the ten-month build' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin',
         k: '3-year NPV', ref: 'FS-04', v: fmt.cr(r.npv3), unit: '₹ Cr',
-        d: 'Discounted at the 12% WACC, net of the build.' })]),
+        d: 'Discounted at the 12% WACC, net of the build' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'ops',
         k: 'Combined ratio', ref: 'W-43', v: fmt.cr(r.combinedPP), unit: 'pp',
-        d: 'Motor OD. Loss plus expense, excluding the capacity line.' })]),
+        d: 'Motor OD. Loss plus expense, excluding the capacity line' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'risk',
         k: 'Investment', ref: 'W-25', v: fmt.cr(r.buildTotal), unit: '₹ Cr',
-        d: 'One-off build across fifteen costed components and four phases.' })])
+        d: 'One-off build across fifteen costed components and four phases' })])
     ])]);
 
     /* ---- what changed ---- */
@@ -168,21 +168,21 @@ const ViewValue = (() => {
       rows: [
         { m: 'Claim turnaround', a: fmt.cr(I.B09_tatToday, 1) + ' d', b: fmt.cr(r.tatFriction, 2) + ' d',
           f: 1 - r.tatFriction / I.B09_tatToday,
-          w: 'Decisions stop waiting for handoffs that add no judgement.' },
+          w: 'Decisions stop waiting for handoffs that add no judgement' },
         { m: 'Manual touches per claim', a: String(I.B02_touchesToday), b: fmt.cr(r.touchesAfter, 2),
           f: 1 - r.touchesAfter / I.B02_touchesToday,
-          w: 'The green lane needs none; amber needs one.' },
+          w: 'The green lane needs none; amber needs one' },
         { m: 'Claims settled with no human touch', a: '0%', b: fmt.pct(I.B03_green, 0),
-          f: I.B03_green, w: 'Gate 00 plus five engines agreeing above the trust floor.' },
+          f: I.B03_green, w: 'Gate 00 plus five engines agreeing above the trust floor' },
         { m: 'Physical surveys a year', a: fmt.compact(r.surveyToday), b: fmt.compact(r.surveyAfter),
           f: r.visitsAvoided / r.surveyToday,
-          w: 'Below the ₹50,000 corridor the evidence already resolves the claim.' },
+          w: 'Below the ₹50,000 corridor the evidence already resolves the claim' },
         { m: 'Garage estimate to approval', a: I.J06_garageToday + ' d', b: I.J07_garageAfter + ' d',
           f: 1 - I.J07_garageAfter / I.J06_garageToday,
-          w: 'An indicative band arrives at first notification, not after an inspection.' },
+          w: 'An indicative band arrives at first notification, not after an inspection' },
         { m: 'Adjuster throughput', a: '1.0×', b: fmt.x(r.throughput),
           f: Math.min(1, 1 - 1 / r.throughput),
-          w: 'The same team, clearing more — nobody is asked to leave.' }
+          w: 'The same team, clearing more — nobody is asked to leave' }
       ]
     })]);
 
@@ -258,13 +258,13 @@ const ViewValue = (() => {
           ],
           rows: [
             { w: 'Complex and disputed claims', f: fmt.n1(r.fteReleased * 0.35),
-              why: 'Amber and red claims require adjuster judgement — now arriving with all forensic evidence pre-compiled.' },
+              why: 'Amber and red claims require adjuster judgement — now arriving with all forensic evidence pre-compiled' },
             { w: 'Claims above ₹50,000 corridor', f: fmt.n1(r.fteReleased * 0.25),
-              why: 'Statutory rules mandate physical surveyor assessment. Surveyors elevate into high-severity loss management.' },
+              why: 'Statutory rules mandate physical surveyor assessment. Surveyors elevate into high-severity loss management' },
             { w: 'Fraud network investigation', f: fmt.n1(r.fteReleased * 0.22),
-              why: 'Graph AI surfaces syndicates and collusive rings; investigators focus on high-yield fraud recovery.' },
+              why: 'Graph AI surfaces syndicates and collusive rings; investigators focus on high-yield fraud recovery' },
             { w: 'Proactive customer recovery & renewal', f: fmt.n1(r.fteReleased * 0.18),
-              why: 'Claimants represent the highest-risk churn cohort. Liberated capacity enables direct outbound retention calls.' }
+              why: 'Claimants represent the highest-risk churn cohort. Liberated capacity enables direct outbound retention calls' }
           ]
         })
       ]),
@@ -281,16 +281,16 @@ const ViewValue = (() => {
       el('div.cells.c-4', {}, [
         UI.metric({ dom: 'ops', size: 'sm', k: 'Claims a year on the platform', ref: 'W-05',
           v: fmt.compact(r.claims),
-          d: 'The addressable Motor OD book at ' + fmt.pct(r.rollout, 0) + ' rollout.' }),
+          d: 'The addressable Motor OD book at ' + fmt.pct(r.rollout, 0) + ' rollout' }),
         UI.metric({ dom: 'cap', size: 'sm', k: 'Settled with no human touch', ref: 'W-63',
           v: fmt.compact(r.autoSettled),
           d: 'Green lane. On the demo desk that is ' + counts.G + ' of ' + all.length + '.' }),
         UI.metric({ dom: 'cust', size: 'sm', k: 'Claimant-days returned', ref: 'W-62',
           v: fmt.compact(r.claimantDays), unit: 'a year',
-          d: 'On-platform claims multiplied by the days each one saves.' }),
+          d: 'On-platform claims multiplied by the days each one saves' }),
         UI.metric({ dom: 'ai', size: 'sm', k: 'Surveyor visits avoided', ref: 'W-72',
           v: fmt.compact(r.visitsAvoided), unit: 'a year',
-          d: 'All below ₹50,000, where the evidence already resolved the claim.' })
+          d: 'All below ₹50,000, where the evidence already resolved the claim' })
       ], { noBottom: true })
     ]);
 
@@ -313,13 +313,13 @@ const ViewValue = (() => {
                background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin', size: 'sm',
         k: 'Capital Payback', ref: 'FS-05', v: r.paybackKickoff ? fmt.n1(r.paybackKickoff) + ' mo' : '—',
-        d: 'From project kickoff, including 10-mo build.' })]),
+        d: 'From project kickoff, including 10-mo build' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin', size: 'sm',
         k: '3-Year NPV @ 12%', ref: 'FS-04', v: '₹' + fmt.cr(r.npv3) + ' Cr',
-        d: 'Net of ₹' + fmt.cr(r.buildTotal) + ' Cr upfront capex.' })]),
+        d: 'Net of ₹' + fmt.cr(r.buildTotal) + ' Cr upfront capex' })]),
       el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap', size: 'sm',
         k: 'Annual RoIC Yield', v: fmt.pct(r.net / r.buildTotal, 0),
-        d: 'Steady-state net cash yield on build investment.' })])
+        d: 'Steady-state net cash yield on build investment' })])
     ])]);
 
     /* ---- open decisions ---- */
@@ -334,17 +334,17 @@ const ViewValue = (() => {
       ],
       rows: [
         { q: 'Redeployment realisation', r: 'B-29',
-          w: 'How much released capacity becomes real output.',
+          w: 'How much released capacity becomes real output',
           i: 'At 0% the capacity line disappears and net benefit falls to ' + UI.money(CPModel.run(plan, { B29_redeployRealisation: 0 }).net) + '.' },
         { q: 'Premium basis for the ratio', r: 'A-02',
-          w: 'Motor OD earned premium versus the group book.',
-          i: 'The pp movement rescales; the rupees do not change.' },
+          w: 'Motor OD earned premium versus the group book',
+          i: 'The pp movement rescales; the rupees do not change' },
         { q: 'Dealer commission treatment', r: 'B-30',
-          w: 'Incremental spend, or a pre-existing network cost.',
-          i: 'Switching it on adds the commission to the marketing cost line.' },
+          w: 'Incremental spend, or a pre-existing network cost',
+          i: 'Switching it on adds the commission to the marketing cost line' },
         { q: 'Expense-ratio treatment of capacity', r: 'B-31',
-          w: 'Whether redeployed output may be credited to the ratio.',
-          i: 'Crediting it improves the combined ratio by roughly 1.0 pp. We do not.' }
+          w: 'Whether redeployed output may be credited to the ratio',
+          i: 'Crediting it improves the combined ratio by roughly 1.0 pp. We do not' }
       ]
     })]);
 
@@ -370,7 +370,7 @@ const ViewValue = (() => {
         { key: 'note', label: '', render: x => el('span.small.muted', { text:
           x.p === 'conservative' ? 'One region, one product. Proves the mechanism before it is scaled.'
           : x.p === 'base' ? 'The recommendation. Enough scale to matter, enough caution to survive a bad quarter.'
-          : 'Full rollout. The ceiling, if every assumption holds.' }) }
+          : 'Full rollout. The ceiling, if every assumption holds' }) }
       ],
       rows: plans,
       selected: x => x.p === plan,

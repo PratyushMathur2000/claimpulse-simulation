@@ -62,12 +62,12 @@ const ViewCommand = (() => {
     const attention = [
       { k: 'gate',     dom: 'risk', label: 'Rejected at Gate 00',
         n: all.filter(c => c.skipped).length,
-        sub: 'Evidence failed integrity. Investigation, zero model calls.' },
+        sub: 'Evidence failed integrity. Investigation, zero model calls' },
       { k: 'surveyor', dom: 'cust', label: 'Surveyor allocation pending',
         n: all.filter(c => c.surveyor.required).length,
-        sub: 'Red lane or above the ₹50,000 corridor.' },
+        sub: 'Red lane or above the ₹50,000 corridor' },
       { k: 'A',        dom: 'ops',  label: 'Awaiting one reviewer',
-        n: counts.A, sub: 'Evidence assembled, reasoning written. A decision, not a collection job.' }
+        n: counts.A, sub: 'Evidence assembled, reasoning written. A decision, not a collection job' }
     ];
 
     mount(host, [
@@ -78,10 +78,10 @@ const ViewCommand = (() => {
           el('div', { style: { minWidth: 0, maxWidth: '56ch' } }, [
             el('p.eyebrow', { style: { margin: 0 }, text: 'Chief Claims Officer Telemetry · Live Operations War Room' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-              'Real-Time Triage Telemetry & ', el('span.grad-ink', { text: 'Exception Queue Balancing.' })
+              'Real-Time Triage Telemetry & ', el('span.grad-ink', { text: 'Exception Queue Balancing' })
             ]),
             el('p.lede', { style: { marginTop: 'var(--s-4)', color: 'var(--ink-muted)' },
-              text: 'Multi-modal straight-through processing (STP) telemetry: Automated instant clearance for Green corridor claims, pre-compiled forensic dossiers for Amber human adjudication, and automated SIU fraud interception.' })
+              text: 'Multi-modal straight-through processing (STP) telemetry: Automated instant clearance for Green corridor claims, pre-compiled forensic dossiers for Amber human adjudication, and automated SIU fraud interception' })
           ]),
           el('div.row', { style: { gap: 'var(--s-2)', alignItems: 'center' } }, [
             el('span.orb.busy'),
@@ -93,18 +93,18 @@ const ViewCommand = (() => {
           background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
           el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'ops',
             k: 'Active Intake Volume', v: fmt.n(t), unit: 'claims',
-            d: 'Sampled live book. Scaled portfolio volume represents ' + fmt.compact(book.claims) + ' claims/year.' })]),
+            d: 'Sampled live book. Scaled portfolio volume represents ' + fmt.compact(book.claims) + ' claims/year' })]),
           el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap',
             k: 'Straight-Through (STP)', v: fmt.n(counts.G), unit: 'claims (' + fmt.pct(counts.G / t, 0) + ')',
             delta: fmt.pct(counts.G / t, 0) + ' auto-settled', deltaGood: true,
             d: 'Green lane automated execution. Target baseline is ' + fmt.pct(CPModel.INPUTS.B03_green, 0) + '.' })]),
           el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cust',
             k: 'Assisted Human Review', v: fmt.n(needHuman), unit: 'claims',
-            d: 'Amber and Red corridors. Human cognitive bandwidth redeployed to complex adjudication.' })]),
+            d: 'Amber and Red corridors. Human cognitive bandwidth redeployed to complex adjudication' })]),
           el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin',
             k: 'Mean Settlement Velocity', v: fmt.cr(avgTat), unit: 'days',
             delta: '▼ ' + fmt.cr(CPModel.INPUTS.B09_tatToday - avgTat) + ' d vs legacy', deltaGood: true,
-            d: 'Accelerated from 9.8-day legacy manual cycle.' })])
+            d: 'Accelerated from 9.8-day legacy manual cycle' })])
         ]),
 
         /* Real-Time Proportional Tri-Lane Throughput Bar */
@@ -128,7 +128,7 @@ const ViewCommand = (() => {
       ]),
 
       /* ---- what needs a person first ---- */
-      UI.clus('Priority Exception Queues: Human-in-the-Loop (HITL) Adjudication', 'cust'),
+      UI.clus('Exception Queues: Human Adjudication', 'cust'),
       el('div.g-3', { id: 'cmdAttn' }, attention.map(a =>
         el('button.panel.lift', { 'data-dom': a.dom, type: 'button', 'data-f': a.k,
           style: { textAlign: 'left', cursor: 'pointer', font: 'inherit', width: '100%' } }, [
@@ -140,7 +140,7 @@ const ViewCommand = (() => {
         ]))),
 
       /* ---- the queue ---- */
-      UI.clus('Portfolio Claims Ledger & Tri-Lane Adjudication Queue', 'ops'),
+      UI.clus('Claims Ledger and Tri-Lane Queue', 'ops'),
       el('div.panel.rise.pad-0', { 'data-dom': 'ops' }, [
         el('div', { style: { padding: 'var(--s-6)' } }, [
           el('div.spread.wrap', { style: { gap: 'var(--s-5)' } }, [
@@ -234,7 +234,7 @@ const ViewCommand = (() => {
       ],
       rows,
       onRow: c => { location.hash = '#/inspector?id=' + c.claim.id; },
-      empty: 'No claim on this desk matches that.'
+      empty: 'No claim on this desk matches that'
     })]);
   }
 

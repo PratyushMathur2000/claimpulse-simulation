@@ -81,7 +81,7 @@ const ViewGarage = (() => {
             el('h2', { style: { margin: 0, fontSize: 'var(--fs-lg)', fontWeight: 680 },
               text: 'Repair Bay Velocity Optimization & Real-Time Estimate Harmonization' }),
             el('p.small.muted', { style: { margin: 'var(--s-2) 0 0' },
-              text: 'Algorithmic parts and labor cost bands delivered at FNOL eliminate physical surveyor idle latency, freeing garage bays 3 days faster across the authorized network.' })
+              text: 'Algorithmic parts and labor cost bands delivered at FNOL eliminate physical surveyor idle latency, freeing garage bays 3 days faster across the authorized network' })
           ]),
           el('div.row.wrap', { style: { gap: 'var(--s-3)' } }, [
             UI.dchip('3 Bay-Days Saved / Claim', 'cap'),
@@ -97,7 +97,7 @@ const ViewGarage = (() => {
               d: '3 days saved per job across ' + fmt.compact(r.claims) + ' on-platform claims. (' + fmt.n(jobs.length * r.garageDaysSaved) + ' days on demo desk)' })]),
             el('div.cell-x', {}, [UI.metric({ dom: 'ops', size: 'sm', k: 'Estimate approval turnaround',
               ref: 'J-07', v: '1.0 day', unit: 'vs 4.0d legacy',
-              d: 'Instant indicative band at FNOL frees repair bays 3 days faster.' })]),
+              d: 'Instant indicative band at FNOL frees repair bays 3 days faster' })]),
             el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'risk', size: 'sm',
               k: 'Band compliance rate', v: fmt.pct(1 - (over(jobs)/jobs.length), 0), unit: 'in band',
               d: fmt.n(jobs.length - over(jobs)) + ' of ' + jobs.length + ' jobs in band. (' + fmt.n(over(jobs)) + ' excess estimates flagged for re-quote)' })])
@@ -106,7 +106,7 @@ const ViewGarage = (() => {
       ]),
 
       /* ---- the network, as a table ---- */
-      UI.clus('Authorized Cashless Garage Network Performance Ledger', 'ops',
+      UI.clus('Cashless Garage Performance', 'ops',
         el('div.seg', { id: 'gaSort' }, [['jobs', 'Volume'], ['over', 'Above band'], ['value', 'Value']]
           .map(([k, l]) => el('button', { type: 'button', 'data-s': k,
             'aria-pressed': String(k === sortBy), text: l })))),
@@ -151,7 +151,7 @@ const ViewGarage = (() => {
       UI.clus(sel ? 'The queue at ' + sel.g.name : 'The queue, as a garage sees it', 'cust'),
       el('div.panel.rise.pad-0', { 'data-dom': 'cust' }, [
         el('div', { style: { padding: 'var(--s-6)' } }, [
-          el('div.small.muted', { text: 'Every job arrives with an indicative band already attached, returned at first notification. A garage no longer waits to be told what it may spend.' })
+          el('div.small.muted', { text: 'Every job arrives with an indicative band already attached, returned at first notification. A garage no longer waits to be told what it may spend' })
         ]),
         el('div', { style: { maxHeight: '520px', overflow: 'auto' } }, [
           UI.dtable({
@@ -178,7 +178,7 @@ const ViewGarage = (() => {
             ],
             rows: jobs,
             onRow: c => { location.hash = '#/inspector?id=' + c.claim.id; },
-            empty: 'No open jobs at this garage.'
+            empty: 'No open jobs at this garage'
           })
         ])
       ]),
@@ -227,7 +227,7 @@ const ViewGarage = (() => {
             el('h2', { style: { margin: 0, fontSize: 'var(--fs-lg)', fontWeight: 680 },
               text: 'Surveyor Physical Inspection Optimization' }),
             el('p.small.muted', { style: { margin: 'var(--s-2) 0 0' },
-              text: 'Routine physical surveys are eliminated for claims below the ₹50,000 corridor where AI evidence is deterministic, refocusing licensed surveyors on complex structural losses and fraud ring forensics.' })
+              text: 'Routine physical surveys are eliminated for claims below the ₹50,000 corridor where AI evidence is deterministic, refocusing licensed surveyors on complex structural losses and fraud ring forensics' })
           ]),
           el('div.row.wrap', { style: { gap: 'var(--s-3)' } }, [
             UI.dchip('72% Routine Visits Avoided', 'cap'),
@@ -240,13 +240,13 @@ const ViewGarage = (() => {
             borderRadius: 'var(--r-4)', background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
             el('div.cell-x', {}, [UI.metric({ dom: 'cap', size: 'sm', k: 'Routine visits avoided',
               ref: 'W-72', v: fmt.compact(r.visitsAvoided), unit: 'visits / year (72%)',
-              d: 'All below ₹50,000, where the evidence already resolved the claim.' })]),
+              d: 'All below ₹50,000, where the evidence already resolved the claim' })]),
             el('div.cell-x', {}, [UI.metric({ dom: 'ops', size: 'sm', k: 'Still surveyed (complex/large loss)',
               ref: 'W-71', v: fmt.compact(r.surveyAfter), unit: 'visits / year',
-              d: 'Red lane, large losses and disputed assessments. The work where judgement was always the point.' })]),
+              d: 'Red lane, large losses and disputed assessments. The work where judgement was always the point' })]),
             el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cust', size: 'sm',
               k: 'On demo desk', v: fmt.n(need.length), unit: 'of ' + all.length + ' claims',
-              d: 'Claims on the demo desk that still require a registered surveyor.' })])
+              d: 'Claims on the demo desk that still require a registered surveyor' })])
           ])
         ])
       ]),
@@ -259,7 +259,7 @@ const ViewGarage = (() => {
       el('div.panel.rise.pad-0', { 'data-dom': 'cust' }, [
         el('div', { style: { padding: 'var(--s-6)' } }, [
           el('div.small.muted', { text: rows.length + ' claim' + (rows.length === 1 ? '' : 's') +
-            ' on this filter. The surveyor arrives to an assembled file, not an empty one — which is the whole change to their day.' })
+            ' on this filter. The surveyor arrives to an assembled file, not an empty one — which is the whole change to their day' })
         ]),
         el('div', { style: { maxHeight: '560px', overflow: 'auto' } }, [
           UI.dtable({
@@ -282,7 +282,7 @@ const ViewGarage = (() => {
             ],
             rows,
             onRow: c => { location.hash = '#/inspector?id=' + c.claim.id; },
-            empty: 'No claim on this desk matches that reason.'
+            empty: 'No claim on this desk matches that reason'
           })
         ])
       ]),

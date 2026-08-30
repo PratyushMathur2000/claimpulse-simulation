@@ -20,25 +20,25 @@ const ViewTat = (() => {
      workbook inputs — the screen says so rather than implying otherwise. */
   const ABSORBED = [
     { label: 'Document collection & chase', share: 0.32, color: 'var(--d1)',
-      d: 'Automated via instant WhatsApp intake, Document AI OCR extraction, and live tamper-proof capture.' },
+      d: 'Automated via instant WhatsApp intake, Document AI OCR extraction, and live tamper-proof capture' },
     { label: 'Manual policy & coverage check', share: 0.24, color: 'var(--d3)',
-      d: 'Gate 00 and Policy Engine verify active status, deductibles, endorsements, and coverage limits automatically.' },
+      d: 'Gate 00 and Policy Engine verify active status, deductibles, endorsements, and coverage limits automatically' },
     { label: 'Survey coordination & dispatch', share: 0.20, color: 'var(--d4)',
-      d: 'Replaced by AI computer-vision damage appraisal and garage estimate matching for claims under ₹50,000.' },
+      d: 'Replaced by AI computer-vision damage appraisal and garage estimate matching for claims under ₹50,000' },
     { label: 'Multi-tier approval routing', share: 0.14, color: 'var(--d7)',
-      d: 'Straight-through automated decisioning for Green Lane claims without multi-level manual sign-offs.' },
+      d: 'Straight-through automated decisioning for Green Lane claims without multi-level manual sign-offs' },
     { label: 'Status calls & claimant follow-up', share: 0.10, color: 'var(--d5)',
-      d: 'Real-time proactive claimant tracking on WhatsApp eliminating reactive inbound contact center traffic.' }
+      d: 'Real-time proactive claimant tracking on WhatsApp eliminating reactive inbound contact center traffic' }
   ];
   const REDEPLOYED = [
     { label: 'Complex & disputed claims', share: 0.35, color: 'var(--dom-cap)',
-      d: 'Adjusters spend dedicated investigation time on contested liabilities, major total-loss cases, and third-party claims.' },
+      d: 'Adjusters spend dedicated investigation time on contested liabilities, major total-loss cases, and third-party claims' },
     { label: 'Claims above ₹50,000 corridor', share: 0.25, color: 'var(--dom-ops)',
-      d: 'Licensed surveyors and senior officers focus on heavy structural damages where physical inspection truly adds value.' },
+      d: 'Licensed surveyors and senior officers focus on heavy structural damages where physical inspection truly adds value' },
     { label: 'Organized fraud ring investigation', share: 0.22, color: 'var(--dom-ai)',
-      d: 'Cross-insurer syndicate detection, synthetic image forensics, and repeat staged-accident prosecution.' },
+      d: 'Cross-insurer syndicate detection, synthetic image forensics, and repeat staged-accident prosecution' },
     { label: 'Customer recovery & renewal concierge', share: 0.18, color: 'var(--dom-cust)',
-      d: 'Proactive outreach to distressed policyholders to deliver high-touch service and protect annual renewal retention.' }
+      d: 'Proactive outreach to distressed policyholders to deliver high-touch service and protect annual renewal retention' }
   ];
 
   function render(host) {
@@ -53,10 +53,10 @@ const ViewTat = (() => {
           el('div', { style: { minWidth: 0, maxWidth: '58ch' } }, [
             el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · TAT & Human Capital Repurposing' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
-              'Strategic Human Capital Redeployment: ', el('span.grad-ink', { text: 'Liberating operational bandwidth into high-yield forensics.' })
+              'Strategic Human Capital Redeployment: ', el('span.grad-ink', { text: 'Liberating operational bandwidth into high-yield forensics' })
             ]),
             el('p.lede', { style: { marginTop: 'var(--s-4)' },
-              text: 'Turnaround latency contracts because deterministic claims resolve instantly at FNOL without administrative queues. Released adjuster capacity is strategically redeployed into high-severity loss management, complex SIU forensic investigations, and proactive renewal retention.' })
+              text: 'Turnaround latency contracts because deterministic claims resolve instantly at FNOL without administrative queues. Released adjuster capacity is strategically redeployed into high-severity loss management, complex SIU forensic investigations, and proactive renewal retention' })
           ]),
           UI.dchip('W-18 Labour Savings = 0 (Zero Retrenchment)', 'cap')
         ]),
@@ -71,7 +71,7 @@ const ViewTat = (() => {
             el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' },
               text: 'Automated Task Absorption vs. High-Yield Human Capital Reallocation' }),
             el('div.small.muted', { style: { marginTop: 'var(--s-2)' },
-              text: fmt.n1(r.fteReleased) + ' FTE of productive capacity transitioned from low-yield data entry to high-impact underwriting and claims defense.' })
+              text: fmt.n1(r.fteReleased) + ' FTE of productive capacity transitioned from low-yield data entry to high-impact underwriting and claims defense' })
           ]),
           UI.dchip('split is operational, not workbook', 'ai')
         ]),
@@ -80,14 +80,14 @@ const ViewTat = (() => {
       ]),
 
       /* ================= TURNAROUND LATENCY BRIDGE ================= */
-      UI.clus('Turnaround Latency Compression Bridge', 'ops'),
+      UI.clus('Turnaround Time Reduction', 'ops'),
       el('div.panel.rise', { 'data-dom': 'ops' }, [
         el('div.spread.wrap', { style: { marginBottom: 'var(--s-4)', paddingBottom: 'var(--s-3)', borderBottom: '1px solid var(--hairline)' } }, [
           el('div', {}, [
             el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' },
-              text: 'Turnaround Latency Compression Bridge (9.80 Days → 5.46 Days Blended Target)' }),
+              text: 'Turnaround Time Reduction (9.80 Days → 5.46 Days Blended Target)' }),
             el('div.small.muted', { style: { marginTop: 'var(--s-1)' },
-              text: 'Lane-weighted cycle time build-up reflecting conservative live-capture friction (W-14) and 60% addressable rollout blending.' })
+              text: 'Lane-weighted cycle time build-up reflecting conservative live-capture friction (W-14) and 60% addressable rollout blending' })
           ]),
           UI.dchip('44.3% Blended TAT Cut', 'ops')
         ]),
@@ -95,7 +95,7 @@ const ViewTat = (() => {
       ]),
 
       /* ================= ECOSYSTEM STAKEHOLDERS ================= */
-      UI.clus('Ecosystem Stakeholder Alignment: Garages & Licensed Surveyors', 'cust'),
+      UI.clus('Impact on Garages and Surveyors', 'cust'),
       el('div.panel.rise', { 'data-dom': 'cust' }, [
         el('div.spread.wrap', { style: { marginBottom: 'var(--s-5)' } }, [
           el('div', {}, [
@@ -111,10 +111,10 @@ const ViewTat = (() => {
           border: '1px solid var(--hairline)', borderRadius: 'var(--r-3)' } }, [
           el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap', size: 'sm',
             k: 'Days back to the network', ref: 'W-73', v: String(r.garageDaysSaved), unit: 'per job',
-            d: 'A bay held for an unapproved job earns nothing. Three days a job, across the whole panel.' })]),
+            d: 'A bay held for an unapproved job earns nothing. Three days a job, across the whole panel' })]),
           el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'ops', size: 'sm',
             k: 'Surveyors move up, not out', v: fmt.pct(r.visitsAvoided / r.surveyToday, 0), unit: 'of visits',
-            d: 'The visits avoided are all below ₹50,000, where the evidence already resolved the claim. Above the corridor a registered surveyor is still required.' })])
+            d: 'The visits avoided are all below ₹50,000, where the evidence already resolved the claim. Above the corridor a registered surveyor is still required' })])
         ]),
         el('div', { style: { marginTop: 'var(--s-5)' } }, [
           UI.disc('The mechanism, not the wish',
@@ -123,20 +123,20 @@ const ViewTat = (() => {
       ]),
 
       /* ================= ACQUISITION ================= */
-      UI.clus('Self-Funding Growth Flywheel: Channel Acquisition & Policyholder Retention', 'cust'),
+      UI.clus('Growth Flywheel: Acquisition and Retention', 'cust'),
       el('div.panel.rise', { 'data-dom': 'cust' }, [
         el('div.spread.wrap', { style: { marginBottom: 'var(--s-5)' } }, [
-          el('div.small.muted', { text: 'The Hunt & Farm Plan: Repurposed operational capacity self-funds dealer channel acquisition, repaid via renewal retention.' })
+          el('div.small.muted', { text: 'The Hunt & Farm Plan: Repurposed operational capacity self-funds dealer channel acquisition, repaid via renewal retention' })
         ]),
         el('div', { id: 'tatMkt' })
       ]),
 
       el('div', { style: { marginTop: 'var(--s-6)' } }, [
         UI.limits([
-          '<strong>The 20 minutes per manual touch (J-01) is a team estimate.</strong> It converts touches into hours, so every FTE figure on this screen moves with it.',
+          '<strong>The 20 minutes per manual touch (J-01) is a team estimate.</strong> It converts touches into hours, so every FTE figure on this screen moves with it',
           '<strong>The 70% redeployment realisation (B-29) is a placeholder</strong> and the largest Tier 4 input in the model. At 0% the capacity line disappears and net annual benefit falls to ' + UI.money(zero.net) + '.',
-          '<strong>Seven touches per claim (B-02) is workflow-mapped, not filed.</strong> One session with Bajaj claims operations settles it, and it is data request 1.',
-          '<strong>The activity split on this screen is ours.</strong> The totals are the workbook\'s; how the released hours divide across five activities and four destinations is our operational read of the workflow map.'
+          '<strong>Seven touches per claim (B-02) is workflow-mapped, not filed.</strong> One session with Bajaj claims operations settles it, and it is data request 1',
+          '<strong>The activity split on this screen is ours.</strong> The totals are the workbook\'s; how the released hours divide across five activities and four destinations is our operational read of the workflow map'
         ])
       ])
     ]);
@@ -169,16 +169,16 @@ const ViewTat = (() => {
         borderRadius: 'var(--r-3)' } }, [
         el('div.cell-x', {}, [UI.metric({ dom: 'ops', size: 'sm', k: 'Touches avoided', ref: 'W-66',
           v: fmt.compact(r.touchesAvoided), unit: 'a year',
-          d: 'On-platform claims × ' + fmt.cr(r.touchesSaved) + ' touches removed per claim.' })]),
+          d: 'On-platform claims × ' + fmt.cr(r.touchesSaved) + ' touches removed per claim' })]),
         el('div.cell-x', {}, [UI.metric({ dom: 'ops', size: 'sm', k: 'Hours released', ref: 'W-67',
           v: fmt.compact(r.hoursReleased), unit: 'a year',
-          d: 'Touches avoided × ' + I.J01_minutesPerTouch + ' minutes per touch.' })]),
+          d: 'Touches avoided × ' + I.J01_minutesPerTouch + ' minutes per touch' })]),
         el('div.cell-x', {}, [UI.metric({ dom: 'cap', size: 'sm', k: 'FTE capacity released', ref: 'W-68',
           v: fmt.n1(r.fteReleased), unit: 'FTE',
-          d: 'Hours released ÷ ' + fmt.n(I.J02_hoursPerFTE) + ' productive hours per FTE.' })]),
+          d: 'Hours released ÷ ' + fmt.n(I.J02_hoursPerFTE) + ' productive hours per FTE' })]),
         el('div.cell-x', {}, [UI.metric({ dom: 'fin', size: 'sm', k: 'Booked as redeployed output', ref: 'W-22a',
           v: fmt.cr(r.lines.capacity), unit: '₹ Cr',
-          d: 'At the ' + fmt.pct(I.B29_redeployRealisation, 0) + ' realisation rate at B-29.' })])
+          d: 'At the ' + fmt.pct(I.B29_redeployRealisation, 0) + ' realisation rate at B-29' })])
       ]),
       el('div', { style: { marginTop: 'var(--s-5)' } }, [
         UI.disc('Why this is not a labour saving',
@@ -238,9 +238,9 @@ const ViewTat = (() => {
       Charts.vbar($('#tatSurveyBar'), {
         items: [
           { label: 'Today · All claims', value: r.surveyToday, color: 'var(--dom-risk)',
-            note: 'Every motor claim below ₹50k gets a physical inspection today.' },
+            note: 'Every motor claim below ₹50k gets a physical inspection today' },
           { label: 'ClaimPulse · >₹50k only', value: r.surveyAfter, color: 'var(--dom-cap)',
-            note: 'Below the IRDAI corridor, live 360° video evidence resolves the claim.' }
+            note: 'Below the IRDAI corridor, live 360° video evidence resolves the claim' }
         ],
         unit: 'visits',
         valueFmt: v => fmt.compact(v),
@@ -250,9 +250,9 @@ const ViewTat = (() => {
       Charts.vbar($('#tatGarageBar'), {
         items: [
           { label: 'Today · Manual survey', value: I.J06_garageToday, color: 'var(--dom-risk)',
-            note: 'Bay idle for up to 4 days while surveyor is dispatched and travels.' },
+            note: 'Bay idle for up to 4 days while surveyor is dispatched and travels' },
           { label: 'ClaimPulse · Instant AI', value: I.J07_garageAfter, color: 'var(--dom-cap)',
-            note: 'Indicative repair cost band arrives at first notification.' }
+            note: 'Indicative repair cost band arrives at first notification' }
         ],
         unit: 'days',
         valueFmt: v => v + ' d',
@@ -273,19 +273,19 @@ const ViewTat = (() => {
               el('span.step-tag', { text: 'STEP 1 · EFFICIENCY SAVINGS' }),
               el('h4', { text: 'Repurposed Fund Pool' }),
               el('div.stat-val.gold', { text: '₹23.82 Cr' }),
-              el('p.xsmall.muted', { text: '175.9 FTE capacity released + 74k surveys eliminated generates productive gross value.' })
+              el('p.xsmall.muted', { text: '175.9 FTE capacity released + 74k surveys eliminated generates productive gross value' })
             ]),
             el('div.flywheel-step-card', {}, [
               el('span.step-tag', { text: 'STEP 2 · RE-INVESTMENT' }),
               el('h4', { text: 'Self-Funded Growth' }),
               el('div.stat-val.blue', { text: `₹${fmt.cr(Math.abs(r.lines.marketingCost))} Cr` }),
-              el('p.xsmall.muted', { text: 'Marketing budget funded directly from operational savings — zero new equity required.' })
+              el('p.xsmall.muted', { text: 'Marketing budget funded directly from operational savings — zero new equity required' })
             ]),
             el('div.flywheel-step-card', {}, [
               el('span.step-tag', { text: 'STEP 3 · REVENUE RETURN' }),
               el('h4', { text: 'Renewal Retention (Farm)' }),
               el('div.stat-val.green', { text: `₹${fmt.cr(r.lines.renewal)} Cr` }),
-              el('p.xsmall.muted', { text: '1.5% renewal conversion lift on 2-day claim experience self-repays the entire plan.' })
+              el('p.xsmall.muted', { text: '1.5% renewal conversion lift on 2-day claim experience self-repays the entire plan' })
             ])
           ]),
 
