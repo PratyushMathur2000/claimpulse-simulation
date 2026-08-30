@@ -248,7 +248,7 @@ input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: var(--shad
 .chart .grid-line { stroke: var(--grid-2); stroke-width: 1; }
 .chart .grid-line.zero { stroke: var(--border-strong); stroke-width: 1.25; }
 .chart .lbl-value { fill: var(--ink-strong); font-weight: 640; font-variant-numeric: tabular-nums; }
-.chart .lbl-axis  { fill: var(--ink-faint); font-size: 10.5px; }
+.chart .lbl-axis  { fill: var(--ink); font-size: 10.5px; }
 .chart .series { transition: opacity var(--t-fast) var(--ease); }
 .chart .hit { fill: transparent; cursor: crosshair; }
 

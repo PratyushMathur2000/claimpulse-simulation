@@ -110,7 +110,7 @@ const ViewArchitecture = (() => {
           el('div.tabstrip', { id: 'lcTabs' }, [
             ['engines', 'Inference Engine Telemetry'],
             ['policy',  'Policy RAG & Clause Retrieval'],
-            ['trust',   'Bayesian Trust Score Arithmetic'],
+            ['trust',   'Bayesian Trust Score'],
             ['cost',    'Compute & Token Consumption'],
             ['node',    'Selected Node Architecture']
           ].map(([k, l]) => el('button', { type: 'button', 'data-k': k,

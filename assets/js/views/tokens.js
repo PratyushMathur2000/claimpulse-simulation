@@ -130,18 +130,9 @@ const ViewTokens = (() => {
         el('div', { id: 'tkDecisions' })
       ]),
 
-      el('div.g-phi-r', { style: { marginTop: 'var(--s-6)' } }, [
-        UI.card('Build vs. Buy Capital Allocation: GenAI Layer (5-Year NPV Analysis)', 'Sheet 13: Strict 5-year NPV comparison evaluating self-hosted GPU clusters vs. enterprise cloud APIs for commodity language reasoning.', [
-          el('div', { id: 'tkBvB' })
-        ]),
-        el('div.stack-6', {}, [
-          UI.tile({ k: '5-year NPV, BUY', ref: 'T-07', v: fmt.cr(0.2396), unit: '₹ Cr',
-            d: 'Total incremental cost of the API route, with published price deflation applied.' }),
-          UI.tile({ k: '5-year NPV, BUILD', ref: 'T-08', v: fmt.cr(2.938), unit: '₹ Cr',
-            d: 'Compute only. Excludes serving, engineering and upgrades, so it is a floor.' }),
-          UI.tile({ k: 'Advantage to buying', ref: 'T-09', warm: true, v: fmt.cr(2.698), unit: '₹ Cr',
-            d: 'Self-hosting loses on compute alone, before a single engineer is hired.' })
-        ])
+      UI.card('Build vs. Buy Capital Allocation: GenAI Layer (5-Year NPV Analysis)', 'Sheet 13: Strict 5-year NPV comparison evaluating self-hosted GPU clusters vs. enterprise cloud APIs for commodity language reasoning.', [
+        el('div', { id: 'tkBvB' }),
+        el('div', { id: 'tkBvBKPIs', style: { marginTop: 'var(--s-5)' } })
       ]),
 
       el('div', { style: { marginTop: 'var(--s-6)' } }, [
@@ -179,7 +170,7 @@ const ViewTokens = (() => {
         note: 'Lightweight CV validation with structured JSON decision output' },
       { label: 'Economy + batching, MEDIUM', value: rsPerClaim('central', true, true), color: 'var(--d6)',
         note: 'Asynchronous 10-min micro-batched processing on economy model tier (50% discount)' }
-    ], unit: '₹ per claim', height: 260 });
+    ], unit: '₹ per claim', height: 320 });
     $('#tkPaths').appendChild(UI.disc('Economic batching & cost hierarchy', `<p>The most expensive path costs ${UI.money(highCr)} a year against ${UI.money(r.runCost)} of run cost and ${UI.money(r.net)} of net benefit. The cheapest batched path costs only ${fmt.cr(rsPerClaim('central', true, true) * r.claims / 1e7, 3)} Cr/year.</p>`));
 
     /* ---- breakeven ---- */
@@ -223,7 +214,20 @@ const ViewTokens = (() => {
         note: 'Compute only. A floor — excludes serving, engineering, infrastructure & model maintenance.' },
       { label: 'BUY · 5-year API NPV (Commodity LLM)', value: 0.2396, color: 'var(--d1)',
         note: 'With published price deflation applied across the 5-year operating window.' }
-    ], unit: '₹ Cr', height: 200 });
+    ], unit: '₹ Cr', height: 160 });
+    mount($('#tkBvBKPIs'), [el('div.cells.c-3', {
+      style: { border: '1px solid var(--hairline)', borderRadius: 'var(--r-3)',
+               background: 'color-mix(in srgb, var(--surface) 30%, transparent)' } }, [
+      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'fin', size: 'sm',
+        k: '5-Year NPV, BUY', ref: 'T-07', v: '₹' + fmt.cr(0.2396) + ' Cr',
+        d: 'Total incremental cost of the API route, with published price deflation applied.' })]),
+      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'risk', size: 'sm',
+        k: '5-Year NPV, BUILD', ref: 'T-08', v: '₹' + fmt.cr(2.938) + ' Cr',
+        d: 'Compute only. Excludes serving, engineering and upgrades — a conservative floor.' })]),
+      el('div.cell-x', { style: { borderBottom: 0 } }, [UI.metric({ dom: 'cap', size: 'sm',
+        k: 'Advantage to BUY', ref: 'T-09', v: '₹' + fmt.cr(2.698) + ' Cr',
+        d: 'Self-hosting loses on compute alone, before a single engineer is hired.' })])
+    ])]);
     $('#tkBvB').appendChild(UI.disc('Why volume does not decide this', '<p> Both options scale linearly with claims, so there is no crossover volume — doubling claims doubles both. What would flip it is efficiency: self-hosting wins below <strong>77 provisioned GPU-seconds per claim</strong>, and E-01 currently assumes 648. That gap, 8.4× over breakeven, is the honest reason the answer is "buy the commodity layer, self-host the moat".</p>'));
   }
 

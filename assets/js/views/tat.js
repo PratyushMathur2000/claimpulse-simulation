@@ -126,8 +126,7 @@ const ViewTat = (() => {
       UI.clus('Self-Funding Growth Flywheel: Channel Acquisition & Policyholder Retention', 'cust'),
       el('div.panel.rise', { 'data-dom': 'cust' }, [
         el('div.spread.wrap', { style: { marginBottom: 'var(--s-5)' } }, [
-          el('div.small.muted', { text: 'The Hunt & Farm Plan: Repurposed operational capacity self-funds dealer channel acquisition, repaid via renewal retention.' }),
-          UI.dchip('Self-Funding Capital Reinvestment', 'risk')
+          el('div.small.muted', { text: 'The Hunt & Farm Plan: Repurposed operational capacity self-funds dealer channel acquisition, repaid via renewal retention.' })
         ]),
         el('div.g-phi', {}, [
           el('div', { id: 'tatMkt' }),
@@ -228,77 +227,52 @@ const ViewTat = (() => {
       margin: { t: 26, r: 24, b: 54, l: 48 }
     });
 
-    /* ---------------- surveyor and garage intuitive dual-card comparison ---------------- */
+    /* ---------------- surveyor & garage — two side-by-side bar charts ---------------- */
     const sgHost = $('#tatGauge');
     if (sgHost) {
       sgHost.innerHTML = '';
       mount(sgHost, [
-        el('div.stakeholder-chain-grid', {}, [
-          // CARD 1: SURVEYOR NETWORK
-          el('div.stakeholder-card', {}, [
-            el('div.card-head', {}, [
-              el('span.badge-pill.ops', { text: 'STAKEHOLDER 01 · SURVEYORS' }),
-              el('h4', { style: { marginTop: 'var(--s-2)', marginBottom: '2px', fontSize: 'var(--fs-base)' }, text: 'Licensed Surveyor Network' }),
-              el('p.small.muted', { style: { margin: 0 }, text: 'IRDAI Statutory ₹50,000 Cap Alignment' })
+        el('div.g-2', {}, [
+          el('div', {}, [
+            el('div', { style: { marginBottom: 'var(--s-3)' } }, [
+              el('div', { style: { fontWeight: 650, fontSize: 'var(--fs-base)', color: 'var(--ink-strong)' },
+                text: 'Physical Surveys: Before vs. After' }),
+              el('div.small.muted', { text: 'Annual survey volume across the addressable book' })
             ]),
-            el('div.compare-bar-group', {}, [
-              el('div.compare-row', {}, [
-                el('div.meta-row', {}, [
-                  el('span.label', { text: 'Today (Universal 55% Survey)' }),
-                  el('span.val.risk', { text: fmt.compact(r.surveyToday) + ' visits (55%)' })
-                ]),
-                el('div.bar-track', {}, [el('div.bar-fill.risk', { style: { width: '100%' } })])
-              ]),
-              el('div.compare-row', {}, [
-                el('div.meta-row', {}, [
-                  el('span.label', { text: 'On ClaimPulse (Elevated >₹50k)' }),
-                  el('span.val.cap', { text: fmt.compact(r.surveyAfter) + ' visits (10%)' })
-                ]),
-                el('div.bar-track', {}, [el('div.bar-fill.cap', { style: { width: `${(r.surveyAfter / r.surveyToday) * 100}%` } })])
-              ])
-            ]),
-            el('div.impact-pill.success', {}, [
-              el('span.icon', { text: '⚡' }),
-              el('div', {}, [
-                el('div', { style: { fontWeight: 700, color: 'var(--ink-strong)' }, text: `${fmt.compact(r.visitsAvoided)} physical surveys eliminated (−81.9%)` }),
-                el('div.xsmall.muted', { style: { marginTop: '2px' }, text: 'Below ₹50,000 corridor, live 360° video evidence suffices. Surveyors move up into complex structural damage and fraud forensics.' })
-              ])
-            ])
+            el('div', { id: 'tatSurveyBar' })
           ]),
-
-          // CARD 2: GARAGE NETWORK
-          el('div.stakeholder-card', {}, [
-            el('div.card-head', {}, [
-              el('span.badge-pill.cust', { text: 'STAKEHOLDER 02 · GARAGES' }),
-              el('h4', { style: { marginTop: 'var(--s-2)', marginBottom: '2px', fontSize: 'var(--fs-base)' }, text: '1,300+ Cashless Garages' }),
-              el('p.small.muted', { style: { margin: 0 }, text: 'Bay Velocity & Key-to-Key Cycle' })
+          el('div', {}, [
+            el('div', { style: { marginBottom: 'var(--s-3)' } }, [
+              el('div', { style: { fontWeight: 650, fontSize: 'var(--fs-base)', color: 'var(--ink-strong)' },
+                text: 'Garage Approval Wait: Before vs. After' }),
+              el('div.small.muted', { text: 'Days a bay sits idle awaiting repair authorisation' })
             ]),
-            el('div.compare-bar-group', {}, [
-              el('div.compare-row', {}, [
-                el('div.meta-row', {}, [
-                  el('span.label', { text: 'Today (Surveyor Inspection Wait)' }),
-                  el('span.val.risk', { text: `${I.J06_garageToday} days bay idle` })
-                ]),
-                el('div.bar-track', {}, [el('div.bar-fill.risk', { style: { width: '100%' } })])
-              ]),
-              el('div.compare-row', {}, [
-                el('div.meta-row', {}, [
-                  el('span.label', { text: 'On ClaimPulse (Instant FNOL Match)' }),
-                  el('span.val.cap', { text: `${I.J07_garageAfter} day (−75% idle)` })
-                ]),
-                el('div.bar-track', {}, [el('div.bar-fill.cap', { style: { width: `${(I.J07_garageAfter / I.J06_garageToday) * 100}%` } })])
-              ])
-            ]),
-            el('div.impact-pill.success', {}, [
-              el('span.icon', { text: '🏎️' }),
-              el('div', {}, [
-                el('div', { style: { fontWeight: 700, color: 'var(--ink-strong)' }, text: `${r.garageDaysSaved} days saved per repair job across panel` }),
-                el('div.xsmall.muted', { style: { marginTop: '2px' }, text: 'Instant damage band delivered at first notification. A freed bay is an earning bay, making garages prioritize Bajaj policyholders.' })
-              ])
-            ])
+            el('div', { id: 'tatGarageBar' })
           ])
         ])
       ]);
+      Charts.hbar($('#tatSurveyBar'), {
+        items: [
+          { label: 'Today · Universal survey (55%)', value: r.surveyToday, color: 'var(--dom-risk)',
+            note: 'Every motor claim below ₹50k still gets a physical inspection today.' },
+          { label: 'On ClaimPulse · Above ₹50k only', value: r.surveyAfter, color: 'var(--dom-cap)',
+            note: 'Below the IRDAI corridor, live 360° video evidence resolves the claim.' }
+        ],
+        unit: 'surveys / year',
+        valueFmt: v => fmt.compact(v),
+        height: 120
+      });
+      Charts.hbar($('#tatGarageBar'), {
+        items: [
+          { label: 'Today · Awaiting surveyor allocation', value: I.J06_garageToday, color: 'var(--dom-risk)',
+            note: 'Bay idle for up to 4 days while surveyor is dispatched and travels.' },
+          { label: 'On ClaimPulse · Instant band at FNOL', value: I.J07_garageAfter, color: 'var(--dom-cap)',
+            note: 'Indicative repair cost band arrives at first notification.' }
+        ],
+        unit: 'days idle per job',
+        valueFmt: v => v + ' d',
+        height: 120
+      });
     }
 
     /* ---------------- marketing & saved funds growth flywheel ---------------- */
@@ -307,34 +281,12 @@ const ViewTat = (() => {
       mktHost.innerHTML = '';
       mount(mktHost, [
         el('div.growth-flywheel', {}, [
-          // STAGE FLOW ROW
-          el('div.flywheel-flow-row', {}, [
-            el('div.flywheel-step-card', {}, [
-              el('span.step-tag', { text: 'STEP 1 · EFFICIENCY SAVINGS' }),
-              el('h4', { text: 'Repurposed Fund Pool' }),
-              el('div.stat-val.gold', { text: '₹23.82 Cr' }),
-              el('p.xsmall.muted', { text: '175.9 FTE capacity released + 74k surveys eliminated generates productive gross value.' })
-            ]),
-            el('div.flywheel-step-card', {}, [
-              el('span.step-tag', { text: 'STEP 2 · RE-INVESTMENT' }),
-              el('h4', { text: 'Self-Funded Growth' }),
-              el('div.stat-val.blue', { text: `₹${fmt.cr(Math.abs(r.lines.marketingCost))} Cr` }),
-              el('p.xsmall.muted', { text: 'Marketing budget funded directly from operational savings — zero new equity required.' })
-            ]),
-            el('div.flywheel-step-card', {}, [
-              el('span.step-tag', { text: 'STEP 3 · REVENUE RETURN' }),
-              el('h4', { text: 'Renewal Retention (Farm)' }),
-              el('div.stat-val.green', { text: `₹${fmt.cr(r.lines.renewal)} Cr` }),
-              el('p.xsmall.muted', { text: '1.5% renewal conversion lift on 2-day claim experience self-repays the entire plan.' })
-            ])
-          ]),
-
           // HUNT & FARM DUAL ENGINE BREAKDOWN
           el('div.hunt-farm-split', {}, [
             // THE HUNT
             el('div.hunt-box', {}, [
               el('div.spread', {}, [
-                el('span.badge-pill.ops', { text: 'THE HUNT · NEW CUSTOMER ACQUISITION' }),
+                el('span.badge-pill.ops', { text: 'THE HUNT · ACQUISITION' }),
                 el('span.small.bold', { style: { color: 'var(--d1)' }, text: `₹${fmt.cr(mkt.totalCr)} Cr Plan` })
               ]),
               el('p.small.muted', { style: { margin: 0 }, text: 'Equipping dealerships and distribution partners with the 2-Day Green Lane claim settlement guarantee:' }),
@@ -361,7 +313,7 @@ const ViewTat = (() => {
             // THE FARM
             el('div.farm-box', {}, [
               el('div.spread', {}, [
-                el('span.badge-pill.cust', { text: 'THE FARM · RENEWAL RETENTION & LTV' }),
+                el('span.badge-pill.cust', { text: 'THE FARM · RETENTION' }),
                 el('span.small.bold', { style: { color: 'var(--dom-cust)' }, text: `₹${fmt.cr(r.lines.renewal)} Cr GWP` })
               ]),
               el('p.small.muted', { style: { margin: 0 }, text: 'Repurposed adjuster capacity proactively engages claimants with high-touch recovery calls:' }),

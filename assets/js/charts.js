@@ -223,8 +223,17 @@ const Charts = (() => {
       if (!p.tick) return;
       s.appendChild(el('circle', { cx: x(i), cy: y(p.v), r: 4.5,
         fill: 'var(--d1)', stroke: 'var(--surface)', 'stroke-width': 2 }));
+      // Bottom x-axis label
       s.appendChild(el('text', { class: 'lbl-axis', x: x(i), y: m.t + ih + 18,
         'text-anchor': 'middle', text: p.tick }));
+      // Value annotation above the dot
+      const above = y(p.v) - 10;
+      s.appendChild(el('text', {
+        class: 'lbl-value', x: x(i), y: above,
+        'text-anchor': 'middle', 'font-size': 10.5, 'font-weight': 700,
+        fill: p.v >= 0 ? 'var(--dom-cap)' : 'var(--dom-risk)',
+        text: (p.v >= 0 ? '+₹' : '−₹') + fmt.cr(Math.abs(p.v)) + ' Cr'
+      }));
     });
 
     // crosshair
@@ -349,7 +358,7 @@ const Charts = (() => {
     const xPos = delta => cx + (delta / maxDev) * (iw / 2);
     const s = svg(host, W, H);
 
-    // Ticks and scale labels (showing both absolute ₹ Cr and signed Δ)
+    // Ticks and scale labels (absolute ₹ Cr values only — delta labels removed)
     const tickSteps = [-maxDev, -maxDev / 2, 0, maxDev / 2, maxDev];
     tickSteps.forEach(t => {
       const isZero = Math.abs(t) < 1e-6;
@@ -361,16 +370,10 @@ const Charts = (() => {
         'stroke-width': isZero ? 1.5 : 1
       }));
       s.appendChild(el('text', {
-        class: 'lbl-axis', x: xPos(t), y: m.t - 22,
+        class: 'lbl-axis', x: xPos(t), y: m.t - 14,
         'text-anchor': 'middle', 'font-size': 11, 'font-weight': isZero ? 700 : 500,
         fill: isZero ? 'var(--ink-strong)' : 'var(--ink-muted)',
-        text: isZero ? `₹${fmt.cr(baseline)} Cr` : `₹${fmt.cr(baseline + t)} Cr`
-      }));
-      s.appendChild(el('text', {
-        class: 'lbl-axis', x: xPos(t), y: m.t - 10,
-        'text-anchor': 'middle', 'font-size': 9.5, 'font-family': 'var(--ff-mono)',
-        fill: isZero ? 'var(--accent)' : 'var(--ink-faint)',
-        text: isZero ? '[Baseline]' : (t > 0 ? `+₹${fmt.cr(t)}` : `−₹${fmt.cr(Math.abs(t))}`)
+        text: isZero ? `₹${fmt.cr(baseline)} Cr (Baseline)` : `₹${fmt.cr(baseline + t)} Cr`
       }));
     });
 
@@ -819,18 +822,18 @@ Charts.contrib = function (host, parts) {
      Replaces four separate cards wherever "value vs benchmark" repeats.
      ------------------------------------------------------------------- */
   Charts.gaugebar = function (host, { rows, height }) {
-    const W = 620, rh = 42, H = height || rows.length * rh + 8;
+    const W = 780, rh = 50, H = height || rows.length * rh + 8;
     const s = svgOf(host, W, H);
-    const lx = 200, iw = W - lx - 86;
+    const lx = 280, iw = W - lx - 96;
     rows.forEach((r, i) => {
-      const y = 12 + i * rh;
+      const y = 14 + i * rh;
       const max = r.max || Math.max(r.value, r.ref) * 1.25;
       const fill = grad(s, r.c1 || 'var(--accent)', r.c2 || r.c1 || 'var(--accent)', 0);
-      s.appendChild(el('text', { x: lx - 14, y: y + 12, 'text-anchor': 'end', 'font-size': 11.5,
-        'font-weight': 600, fill: 'var(--ink-muted)', text: r.label }));
-      s.appendChild(el('rect', { x: lx, y: y + 3, width: iw, height: 14, rx: 7, fill: 'var(--hairline)' }));
+      s.appendChild(el('text', { x: lx - 16, y: y + 15, 'text-anchor': 'end', 'font-size': 12,
+        'font-weight': 600, fill: 'var(--ink)', text: r.label }));
+      s.appendChild(el('rect', { x: lx, y: y + 4, width: iw, height: 18, rx: 9, fill: 'var(--hairline)' }));
       const w = Math.max((r.value / max) * iw, 4);
-      const bar = el('rect', { x: lx, y: y + 3, width: 0, height: 14, rx: 7, fill,
+      const bar = el('rect', { x: lx, y: y + 4, width: 0, height: 18, rx: 9, fill,
         style: 'filter:drop-shadow(0 0 7px ' + (r.c1 || 'var(--accent)') + ')' });
       s.appendChild(bar);
       requestAnimationFrame(() => {
@@ -839,10 +842,10 @@ Charts.contrib = function (host, parts) {
       });
       if (r.ref !== undefined) {
         const rx = lx + (r.ref / max) * iw;
-        s.appendChild(el('line', { x1: rx, x2: rx, y1: y - 2, y2: y + 22,
+        s.appendChild(el('line', { x1: rx, x2: rx, y1: y - 2, y2: y + 26,
           stroke: 'var(--ink-faint)', 'stroke-width': 1.5, 'stroke-dasharray': '3 3' }));
       }
-      s.appendChild(el('text', { x: W - 76, y: y + 14, 'font-size': 12.5, 'font-weight': 700,
+      s.appendChild(el('text', { x: W - 88, y: y + 17, 'font-size': 13, 'font-weight': 700,
         fill: 'var(--ink-strong)', text: r.display !== undefined ? r.display : fmt.cr(r.value) }));
     });
     return s;

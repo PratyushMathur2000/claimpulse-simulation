@@ -503,7 +503,8 @@ const ViewStress = (() => {
     Charts.cashflow(CP.$('#cash'), { points: pts, buildCost: r.buildTotal,
       paybackMonths: r.paybackKickoff ? r.paybackKickoff - CPModel.INPUTS.B27_buildMonths : null,
       paybackLabel: r.paybackKickoff
-        ? `build repaid · ${fmt.n1(r.paybackKickoff)} mo from kickoff` : null });
+        ? `build repaid · ${fmt.n1(r.paybackKickoff)} mo from kickoff` : null,
+      height: 340 });
 
     /* --- run cost donut chart --- */
     Charts.donut(CP.$('#runcost'), { slices: [

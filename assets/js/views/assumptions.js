@@ -231,13 +231,9 @@ const ViewAssumptions = (() => {
         el('div.spread', {}, [
           el('span.small', { text: 'Workbook self-audit (IC-01 to IC-08, three plans)' }),
           el('span.integrity.ok', { text: '✓ 24/24 PASS' })
-        ]),
-        el('div.spread', {}, [
-          el('span.small', { text: 'Stakeholder split reconciles to net benefit (W-60)' }),
-          el('span.integrity.ok', { text: '✓ 0.000' })
         ])
       ]),
-      UI.disc('What these three checks prove', '<p>The first is that this application has not drifted from the Excel. The second is that the Excel does not contradict itself. The third is that who-books-what adds back to the same total — if the split ever drifts from the P&L that number stops being zero, and every screen says so.</p>')
+      UI.disc('What these two checks prove', '<p>The first is that this application has not drifted from the Excel. The second is that the Excel does not contradict itself — all 24 internal consistency checks return PASS across all three rollout plans.</p>')
     ]);
   }
 

@@ -232,7 +232,7 @@ const Pipeline = (() => {
       'font-weight': 700, 'letter-spacing': '.1em', fill: 'var(--ink-faint)',
       text: 'FIVE ENGINES IN PARALLEL' }));
 
-    box(s, 'fusion', COL.fusion, MID - 54, 168, 108,
+    box(s, 'fusion', COL.fusion, MID - 54, 180, 108,
       { title: 'TRUST SCORE', sub: 'signal fusion, 0–100', tone: NODES.fusion.tone });
     s.appendChild(el('text', { x: COL.fusion + 16, y: MID + 16, 'font-size': 9.5,
       fill: 'var(--ink-muted)', text: 'do the signals agree' }));
@@ -277,13 +277,28 @@ const Pipeline = (() => {
       s.appendChild(el('text', { x: COL.intake + 4, y: hfY - 6 + i * 13, 'font-size': 9.5,
         fill: 'var(--ink-muted)', text: t })));
 
-    /* governance and ecosystem strips */
+    /* governance and ecosystem strips — lighter background for readability */
     [['gov', 'HUMAN + SYSTEM GOVERNANCE', 'override · audit trail · explanation · rollback · SIU escalation'],
      ['eco', 'SETTLEMENT + ECOSYSTEM', 'customer · garage · surveyor · Bajaj ops']]
       .forEach(([id, title, sub]) => {
         const y = STRIP_Y[id];
-        box(s, id, COL.gate, y, W - COL.gate - 24, 62,
-          { title, sub, tone: NODES[id].tone, dashed: true });
+        const stripG = el('g.hot', { 'data-node': id, tabindex: 0, role: 'button',
+          'aria-label': title + (sub ? ', ' + sub : '') });
+        const sw = W - COL.gate - 24;
+        stripG.appendChild(el('rect', {
+          x: COL.gate, y, width: sw, height: 62, rx: 11,
+          fill: 'color-mix(in srgb, var(--surface-raised) 70%, var(--surface))',
+          stroke: NODES[id].tone, 'stroke-width': 1.4,
+          'stroke-dasharray': '6 4', class: 'nbox'
+        }));
+        stripG.appendChild(el('rect', { x: COL.gate, y, width: 4, height: 62, rx: 2,
+          fill: NODES[id].tone, class: 'nedge' }));
+        stripG.appendChild(el('text', { x: COL.gate + 16, y: y + 24,
+          'font-size': 12.5, 'font-weight': 680, fill: 'var(--ink-strong)', text: title }));
+        stripG.appendChild(el('text', { x: COL.gate + 16, y: y + 41,
+          'font-size': 10.5, fill: 'var(--ink)', text: sub }));
+        nodeBox[id] = { x: COL.gate, y, w: sw, h: 62 };
+        s.appendChild(stripG);
       });
     s.appendChild(el('path', { d: `M${COL.lane + 100},${LTOP + 3 * (LH + LGAP) - LGAP} V${STRIP_Y.gov}`,
       fill: 'none', stroke: 'var(--border-strong)', 'stroke-dasharray': '4 4' }));

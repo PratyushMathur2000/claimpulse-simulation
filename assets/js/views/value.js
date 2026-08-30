@@ -44,28 +44,31 @@ const ViewValue = (() => {
       el('div.panel.rise', { 'data-dom': 'ops' }, [el('div', { id: 'vlChanged' })]),
 
       UI.clus('Net Financial Alpha & Inter-Entity Value Attribution', 'fin'),
-      el('div.g-phi', { style: { alignItems: 'stretch' } }, [
-        el('div.panel.rise', { 'data-dom': 'fin' }, [
-          el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
-            text: 'Line-by-Line P&L Benefit Realization (Waterfall)' }),
-          el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-            text: 'Sheet 3 Part C at steady state. Labour is deliberately zero.' }),
-          el('div', { id: 'vlBridge' }),
-          el('div', { style: { marginTop: 'var(--s-5)' } }, [
-            UI.disc('Why the marketing line is negative',
-              '<p>The Hunt &amp; Farm plan is carried at full cost against a renewal line smaller than itself. The acquisition benefit — new business won on a two-day claim promise — is real and we cannot size it, so it is not counted. A benefit we cannot size does not get to offset a cost we can.</p>'),
-            UI.disc('Why there is no labour line',
-              '<p>W-18 is zero by decision. Headcount does not fall, so no salary leaves the P&amp;L. What the platform releases is capacity, and capacity is booked as redeployed output at a stated realisation rate, outside both ratios.</p>')
-          ])
+      el('div.panel.rise', { 'data-dom': 'fin' }, [
+        el('div.spread.wrap', { style: { marginBottom: 'var(--s-4)', paddingBottom: 'var(--s-3)', borderBottom: '1px solid var(--hairline)' } }, [
+          el('div', {}, [
+            el('h3', { style: { margin: 0, fontSize: 'var(--fs-md)' },
+              text: 'Line-by-Line P&L Benefit Realization (Waterfall)' }),
+            el('div.small.muted', { style: { marginTop: 'var(--s-1)' },
+              text: 'Sheet 3 Part C at steady state. Labour is deliberately zero (W-18).' })
+          ]),
+          UI.dchip('W-35 Steady State', 'fin')
         ]),
-        el('div.panel.rise', { 'data-dom': 'fin' }, [
-          el('h3', { style: { margin: '0 0 var(--s-2)', fontSize: 'var(--fs-md)' },
-            text: 'Ratio Movement: Loss Ratio Compression vs. Expense Ratio De-leveraging' }),
-          el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
-            text: 'The distinction the finance function will make first.' }),
-          el('div', { id: 'vlRatio' }),
-          el('div', { id: 'vlStake', style: { marginTop: 'var(--s-6)' } })
+        el('div', { id: 'vlBridge' }),
+        el('div', { style: { marginTop: 'var(--s-5)' } }, [
+          UI.disc('Why the marketing line is negative',
+            '<p>The Hunt &amp; Farm plan is carried at full cost against a renewal line smaller than itself. The acquisition benefit — new business won on a two-day claim promise — is real and we cannot size it, so it is not counted. A benefit we cannot size does not get to offset a cost we can.</p>'),
+          UI.disc('Why there is no labour line',
+            '<p>W-18 is zero by decision. Headcount does not fall, so no salary leaves the P&amp;L. What the platform releases is capacity, and capacity is booked as redeployed output at a stated realisation rate, outside both ratios.</p>')
         ])
+      ]),
+
+      UI.clus('Ratio Movement: Loss Ratio Compression vs. Expense Ratio De-leveraging', 'fin'),
+      el('div.panel.rise', { 'data-dom': 'fin' }, [
+        el('div.small.muted', { style: { marginBottom: 'var(--s-5)' },
+          text: 'The distinction the finance function will make first.' }),
+        el('div', { id: 'vlRatio' }),
+        el('div', { id: 'vlStake', style: { marginTop: 'var(--s-6)' } })
       ]),
 
       UI.clus('Human Capital Reallocation: 175.9 FTE Capacity Redeployment', 'cap'),
@@ -186,7 +189,7 @@ const ViewValue = (() => {
     /* ---- benefit bridge ---- */
     /* ---- benefit bridge ---- */
     const L = r.lines;
-    Charts.waterfall($('#vlBridge'), { height: 360, unit: '₹ Cr', items: [
+    Charts.waterfall($('#vlBridge'), { width: 900, height: 400, unit: '₹ Cr', items: [
       { label: 'Fraud, graph detection', value: L.fraudGraph, kind: 'add', note: 'W-19 · Loss ratio saving' },
       { label: 'Fraud, capture gate', value: L.fraudGate, kind: 'add', note: 'W-20 · Loss ratio saving' },
       { label: 'Synthetic media detection', value: L.synthetic, kind: 'add', note: 'W-21 · Loss ratio saving' },

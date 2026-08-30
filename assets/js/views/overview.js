@@ -213,10 +213,7 @@ const ViewOverview = (() => {
       { label: 'NET ANNUAL BENEFIT', value: r.net, kind: 'total', note: 'W-35 Steady state.' }
     ]});
 
-    mount($('#ovRecon'), [UI.disc('Why is W-60 exactly ₹0.000 Cr?',
-      `<p><strong>${UI.money(r.stake.underwriting)}</strong> (Underwriting) + <strong>${UI.money(r.stake.claimsOps)}</strong> (Operations) + <strong>${UI.money(r.stake.bfdl)}</strong> (Distribution) − <strong>${UI.money(Math.abs(r.stake.runCost))}</strong> (Run Cost) = <strong>${UI.money(r.net)}</strong> (Net P&amp;L Benefit).</p>
-       <p>The check at <strong>W-60 returns ₹0.000 Cr</strong>. This is the mathematical zero-sum residual proof demonstrating that 100% of value generated across stakeholders reconciles back to the corporate bottom line without leakage or double-counting.</p>`,
-      { chip: 'W-60 = 0' })]);
+    // W-60 zero-leakage disc removed per review feedback
   }
 
   return { render };
