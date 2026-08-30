@@ -463,8 +463,11 @@ const ViewStress = (() => {
     ];
     // waterfall wants a running sequence; totals reset to zero
     const seq = items.filter(i => i.kind !== 'total' || i.label === 'NET ANNUAL BENEFIT');
-    Charts.waterfall(CP.$('#bridge'), { items: seq.map(i =>
-      i.label === 'NET ANNUAL BENEFIT' ? { ...i, kind:'total' } : i) });
+    Charts.waterfall(CP.$('#bridge'), {
+      items: seq.map(i => i.label === 'NET ANNUAL BENEFIT' ? { ...i, kind:'total' } : i),
+      unit: '₹ Cr',
+      height: 320
+    });
 
     /* table view — the relief rule, and the accessible fallback */
     mount(CP.$('#bridgeTable'), [el('div.tbl-wrap', {}, [

@@ -96,8 +96,11 @@ const ViewLive = (() => {
           ])
         ]),
         el('div.panel.rise.pad-0', { 'data-dom': 'cust' }, [
-          el('div', { style: { padding: 'var(--s-6)' } }, [
-            el('div.small.muted', { text: 'Each claim gated, scored and routed by the same engine. Click any row to open it.' })
+          el('div', { style: { padding: 'var(--s-4) var(--s-6)', borderBottom: '1px solid var(--border)' } }, [
+            el('div.spread', {}, [
+              el('div.small.bold', { style: { color: 'var(--ink-muted)' }, text: 'Claimant & Loss Details' }),
+              el('div.small.bold', { style: { color: 'var(--ink-muted)' }, text: 'Trust Score (0–100) & Settlement' })
+            ])
           ]),
           el('div', { id: 'lvFeed', style: { maxHeight: '560px', overflowY: 'auto' } })
         ])
@@ -237,9 +240,10 @@ const ViewLive = (() => {
           el('div.xsmall.faint', { text: `${c.claim.vehicle.make} ${c.claim.vehicle.model} · ${c.claim.city}` })
         ]),
         el('div', { style: { textAlign: 'right' } }, [
-          el('div.small.mono', { style: { fontWeight: 640 },
-            text: c.trust.score === null ? 'gate' : fmt.cr(c.trust.score, 1) }),
-          el('div.xsmall.faint', { text: c.money.payable === null ? 'rejected' : '₹' + fmt.n(c.money.payable) })
+          el('div.small.mono', { style: { fontWeight: 700, color: c.trust.score === null ? 'var(--dom-risk)' : c.trust.score >= 75 ? 'var(--dom-cap)' : c.trust.score >= 50 ? 'var(--d4)' : 'var(--dom-risk)' },
+            text: c.trust.score === null ? 'GATE STOP' : `Trust ${fmt.cr(c.trust.score, 1)}/100` }),
+          el('div.xsmall', { style: { fontWeight: 600, color: c.money.payable === null ? 'var(--ink-faint)' : 'var(--ink-strong)' },
+            text: c.money.payable === null ? 'Rejected at Gate 00' : '₹' + fmt.n(c.money.payable) })
         ])
       ])) : [el('p.small.faint', { style: { padding: 'var(--s-6)' }, text: 'The feed fills as claims arrive.' })]);
   }

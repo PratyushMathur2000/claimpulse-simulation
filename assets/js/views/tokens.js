@@ -83,7 +83,20 @@ const ViewTokens = (() => {
       UI.head('Simulation · Token economics & inference risk',
         el('h1', {}, ['We cannot measure tokens yet. ',
           el('span.grad-ink', { text: 'So we bounded them, and the answer did not move.' })]),
-        'Prelude & Risk Architecture: AI inference rates can fluctuate and scale with claim volume. Rather than relying on a single point estimate, we stress-test token economics across an eighteen-fold range. Steady-state payback moves by only 0.02 months. Inference cost cannot break this business case at any plausible volume.'),
+        el('div.stack-2', { style: { marginTop: 'var(--s-3)' } }, [
+          el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-2)' } }, [
+            el('span', { style: { color: 'var(--accent)', fontWeight: 800 }, text: '•' }),
+            el('span.small', { html: '<strong>AI Inference Scalability:</strong> Token usage scales linearly with claim volume, bound by deterministic pre-filtering before any model call.' })
+          ]),
+          el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-2)' } }, [
+            el('span', { style: { color: 'var(--accent)', fontWeight: 800 }, text: '•' }),
+            el('span.small', { html: '<strong>Payback Resilience:</strong> Across an 18-fold token pricing variation, steady-state payback moves by only <strong>0.02 months</strong>.' })
+          ]),
+          el('div.row', { style: { alignItems: 'flex-start', gap: 'var(--s-2)' } }, [
+            el('span', { style: { color: 'var(--accent)', fontWeight: 800 }, text: '•' }),
+            el('span.small', { html: '<strong>Architectural Defense:</strong> Self-hosting the proprietary fraud/gate moat while buying commodity language APIs saves <strong>₹2.70 Cr</strong> over 5 years.' })
+          ])
+        ])),
 
       el('div.g-4', { style: { marginBottom: 'var(--s-7)' } }, [
         UI.tile({ hero: true, accent: true, k: 'Inference, medium case', ref: 'Sheet 12 Part D',
@@ -142,8 +155,8 @@ const ViewTokens = (() => {
 
     /* ---- component table ---- */
     mount($('#tkTable'), [UI.table(
-      [{ label: 'Component' }, { label: 'Low consumption', n: true }, { label: 'Medium consumption', n: true },
-       { label: 'High consumption', n: true }, { label: 'Basis' }],
+      [{ label: 'Inference Component' }, { label: 'Low (Tokens)', n: true }, { label: 'Medium (Tokens)', n: true },
+       { label: 'High (Tokens)', n: true }, { label: 'Estimation Basis & Assumption' }],
       COMPONENTS.map(c => [
         { node: el('span', { style: { fontWeight: 580 }, text: c.name }) },
         fmt.n(c.low), fmt.n(c.central), fmt.n(c.high),
@@ -162,7 +175,8 @@ const ViewTokens = (() => {
       { label: 'Mid-tier, MEDIUM consumption', value: rsPerClaim('central'), color: 'var(--d1)' },
       { label: 'Mid-tier, LOW consumption', value: rsPerClaim('low'), color: 'var(--d3)' },
       { label: 'Economy + batching, MEDIUM', value: rsPerClaim('central', true, true), color: 'var(--d6)' }
-    ], unit: '₹ per claim' });
+    ], unit: '₹ per claim', height: 230 });
+    $('#tkPaths').appendChild(UI.disc('Economic batching & cost hierarchy', `<p>The most expensive path costs ${UI.money(highCr)} a year against ${UI.money(r.runCost)} of run cost and ${UI.money(r.net)} of net benefit. The cheapest batched path costs only ${fmt.cr(rsPerClaim('central', true, true) * r.claims / 1e7, 3)} Cr/year.</p>`));
     $('#tkPaths').appendChild(UI.disc('Economic batching & cost hierarchy', `<p>The most expensive path costs ${UI.money(highCr)} a year against ${UI.money(r.runCost)} of run cost and ${UI.money(r.net)} of net benefit. The cheapest batched path costs only ${fmt.cr(rsPerClaim('central', true, true) * r.claims / 1e7, 3)} Cr/year.</p>`));
 
     /* ---- breakeven ---- */
@@ -202,11 +216,11 @@ const ViewTokens = (() => {
 
     /* ---- build vs buy ---- */
     Charts.hbar($('#tkBvB'), { items: [
-      { label: 'BUILD · 5-year compute NPV', value: 2.938, color: 'var(--d8)',
-        note: 'Compute only. A floor — excludes serving, engineering and upgrades.' },
-      { label: 'BUY · 5-year API NPV', value: 0.2396, color: 'var(--d1)',
-        note: 'With A-12 price deflation applied across the window.' }
-    ]});
+      { label: 'BUILD · 5-year compute NPV (Floor)', value: 2.938, color: 'var(--d8)',
+        note: 'Compute only. A floor — excludes serving, engineering, infrastructure & model maintenance.' },
+      { label: 'BUY · 5-year API NPV (Commodity LLM)', value: 0.2396, color: 'var(--d1)',
+        note: 'With published price deflation applied across the 5-year operating window.' }
+    ], unit: '₹ Cr', height: 180 });
     $('#tkBvB').appendChild(UI.disc('Why volume does not decide this', '<p> Both options scale linearly with claims, so there is no crossover volume — doubling claims doubles both. What would flip it is efficiency: self-hosting wins below <strong>77 provisioned GPU-seconds per claim</strong>, and E-01 currently assumes 648. That gap, 8.4× over breakeven, is the honest reason the answer is "buy the commodity layer, self-host the moat".</p>'));
   }
 

@@ -176,17 +176,18 @@ const ViewValue = (() => {
     })]);
 
     /* ---- benefit bridge ---- */
+    /* ---- benefit bridge ---- */
     const L = r.lines;
-    Charts.waterfall($('#vlBridge'), { height: 330, items: [
-      { label: 'Fraud, graph', value: L.fraudGraph, kind: 'add', note: 'W-19 · loss ratio' },
-      { label: 'Fraud, capture gate', value: L.fraudGate, kind: 'add', note: 'W-20 · loss ratio' },
-      { label: 'Synthetic media', value: L.synthetic, kind: 'add', note: 'W-21 · loss ratio' },
-      { label: 'Capacity redeployed', value: L.capacity, kind: 'add', note: 'W-22a · outside both ratios' },
-      { label: 'Renewal retention', value: L.renewal, kind: 'add', note: 'W-22 · distribution income' },
-      { label: 'Live-capture friction', value: L.frictionCost, kind: 'sub', note: 'W-23 · our own hard rule' },
-      { label: 'Marketing', value: L.marketingCost, kind: 'sub', note: 'W-23a · a spend, not a saving' },
-      { label: 'Run cost', value: -r.runCost, kind: 'sub', note: 'W-32' },
-      { label: 'Net benefit', value: r.net, kind: 'total', note: 'W-35' }
+    Charts.waterfall($('#vlBridge'), { height: 360, unit: '₹ Cr', items: [
+      { label: 'Fraud, graph detection', value: L.fraudGraph, kind: 'add', note: 'W-19 · Loss ratio saving' },
+      { label: 'Fraud, capture gate', value: L.fraudGate, kind: 'add', note: 'W-20 · Loss ratio saving' },
+      { label: 'Synthetic media detection', value: L.synthetic, kind: 'add', note: 'W-21 · Loss ratio saving' },
+      { label: 'Capacity redeployed', value: L.capacity, kind: 'add', note: 'W-22a · Outside both ratios' },
+      { label: 'Renewal retention lift', value: L.renewal, kind: 'add', note: 'W-22 · Distribution income' },
+      { label: 'Live-capture friction cost', value: L.frictionCost, kind: 'sub', note: 'W-23 · Operational friction' },
+      { label: 'Marketing investment', value: L.marketingCost, kind: 'sub', note: 'W-23a · Strategic spend' },
+      { label: 'Annual run cost', value: -r.runCost, kind: 'sub', note: 'W-32 · Compute & operations' },
+      { label: 'NET ANNUAL BENEFIT', value: r.net, kind: 'total', note: 'W-35 · Steady state' }
     ]});
 
     /* ---- ratio attribution ---- */
@@ -194,27 +195,27 @@ const ViewValue = (() => {
     const expCr  = Math.abs(L.frictionCost) + r.runCost;
     const outside = L.capacity + L.renewal + L.marketingCost;
     Charts.gaugebar($('#vlRatio'), { rows: [
-      { label: 'Moves the loss ratio', value: lossCr, max: Math.max(lossCr, expCr, Math.abs(outside)) * 1.15,
-        display: '₹' + fmt.cr(lossCr) + ' Cr', c1: 'var(--dom-cap)', c2: 'var(--dom-cap-2)' },
-      { label: 'Moves the expense ratio', value: expCr, max: Math.max(lossCr, expCr, Math.abs(outside)) * 1.15,
+      { label: 'Moves the Loss Ratio (Claims P&L)', value: lossCr, max: Math.max(lossCr, expCr, Math.abs(outside)) * 1.15,
+        display: '+₹' + fmt.cr(lossCr) + ' Cr', c1: 'var(--dom-cap)', c2: 'var(--dom-cap-2)' },
+      { label: 'Moves the Expense Ratio (Operating Cost)', value: expCr, max: Math.max(lossCr, expCr, Math.abs(outside)) * 1.15,
         display: '−₹' + fmt.cr(expCr) + ' Cr', c1: 'var(--dom-risk)', c2: 'var(--dom-risk-2)' },
-      { label: 'Outside both ratios', value: Math.abs(outside), max: Math.max(lossCr, expCr, Math.abs(outside)) * 1.15,
-        display: '₹' + fmt.cr(outside) + ' Cr', c1: 'var(--dom-fin)', c2: 'var(--dom-fin-2)' }
+      { label: 'Outside Both Ratios (Redeployed Capacity)', value: Math.abs(outside), max: Math.max(lossCr, expCr, Math.abs(outside)) * 1.15,
+        display: '+₹' + fmt.cr(outside) + ' Cr', c1: 'var(--dom-fin)', c2: 'var(--dom-fin-2)' }
     ]});
 
     mount($('#vlStake'), [
       UI.dtable({
         cols: [
-          { key: 'w', label: 'Books the benefit', tip: x => ({ title: x.w, rows: [['Workbook ref', x.r], ['Contribution', fmt.cr(x.v) + ' ₹ Cr']] }) },
-          { key: 'v', label: '₹ Cr', n: true, render: x => el('span', {
-            style: { fontWeight: 680, color: x.v < 0 ? 'var(--neg)' : 'var(--ink)' },
-            text: fmt.cr(x.v) }) }
+          { key: 'w', label: 'Books the benefit (Stakeholder Entity)', tip: x => ({ title: x.w, rows: [['Workbook ref', x.r], ['Contribution', fmt.cr(x.v) + ' ₹ Cr']] }) },
+          { key: 'v', label: 'Impact (₹ Cr)', n: true, render: x => el('span', {
+            style: { fontWeight: 700, color: x.v < 0 ? 'var(--neg)' : 'var(--dom-cap)' },
+            text: (x.v > 0 ? '+₹' : '−₹') + fmt.cr(Math.abs(x.v)) + ' Cr' }) }
         ],
         rows: [
-          { w: 'BGeneral underwriting', v: r.stake.underwriting, r: 'W-57' },
-          { w: 'BGeneral claims operations', v: r.stake.claimsOps, r: 'W-56' },
-          { w: 'BFDL distribution', v: r.stake.bfdl, r: 'W-58' },
-          { w: 'less: platform run cost', v: r.stake.runCost, r: 'W-59' }
+          { w: 'BGeneral Underwriting (Loss Ratio improvement)', v: r.stake.underwriting, r: 'W-57' },
+          { w: 'BGeneral Claims Operations (Efficiency gains)', v: r.stake.claimsOps, r: 'W-56' },
+          { w: 'BFDL Distribution (Incremental renewal fee)', v: r.stake.bfdl, r: 'W-58' },
+          { w: 'Platform Run Cost (Software & GPU compute)', v: r.stake.runCost, r: 'W-59' }
         ]
       }),
       el('div', { style: { marginTop: 'var(--s-5)' } }, [

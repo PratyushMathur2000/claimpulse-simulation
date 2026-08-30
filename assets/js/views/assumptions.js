@@ -113,13 +113,13 @@ const ViewAssumptions = (() => {
           el('h3', { text: 'Strategic Principles & Implementation Decisions' }),
           el('div.sub', { text: 'Core architectural and governance choices embedded in the ClaimPulse deployment.' })
         ])]),
-        el('div.stack-6', {}, OPEN.map(([t, body, ask], i) => el('div', {}, [
-          el('div.row', { style: { alignItems: 'baseline', marginBottom: 'var(--s-3)' } }, [
-            el('span.ref', { text: String(i + 1) }),
-            el('span', { style: { fontWeight: 640 }, text: t })
+        el('div.g-2', { style: { marginTop: 'var(--s-4)', gap: 'var(--s-4)' } }, OPEN.map(([t, body, ask], i) => el('div.stakeholder-card', {}, [
+          el('div.row', { style: { alignItems: 'baseline', marginBottom: 'var(--s-2)', gap: 'var(--s-2)' } }, [
+            el('span.badge-pill.ops', { text: `PRINCIPLE 0${i + 1}` }),
+            el('span', { style: { fontWeight: 650, color: 'var(--ink-strong)' }, text: t })
           ]),
-          el('p.small.muted', { style: { marginBottom: 'var(--s-3)' }, text: body }),
-          el('div.callout', { style: { padding: 'var(--s-4)' } }, [el('span.small', { text: ask })])
+          el('p.small.muted', { style: { margin: 0, lineHeight: 1.5 }, text: body }),
+          el('div.callout', { style: { marginTop: 'var(--s-3)', padding: 'var(--s-3)' } }, [el('span.small', { text: ask })])
         ])))
       ]),
 
@@ -175,8 +175,8 @@ const ViewAssumptions = (() => {
     });
     $('#regCount').textContent = `${rows.length} of ${REG.length} inputs shown. Every one of them is live — change it in the workbook and the whole model moves.`;
     mount($('#regTable'), [UI.table(
-      [{ label: 'Input' }, { label: 'Value', n: true },
-       { label: 'Tier' }, { label: 'Basis, and validation source' }],
+      [{ label: 'Input Parameter' }, { label: 'Model Value (Explicit Units)', n: true },
+       { label: 'Governance Tier' }, { label: 'Basis, Reference & Validation Source' }],
       rows.map(([ref, label, val, unit, tier, note]) => [
         {
           node: el('span', { style: { fontWeight: 580 } }, [label]),
@@ -192,7 +192,15 @@ const ViewAssumptions = (() => {
   function fmtVal(v, unit) {
     if (typeof v === 'string') return v;
     if (unit === 'ratio') return fmt.pct(v, v < 0.01 ? 2 : 1);
-    if (unit === 'Rs' || unit === 'Rs Cr' || unit === 'policies' || unit === 'Rs/month') return fmt.n(v);
+    if (unit === 'Rs') return '₹' + fmt.n(v);
+    if (unit === 'Rs Cr') return '₹' + fmt.cr(v, 2) + ' Cr';
+    if (unit === 'touches') return fmt.cr(v, 1) + ' touches';
+    if (unit === 'days') return fmt.cr(v, 1) + ' days';
+    if (unit === 'min') return fmt.n(v) + ' min';
+    if (unit === 'policies') return fmt.n(v) + ' policies';
+    if (unit === 'Rs/month') return '₹' + fmt.n(v) + '/mo';
+    if (unit === 'pp') return fmt.cr(v, 2) + ' pp';
+    if (unit === 'x') return fmt.x(v);
     return fmt.cr(v, v % 1 === 0 ? 0 : 2);
   }
 
