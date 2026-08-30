@@ -58,14 +58,22 @@ const ViewCustomer = (() => {
         ])
       ]),
 
-      /* the step rail — every step reachable, always */
-      el('div.stages', { id: 'cuSteps', style: { marginBottom: 'var(--s-6)' } }),
+      /* the sticky step rail / quick access panel — frozen on scroll */
+      el('div.sticky-step-bar', { style: {
+        position: 'sticky', top: 'var(--topbar-h)', zIndex: 30,
+        background: 'color-mix(in srgb, var(--surface) 90%, transparent)',
+        backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+        padding: 'var(--s-3) 0 var(--s-4)', marginBottom: 'var(--s-5)',
+        borderBottom: '1px solid var(--border)'
+      } }, [
+        el('div.stages', { id: 'cuSteps' })
+      ]),
 
       el('div.g-phi-r', { style: { alignItems: 'start' } }, [
 
         /* ---- the handset ---- */
         el('div.panel.rise', { 'data-dom': 'cust', style: { alignSelf: 'start',
-          position: 'sticky', top: 'calc(var(--topbar-h) + var(--s-5))' } }, [
+          position: 'sticky', top: 'calc(var(--topbar-h) + 76px)' } }, [
           el('div.spread', { style: { marginBottom: 'var(--s-5)' } }, [
             el('div.small.muted', { id: 'cuStepName' }),
             el('button.gbtn', { id: 'cuRestart', type: 'button', text: '↺' })
