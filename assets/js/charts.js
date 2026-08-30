@@ -693,12 +693,12 @@ Charts.contrib = function (host, parts) {
      Ample margins prevent text clipping, and nodes/ribbons provide deep context.
      ------------------------------------------------------------------- */
   Charts.sankey = function (host, { left, right, height = 340, unit = 'FTE' }) {
-    const W = 1060, H = height, s = svgOf(host, W, H);
+    const W = 1180, H = height, s = svgOf(host, W, H);
     const colW = 16, m = { t: 36, b: 24 };
     const ih = H - m.t - m.b;
     const totalL = left.reduce((a, x) => a + x.value, 0);
     const totalR = right.reduce((a, x) => a + x.value, 0);
-    const xL = 248, xR = W - 248;
+    const xL = 260, xR = W - 340;
     const gapL = 8, gapR = 8;
 
     // Column titles
