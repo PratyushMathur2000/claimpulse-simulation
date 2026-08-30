@@ -322,59 +322,120 @@ const Charts = (() => {
   }
 
   /* =====================================================================
-     TORNADO · sensitivity ranking around a baseline
-     Job: polarity plus magnitude. Diverging blue<->red about a gray zero.
+     TORNADO · Financial sensitivity ranking around baseline
+     Job: Polarity plus magnitude. Clear downside (left, coral) vs
+     upside (right, teal) around a central baseline axis.
      ===================================================================== */
   function tornado(host, { items, baseline, unit = '₹ Cr' }) {
-    const rowH = 34, W = 820;
-    const m = { t: 26, r: 20, b: 26, l: 250 };
+    const rowH = 36, W = 940;
+    const m = { t: 44, r: 100, b: 32, l: 230 };
     const H = m.t + m.b + items.length * rowH;
     const iw = W - m.l - m.r;
-    const span = niceMax(Math.max(...items.map(i => Math.max(Math.abs(i.low - baseline), Math.abs(i.high - baseline)))));
+    const maxDev = niceMax(Math.max(...items.map(i => Math.max(Math.abs(i.downsideDelta), Math.abs(i.upsideDelta), 1))));
     const cx = m.l + iw / 2;
-    const x = d => cx + (d / span) * (iw / 2);
+    const xPos = delta => cx + (delta / maxDev) * (iw / 2);
     const s = svg(host, W, H);
 
-    // zero line and scale
-    ticks(-span, span, 4).forEach(t => {
-      s.appendChild(el('line', { class: 'grid-line' + (Math.abs(t) < 1e-9 ? ' zero' : ''),
-        x1: x(t), x2: x(t), y1: m.t - 6, y2: m.t + items.length * rowH }));
-      s.appendChild(el('text', { class: 'lbl-axis', x: x(t), y: m.t - 12,
-        'text-anchor': 'middle', text: (t > 0 ? '+' : '') + fmt.cr(t, 0) }));
+    // Ticks and scale labels (showing both absolute ₹ Cr and signed Δ)
+    const tickSteps = [-maxDev, -maxDev / 2, 0, maxDev / 2, maxDev];
+    tickSteps.forEach(t => {
+      const isZero = Math.abs(t) < 1e-6;
+      s.appendChild(el('line', {
+        class: 'grid-line' + (isZero ? ' zero' : ''),
+        x1: xPos(t), x2: xPos(t), y1: m.t - 8, y2: m.t + items.length * rowH + 4,
+        stroke: isZero ? 'var(--ink)' : 'var(--hairline)',
+        'stroke-dasharray': isZero ? '3 3' : undefined,
+        'stroke-width': isZero ? 1.5 : 1
+      }));
+      s.appendChild(el('text', {
+        class: 'lbl-axis', x: xPos(t), y: m.t - 22,
+        'text-anchor': 'middle', 'font-size': 11, 'font-weight': isZero ? 700 : 500,
+        fill: isZero ? 'var(--ink-strong)' : 'var(--ink-muted)',
+        text: isZero ? `₹${fmt.cr(baseline)} Cr` : `₹${fmt.cr(baseline + t)} Cr`
+      }));
+      s.appendChild(el('text', {
+        class: 'lbl-axis', x: xPos(t), y: m.t - 10,
+        'text-anchor': 'middle', 'font-size': 9.5, 'font-family': 'var(--ff-mono)',
+        fill: isZero ? 'var(--accent)' : 'var(--ink-faint)',
+        text: isZero ? '[Baseline]' : (t > 0 ? `+₹${fmt.cr(t)}` : `−₹${fmt.cr(Math.abs(t))}`)
+      }));
     });
 
     items.forEach((it, i) => {
-      const y = m.t + i * rowH + (rowH - 15) / 2;
-      const dLow = it.low - baseline, dHigh = it.high - baseline;
+      const y = m.t + i * rowH + (rowH - 18) / 2;
+      const dDown = it.downsideDelta; // negative or 0
+      const dUp = it.upsideDelta;     // positive or 0
 
-      s.appendChild(el('text', { class: 'lbl-axis', x: m.l - 14, y: y + 11.5,
-        'text-anchor': 'end', 'font-size': 11.5, text: it.label }));
-
-      [[dLow, 'var(--d8)', it.lowNote], [dHigh, 'var(--d1)', it.highNote]].forEach(([d, col, note]) => {
-        if (Math.abs(d) < 1e-9) return;
-        const x0 = Math.min(cx, x(d)), w = Math.abs(x(d) - cx) - (SURFACE_GAP / 2);
-        if (w <= 0) return;
-        const p = el('path.series', {
-          d: barPath(d < 0 ? x0 : cx + SURFACE_GAP / 2, y, w, 15, END_R, d < 0 ? 'left' : 'right'),
-          fill: col, opacity: .9
-        });
-        p.addEventListener('mousemove', e => tip.show(e.clientX, e.clientY, it.label,
-          [['Net annual', fmt.money(baseline + d)], ['Change', fmt.crSigned(d) + ' Cr'],
-           ...(note ? [['', note]] : [])]));
-        p.addEventListener('mouseleave', tip.hide);
-        s.appendChild(p);
+      // Parameter label on left
+      const labelEl = el('text', {
+        class: 'lbl-axis', x: m.l - 12, y: y + 13,
+        'text-anchor': 'end', 'font-size': 11.5, 'font-weight': 580,
+        fill: 'var(--ink)', text: it.label
       });
+      s.appendChild(labelEl);
 
-      const outer = Math.abs(dHigh) >= Math.abs(dLow) ? dHigh : dLow;
-      s.appendChild(el('text', { class: 'lbl-value', x: x(outer) + (outer < 0 ? -8 : 8), y: y + 11.5,
-        'text-anchor': outer < 0 ? 'end' : 'start', 'font-size': 11,
-        text: `${fmt.cr(Math.min(it.low, it.high))} – ${fmt.cr(Math.max(it.low, it.high))}` }));
+      // Downside bar (Left from cx)
+      const wDown = Math.max(0, (Math.abs(dDown) / maxDev) * (iw / 2) - (SURFACE_GAP / 2));
+      if (wDown > 0.5) {
+        const x0 = cx - (SURFACE_GAP / 2) - wDown;
+        const pDown = el('path.series', {
+          d: barPath(x0, y, wDown, 18, END_R, 'left'),
+          fill: 'var(--dom-risk)', opacity: .92
+        });
+        pDown.addEventListener('mousemove', e => tip.show(e.clientX, e.clientY, `${it.label} (Downside)`, [
+          ['Tested range', it.rangeDesc || ''],
+          ['Tested condition', it.downsideNote || ''],
+          ['Net annual benefit', `₹${fmt.cr(it.downside)} Cr`],
+          ['Adverse variance', `−₹${fmt.cr(Math.abs(dDown))} Cr vs baseline`]
+        ]));
+        pDown.addEventListener('mouseleave', tip.hide);
+        s.appendChild(pDown);
+
+        // Downside value label
+        s.appendChild(el('text', {
+          class: 'lbl-value', x: x0 - 6, y: y + 13,
+          'text-anchor': 'end', 'font-size': 10.5, fill: 'var(--dom-risk)',
+          text: `₹${fmt.cr(it.downside)}`
+        }));
+      }
+
+      // Upside bar (Right from cx)
+      const wUp = Math.max(0, (dUp / maxDev) * (iw / 2) - (SURFACE_GAP / 2));
+      if (wUp > 0.5) {
+        const x1 = cx + (SURFACE_GAP / 2);
+        const pUp = el('path.series', {
+          d: barPath(x1, y, wUp, 18, END_R, 'right'),
+          fill: 'var(--dom-fin)', opacity: .92
+        });
+        pUp.addEventListener('mousemove', e => tip.show(e.clientX, e.clientY, `${it.label} (Upside)`, [
+          ['Tested range', it.rangeDesc || ''],
+          ['Tested condition', it.upsideNote || ''],
+          ['Net annual benefit', `₹${fmt.cr(it.upside)} Cr`],
+          ['Favourable variance', `+₹${fmt.cr(dUp)} Cr vs baseline`]
+        ]));
+        pUp.addEventListener('mouseleave', tip.hide);
+        s.appendChild(pUp);
+
+        // Upside value label
+        s.appendChild(el('text', {
+          class: 'lbl-value', x: x1 + wUp + 6, y: y + 13,
+          'text-anchor': 'start', 'font-size': 10.5, fill: 'var(--dom-fin)',
+          text: `₹${fmt.cr(it.upside)}`
+        }));
+      }
+
+      // Total swing annotation on far right
+      s.appendChild(el('text', {
+        class: 'lbl-axis', x: W - 10, y: y + 13,
+        'text-anchor': 'end', 'font-size': 10.5, 'font-family': 'var(--ff-mono)',
+        fill: 'var(--ink-muted)', text: `± ₹${fmt.cr(it.swing / 2, 1)} Cr`
+      }));
     });
 
     legend(host, [
-      { label: 'Lever at its low end',  color: 'var(--d8)' },
-      { label: 'Lever at its high end', color: 'var(--d1)' },
-      { label: `Baseline · net ₹${fmt.cr(baseline)} Cr at the current board setting`, color: 'var(--border-strong)' }
+      { label: 'Downside outcome (Adverse stress limit)', color: 'var(--dom-risk)' },
+      { label: 'Upside outcome (Favourable stress limit)', color: 'var(--dom-fin)' },
+      { label: `Baseline reference · ₹${fmt.cr(baseline)} Cr Net Annual Benefit`, color: 'var(--ink-strong)' }
     ]);
     return s;
   }

@@ -118,22 +118,39 @@ const ViewStress = (() => {
      at the current board state. The ranking that comes out is whatever
      the model says it is. */
   function sensitivity() {
-    const base = compute().net;
+    const baseVal = compute().net;
     return LEVERS.map(l => {
-      const lo = compute(Object.assign({}, state, { [l.key]: l.min })).net;
-      const hi = compute(Object.assign({}, state, { [l.key]: l.max })).net;
-      return { label: `${l.label}`, ref: l.ref, low: lo, high: hi,
-               swing: Math.abs(hi - lo),
-               lowNote:  `at ${l.fmtv(l.min)}`, highNote: `at ${l.fmtv(l.max)}` };
+      const oLow = Object.assign({}, state, { [l.key]: l.min });
+      const oHigh = Object.assign({}, state, { [l.key]: l.max });
+      const rLow = compute(oLow).net;
+      const rHigh = compute(oHigh).net;
+
+      // Determine which end is downside and which is upside
+      const isLowAdverse = rLow <= rHigh;
+      const downside = Math.min(rLow, rHigh);
+      const upside = Math.max(rLow, rHigh);
+      const downsideNote = isLowAdverse ? `at ${l.fmtv(l.min)} (low)` : `at ${l.fmtv(l.max)} (high)`;
+      const upsideNote = isLowAdverse ? `at ${l.fmtv(l.max)} (high)` : `at ${l.fmtv(l.min)} (low)`;
+
+      return {
+        label: l.label,
+        ref: l.ref,
+        downside,
+        upside,
+        downsideDelta: downside - baseVal,
+        upsideDelta: upside - baseVal,
+        swing: upside - downside,
+        downsideNote,
+        upsideNote,
+        rangeDesc: `${l.fmtv(l.min)} to ${l.fmtv(l.max)} (default: ${l.fmtv(l.def)})`
+      };
     }).sort((a, b) => b.swing - a.swing).slice(0, 9);
   }
 
   /* ---------------- Render ----------------
-     The levers used to own a third of the screen. They now live in a
-     drawer: a handle bottom-right says how many are off their default,
-     the drawer slides over, you move what you want, and it slides away.
-     The charts get the whole stage, which is what a scenario engine is
-     supposed to look like. */
+     The levers live in a left-docked collapsible panel attached to the menu.
+     Opened via the prominent header button, cleanly out of the way of the
+     scenario charts. */
   function render(host) {
     root = host;
     resetTo('base');
@@ -142,12 +159,17 @@ const ViewStress = (() => {
       /* ---- the scenario header: state, plan, integrity ---- */
       el('div.panel.hero.rise', { 'data-dom': 'fin' }, [
         el('div.spread.wrap', { style: { alignItems: 'flex-start', gap: 'var(--s-6)' } }, [
-          el('div', { style: { minWidth: 0, maxWidth: '52ch' } }, [
+          el('div', { style: { minWidth: 0, maxWidth: '56ch' } }, [
             el('p.eyebrow', { style: { margin: 0 }, text: 'Simulation · financial stress test' }),
             el('h1', { style: { fontSize: 'var(--fs-xl)', margin: 'var(--s-3) 0 0' } }, [
               'Move any assumption. ', el('span.grad-ink', { text: 'The whole model recomputes.' })
             ]),
-            el('div.row.wrap', { style: { marginTop: 'var(--s-5)' } }, [
+            el('div.row.wrap', { style: { marginTop: 'var(--s-5)', gap: 'var(--s-3)' } }, [
+              el('button.btn.accent', { id: 'leverToggleBtn', type: 'button',
+                style: { display: 'inline-flex', alignItems: 'center', gap: 'var(--s-3)' } }, [
+                el('span', { text: '⚙ Assumption Levers & Controls' }),
+                el('span.badge.neutral', { id: 'drCountBadge', text: 'Default' })
+              ]),
               el('div.seg.accent', { id: 'planSeg' }, Object.keys(PLANS).map(p =>
                 el('button', { type: 'button', 'data-plan': p, 'aria-pressed': String(p === plan),
                   text: p[0].toUpperCase() + p.slice(1) }))),
@@ -194,22 +216,18 @@ const ViewStress = (() => {
 
       el('div', { id: 'verdict', style: { marginTop: 'var(--s-6)' } }),
 
-      /* ---- the drawer ---- */
+      /* ---- the left-docked collapsible drawer ---- */
       el('div.dr-scrim', { id: 'drScrim' }),
       el('aside.wsdrawer', { id: 'drawer', 'aria-label': 'Assumptions' }, [
         el('div.dr-head', {}, [
           el('div', {}, [
-            el('div', { style: { fontWeight: 660, fontSize: 'var(--fs-md)' }, text: 'Assumptions' }),
+            el('div', { style: { fontWeight: 660, fontSize: 'var(--fs-md)' }, text: 'Assumption Levers' }),
             el('div.small.muted', { style: { marginTop: '2px' },
               text: 'Twelve levers over the R6 engine. Tagged by tier.' })
           ]),
           el('button.gbtn', { id: 'drClose', type: 'button', 'aria-label': 'Close', text: '✕' })
         ]),
         el('div.dr-body', { id: 'levers' })
-      ]),
-      el('button.dr-handle', { id: 'drOpen', type: 'button' }, [
-        el('span', { text: '⚙ Assumptions' }),
-        el('span.n', { id: 'drCount', text: '0' })
       ])
     ]);
 
@@ -233,7 +251,7 @@ const ViewStress = (() => {
       $('#drawer').classList.toggle('open', on);
       $('#drScrim').classList.toggle('open', on);
     };
-    $('#drOpen').addEventListener('click', () => openDr(true));
+    $('#leverToggleBtn').addEventListener('click', () => openDr(!$('#drawer').classList.contains('open')));
     $('#drClose').addEventListener('click', () => openDr(false));
     $('#drScrim').addEventListener('click', () => openDr(false));
     document.addEventListener('keydown', escClose);
@@ -327,7 +345,7 @@ const ViewStress = (() => {
 
     /* --- what is off default, stated plainly --- */
     const off = LEVERS.filter(l => Math.abs(state[l.key] - l.def) > 1e-9);
-    if (CP.$('#drCount')) CP.$('#drCount').textContent = String(off.length);
+    if (CP.$('#drCountBadge')) CP.$('#drCountBadge').textContent = off.length ? `${off.length} modified` : 'Defaults';
     mount(CP.$('#stressScen'), [
       el('div.panel', { 'data-dom': off.length ? 'cust' : 'none',
         style: { padding: 'var(--s-6)', minWidth: '260px' } }, [

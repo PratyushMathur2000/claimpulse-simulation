@@ -302,20 +302,26 @@ table.dtable thead th.srt:hover { color: var(--ink); }
 table.dtable thead th .arw { opacity: .5; margin-left: 3px; }
 
 /* =====================================================================
-   9 · DRAWER — assumption controls, off the main stage
+   9 · LEFT-DOCKED COLLAPSIBLE LEVER PANEL
    ===================================================================== */
 .wsdrawer {
-  position: fixed; top: var(--topbar-h); right: 0; bottom: 0; width: min(400px, 92vw);
-  z-index: 60; display: flex; flex-direction: column;
-  background: var(--glass); -webkit-backdrop-filter: blur(24px) saturate(1.6); backdrop-filter: blur(24px) saturate(1.6);
-  border-left: 1px solid var(--glass-brd);
-  box-shadow: -24px 0 60px -24px rgba(0,0,0,.4);
-  transform: translateX(100%); transition: transform var(--t-slow) var(--ease-out);
+  position: fixed; top: var(--topbar-h); left: var(--rail-w); bottom: 0;
+  width: min(390px, 92vw); z-index: 60; display: flex; flex-direction: column;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  backdrop-filter: blur(24px) saturate(1.6);
+  border-right: 1px solid var(--glass-brd);
+  box-shadow: 24px 0 60px -24px rgba(0,0,0,.35);
+  transform: translateX(-105%);
+  transition: transform var(--t-slow) var(--ease-out), left var(--t-base) var(--ease);
 }
+.shell[data-rail="collapsed"] .wsdrawer { left: var(--rail-w-collapsed); }
+@media (max-width: 900px) { .wsdrawer { left: 0; } }
 .wsdrawer.open { transform: none; }
 .wsdrawer .dr-head {
-  padding: var(--s-6); border-bottom: 1px solid var(--hairline);
+  padding: var(--s-5) var(--s-6); border-bottom: 1px solid var(--hairline);
   display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
+  background: color-mix(in srgb, var(--surface) 65%, transparent);
 }
 .wsdrawer .dr-body { overflow-y: auto; padding: var(--s-6); flex: 1; }
 .dr-scrim {
@@ -324,22 +330,6 @@ table.dtable thead th .arw { opacity: .5; margin-left: 3px; }
   opacity: 0; pointer-events: none; transition: opacity var(--t-base) var(--ease);
 }
 .dr-scrim.open { opacity: 1; pointer-events: auto; }
-
-/* The handle that opens it — always reachable, never in the way. */
-.dr-handle {
-  position: fixed; right: var(--s-6); bottom: var(--s-6); z-index: 58;
-  display: inline-flex; align-items: center; gap: var(--s-4);
-  padding: var(--s-5) var(--s-6); border-radius: var(--r-pill);
-  border: 1px solid var(--glass-brd); color: var(--accent-ink);
-  background: var(--accent-grad); box-shadow: var(--shadow-3);
-  font-size: var(--fs-sm); font-weight: 640; cursor: pointer;
-  transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease);
-}
-.dr-handle:hover { transform: translateY(-2px); box-shadow: var(--shadow-3), 0 0 30px -6px var(--accent); }
-.dr-handle .n {
-  display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px;
-  border-radius: var(--r-pill); background: rgba(255,255,255,.24); font-size: 11px; font-weight: 700;
-}
 
 /* =====================================================================
    10 · MISC PRIMITIVES
