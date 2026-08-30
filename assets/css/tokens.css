@@ -1,0 +1,330 @@
+/* =====================================================================
+   ClaimPulse · Design tokens
+   ---------------------------------------------------------------------
+   THE PROPORTION SYSTEM.  Nothing here is an arbitrary number.
+
+   Spacing runs on the Fibonacci sequence (2 3 5 8 13 21 34 55 89 144),
+   which converges on the golden ratio and — unlike raw phi powers —
+   lands on whole pixels, so nothing renders on a half-pixel seam.
+
+   Type runs on a modular scale of 1.272 (the square root of phi). A full
+   phi step between adjacent UI sizes is too violent to read; root-phi
+   gives a scale where every step is visibly different but nothing
+   shouts. Display sizes step by full phi, because they are meant to.
+
+   Line height is 1.618 for body text and 1.236 for headings — long
+   measure wants air, short measure does not.
+
+   COLOUR.  One brand hue (Bajaj blue) carries structure and action. One
+   complementary warm hue carries emphasis and the light theme's ground.
+   Data series are an analogous blue-to-violet run broken by two warm
+   complements, so adjacent series separate on hue rather than on
+   lightness alone. Lane colours are semantic and never reused for data.
+   ===================================================================== */
+
+:root {
+  /* ---------- SPACING · Fibonacci ---------- */
+  --s-1:  2px;   --s-2:  3px;   --s-3:  5px;   --s-4:  8px;
+  --s-5: 13px;   --s-6: 21px;   --s-7: 34px;   --s-8: 55px;
+  --s-9: 89px;   --s-10:144px;
+
+  /* ---------- TYPE · modular scale, ratio 1.272 = sqrt(phi) ---------- */
+  --fs-xs:    11.5px;
+  --fs-sm:    13px;
+  --fs-base:  15px;
+  --fs-md:    17px;
+  --fs-lg:    21.5px;
+  --fs-xl:    27.5px;
+  --fs-2xl:   35px;
+  --fs-3xl:   44.5px;
+  --fs-display: 72px;
+
+  --lh-tight: 1.236;
+  --lh-body:  1.618;
+  --lh-snug:  1.4;
+
+  --tracking-tight: -0.02em;
+  --tracking-wide:   0.08em;
+  --tracking-caps:   0.14em;
+
+  --ff-sans: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --ff-mono: "JetBrains Mono", "SF Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  /* ---------- RADII · Fibonacci ---------- */
+  --r-1: 3px; --r-2: 5px; --r-3: 8px; --r-4: 13px; --r-5: 21px;
+  --r-pill: 999px;
+
+  /* ---------- MOTION ---------- */
+  --ease: cubic-bezier(.2,.7,.3,1);
+  --ease-out: cubic-bezier(.16,1,.3,1);
+  --t-fast: 130ms;
+  --t-base: 220ms;
+  --t-slow: 420ms;
+
+  /* ---------- BRAND · constant across themes ---------- */
+  --bajaj-900: #05305F;
+  --bajaj-800: #0A4E96;
+  --bajaj-700: #0F5FB4;
+  --bajaj-600: #1268C3;
+  --bajaj-500: #2F86D6;
+  --bajaj-400: #5BA5E5;
+  --bajaj-300: #93C6F1;
+
+  --warm-700: #B4521C;
+  --warm-600: #D96A24;
+  --warm-500: #E8853A;
+  --warm-400: #F2A55C;
+  --warm-300: #F8C793;
+
+  /* ---------- LAYOUT CONSTANTS ---------- */
+  --rail-w: 248px;
+  --rail-w-collapsed: 68px;
+  --topbar-h: 58px;
+  --measure: 68ch;
+  /* Content column on the golden ratio: 1440 / 1.618 ~= 890 for prose */
+  --content-max: 1560px;
+}
+
+/* =====================================================================
+   LIGHT THEME  ·  warm, not white
+   A paper-white UI next to a dark one always looks like the afterthought.
+   This ground is a warm parchment that carries the brand's warm
+   complement, so the blue reads as deliberate rather than as default.
+   ===================================================================== */
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg:            #FBF3E9;
+  --bg-grad: radial-gradient(1200px 620px at 12% -8%,  #FFF8EF 0%, transparent 62%),
+             radial-gradient(1000px 560px at 92% 6%,   #F6E6D6 0%, transparent 58%),
+             linear-gradient(168deg, #FDF7F0 0%, #F7EADC 52%, #F2E2D2 100%);
+
+  --surface:        #FFFCF8;
+  --surface-2:      #FFF8F1;
+  --surface-raised: #FFFFFF;
+  --surface-sunken: #F4E7D9;
+  --surface-grad: linear-gradient(158deg, rgba(255,255,255,.92) 0%, rgba(255,248,240,.72) 100%);
+
+  --ink:        #16232F;
+  --ink-strong: #0A1621;
+  --ink-muted:  #5C6D7E;
+  --ink-faint:  #8A98A6;
+  --ink-invert: #FFF8F0;
+
+  --border:        #E7D6C2;
+  --border-strong: #D6BFA6;
+  --border-faint:  #F0E3D3;
+
+  --accent:        var(--bajaj-700);
+  --accent-hover:  var(--bajaj-800);
+  --accent-soft:   rgba(18,104,195,.10);
+  --accent-ink:    #FFFFFF;
+  --accent-grad:   linear-gradient(135deg, var(--bajaj-700) 0%, var(--bajaj-500) 100%);
+
+  --warm:      var(--warm-600);
+  --warm-soft: rgba(217,106,36,.12);
+  --warm-grad: linear-gradient(135deg, var(--warm-600) 0%, var(--warm-400) 100%);
+
+  /* ---- STATUS · reserved. Never used for a data series, and never
+     carried by colour alone — every use ships with a word or an icon. ---- */
+  --lane-green: #0CA30C;  --lane-green-soft: rgba(12,163,12,.13);
+  --lane-amber: #B57A05;  --lane-amber-soft: rgba(250,178,25,.18);
+  --lane-red:   #D03B3B;  --lane-red-soft:   rgba(208,59,59,.12);
+  --status-serious: #EC835A;
+
+  --pos: #0A8A0A;  --neg: #C43535;  --warnc: #B57A05;
+  --pos-soft: rgba(12,163,12,.13); --neg-soft: rgba(208,59,59,.12);
+
+  /* ---- DATA SERIES · validated categorical set, fixed order, never cycled.
+     Passes the lightness band, chroma floor, adjacent CVD separation and
+     the normal-vision floor against this surface. Three slots (aqua,
+     yellow, magenta) sit under 3:1 here, so every chart using them ships
+     direct labels or a table view — the relief rule. ---- */
+  --d1: #2A78D6; --d2: #EB6834; --d3: #1BAF7A; --d4: #EDA100;
+  --d5: #E87BA4; --d6: #008300; --d7: #4A3AA7; --d8: #E34948;
+
+  --grid:   rgba(22,35,47,.09);
+  --grid-2: rgba(22,35,47,.05);
+
+  --shadow-1: 0 1px 2px rgba(74,50,28,.06), 0 1px 1px rgba(74,50,28,.04);
+  --shadow-2: 0 2px 5px rgba(74,50,28,.07), 0 8px 20px -8px rgba(74,50,28,.10);
+  --shadow-3: 0 8px 18px -6px rgba(74,50,28,.14), 0 24px 48px -20px rgba(74,50,28,.18);
+  --shadow-glow: 0 0 0 1px rgba(18,104,195,.16), 0 6px 22px -8px rgba(18,104,195,.30);
+}
+
+/* =====================================================================
+   DARK THEME  ·  deep navy, gradient ground
+   ===================================================================== */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg:            #070D18;
+  --bg-grad: radial-gradient(1150px 600px at 10% -10%, #11284A 0%, transparent 60%),
+             radial-gradient(980px 540px at 94% 4%,   #1A2140 0%, transparent 56%),
+             linear-gradient(168deg, #070D18 0%, #0B1424 54%, #0E1A2C 100%);
+
+  --surface:        #101B2D;
+  --surface-2:      #142339;
+  --surface-raised: #17273F;
+  --surface-sunken: #0A121F;
+  --surface-grad: linear-gradient(158deg, rgba(31,50,79,.62) 0%, rgba(16,27,45,.55) 100%);
+
+  --ink:        #E4EDF8;
+  --ink-strong: #FFFFFF;
+  --ink-muted:  #96A9C1;
+  --ink-faint:  #6B7E96;
+  --ink-invert: #08111E;
+
+  --border:        #24374F;
+  --border-strong: #37506E;
+  --border-faint:  #1A2839;
+
+  --accent:        var(--bajaj-500);
+  --accent-hover:  var(--bajaj-400);
+  --accent-soft:   rgba(47,134,214,.16);
+  --accent-ink:    #05121F;
+  --accent-grad:   linear-gradient(135deg, var(--bajaj-500) 0%, #63C0F0 100%);
+
+  --warm:      var(--warm-400);
+  --warm-soft: rgba(242,165,92,.16);
+  --warm-grad: linear-gradient(135deg, var(--warm-500) 0%, var(--warm-300) 100%);
+
+  /* Status — the same four steps; all clear 3:1 on this surface */
+  --lane-green: #0CA30C;  --lane-green-soft: rgba(12,163,12,.18);
+  --lane-amber: #FAB219;  --lane-amber-soft: rgba(250,178,25,.16);
+  --lane-red:   #D03B3B;  --lane-red-soft:   rgba(208,59,59,.18);
+  --status-serious: #EC835A;
+
+  --pos: #17B417;  --neg: #E15757;  --warnc: #FAB219;
+  --pos-soft: rgba(12,163,12,.17); --neg-soft: rgba(208,59,59,.17);
+
+  /* Data series — the same eight hues, stepped for the dark surface and
+     validated as a set against it. Not an automatic flip of the light set. */
+  --d1: #3987E5; --d2: #D95926; --d3: #199E70; --d4: #C98500;
+  --d5: #D55181; --d6: #008300; --d7: #9085E9; --d8: #E66767;
+
+  --grid:   rgba(228,237,248,.10);
+  --grid-2: rgba(228,237,248,.055);
+
+  --shadow-1: 0 1px 2px rgba(0,0,0,.34);
+  --shadow-2: 0 2px 6px rgba(0,0,0,.36), 0 10px 24px -10px rgba(0,0,0,.52);
+  --shadow-3: 0 10px 24px -8px rgba(0,0,0,.52), 0 30px 60px -24px rgba(0,0,0,.68);
+  --shadow-glow: 0 0 0 1px rgba(47,134,214,.28), 0 6px 26px -8px rgba(47,134,214,.42);
+}
+
+/* System preference, when the viewer has made no explicit choice */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg:            #070D18;
+    --bg-grad: radial-gradient(1150px 600px at 10% -10%, #11284A 0%, transparent 60%),
+               radial-gradient(980px 540px at 94% 4%,   #1A2140 0%, transparent 56%),
+               linear-gradient(168deg, #070D18 0%, #0B1424 54%, #0E1A2C 100%);
+    --surface: #101B2D; --surface-2: #142339; --surface-raised: #17273F; --surface-sunken: #0A121F;
+    --surface-grad: linear-gradient(158deg, rgba(31,50,79,.62) 0%, rgba(16,27,45,.55) 100%);
+    --ink: #E4EDF8; --ink-strong: #FFFFFF; --ink-muted: #96A9C1; --ink-faint: #6B7E96; --ink-invert: #08111E;
+    --border: #24374F; --border-strong: #37506E; --border-faint: #1A2839;
+    --accent: var(--bajaj-500); --accent-hover: var(--bajaj-400);
+    --accent-soft: rgba(47,134,214,.16); --accent-ink: #05121F;
+    --accent-grad: linear-gradient(135deg, var(--bajaj-500) 0%, #63C0F0 100%);
+    --warm: var(--warm-400); --warm-soft: rgba(242,165,92,.16);
+    --warm-grad: linear-gradient(135deg, var(--warm-500) 0%, var(--warm-300) 100%);
+    --lane-green: #0CA30C; --lane-green-soft: rgba(12,163,12,.18);
+    --lane-amber: #FAB219; --lane-amber-soft: rgba(250,178,25,.16);
+    --lane-red: #D03B3B;   --lane-red-soft: rgba(208,59,59,.18);
+    --status-serious: #EC835A;
+    --pos: #17B417; --neg: #E15757; --warnc: #FAB219;
+    --pos-soft: rgba(12,163,12,.17); --neg-soft: rgba(208,59,59,.17);
+    --d1: #3987E5; --d2: #D95926; --d3: #199E70; --d4: #C98500;
+    --d5: #D55181; --d6: #008300; --d7: #9085E9; --d8: #E66767;
+    --grid: rgba(228,237,248,.10); --grid-2: rgba(228,237,248,.055);
+    --shadow-1: 0 1px 2px rgba(0,0,0,.34);
+    --shadow-2: 0 2px 6px rgba(0,0,0,.36), 0 10px 24px -10px rgba(0,0,0,.52);
+    --shadow-3: 0 10px 24px -8px rgba(0,0,0,.52), 0 30px 60px -24px rgba(0,0,0,.68);
+    --shadow-glow: 0 0 0 1px rgba(47,134,214,.28), 0 6px 26px -8px rgba(47,134,214,.42);
+  }
+}
+
+/* =====================================================================
+   DOMAIN IDENTITIES
+   ---------------------------------------------------------------------
+   Six concepts, six hues. These are not data-series colours — the
+   validated d1..d8 set still owns every chart mark. These carry section
+   identity: the wash behind a cluster, the rule above a panel, the glow
+   under a hero number, the icon chip. A reader learns in ten seconds
+   that violet is money, cyan is operations, magenta is the model,
+   amber is the customer, rose is risk and emerald is people.
+
+   Every hue ships three forms: solid (--dom-x), a two-stop gradient
+   (--dom-x-grad) and a translucent wash (--dom-x-soft). Large display
+   numbers clear 3:1 on both grounds; small text never uses them alone.
+   ===================================================================== */
+:root,
+:root[data-theme="light"] {
+  --dom-fin:  #5B4BD6;  --dom-fin-2:  #8B6FF0;
+  --dom-ops:  #0A7EA4;  --dom-ops-2:  #22B8D8;
+  --dom-ai:   #9333A8;  --dom-ai-2:   #C964DC;
+  --dom-cust: #D2691E;  --dom-cust-2: #F0A05A;
+  --dom-risk: #C0304F;  --dom-risk-2: #E8657F;
+  --dom-cap:  #067A56;  --dom-cap-2:  #2BB98A;
+
+  --glass:        rgba(255,253,250,.86);
+  --glass-2:      rgba(255,255,255,.62);
+  --glass-brd:    rgba(214,191,166,.42);
+  --hairline:     rgba(22,35,47,.08);
+  --sheen:        linear-gradient(180deg, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 42%);
+  --scrim:        rgba(255,248,240,.66);
+  --aurora-1: rgba(91,75,214,.13);
+  --aurora-2: rgba(10,126,164,.12);
+  --aurora-3: rgba(210,105,30,.11);
+  --inner-top: inset 0 1px 0 rgba(255,255,255,.9);
+  --noise-op: .035;
+}
+:root[data-theme="dark"] {
+  --dom-fin:  #8B7BF5;  --dom-fin-2:  #B9A5FF;
+  --dom-ops:  #2CC3E8;  --dom-ops-2:  #7DE4F7;
+  --dom-ai:   #D473EC;  --dom-ai-2:   #F0A9FA;
+  --dom-cust: #F5A05A;  --dom-cust-2: #FFC894;
+  --dom-risk: #FF7C93;  --dom-risk-2: #FFB0BE;
+  --dom-cap:  #34D39C;  --dom-cap-2:  #7FEFC6;
+
+  --glass:        rgba(20,35,57,.62);
+  --glass-2:      rgba(31,50,79,.42);
+  --glass-brd:    rgba(140,175,220,.16);
+  --hairline:     rgba(228,237,248,.09);
+  --sheen:        linear-gradient(180deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 44%);
+  --scrim:        rgba(8,16,28,.62);
+  --aurora-1: rgba(139,123,245,.20);
+  --aurora-2: rgba(44,195,232,.16);
+  --aurora-3: rgba(245,160,90,.13);
+  --inner-top: inset 0 1px 0 rgba(255,255,255,.07);
+  --noise-op: .05;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --dom-fin:  #8B7BF5;  --dom-fin-2:  #B9A5FF;
+    --dom-ops:  #2CC3E8;  --dom-ops-2:  #7DE4F7;
+    --dom-ai:   #D473EC;  --dom-ai-2:   #F0A9FA;
+    --dom-cust: #F5A05A;  --dom-cust-2: #FFC894;
+    --dom-risk: #FF7C93;  --dom-risk-2: #FFB0BE;
+    --dom-cap:  #34D39C;  --dom-cap-2:  #7FEFC6;
+    --glass: rgba(20,35,57,.62); --glass-2: rgba(31,50,79,.42);
+    --glass-brd: rgba(140,175,220,.16); --hairline: rgba(228,237,248,.09);
+    --sheen: linear-gradient(180deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 44%);
+    --scrim: rgba(8,16,28,.62);
+    --aurora-1: rgba(139,123,245,.20); --aurora-2: rgba(44,195,232,.16); --aurora-3: rgba(245,160,90,.13);
+    --inner-top: inset 0 1px 0 rgba(255,255,255,.07);
+    --noise-op: .05;
+  }
+}
+
+/* Every domain gets its gradient and wash from one place. */
+:root {
+  --dom-fin-grad:  linear-gradient(135deg, var(--dom-fin) 0%, var(--dom-fin-2) 100%);
+  --dom-ops-grad:  linear-gradient(135deg, var(--dom-ops) 0%, var(--dom-ops-2) 100%);
+  --dom-ai-grad:   linear-gradient(135deg, var(--dom-ai) 0%, var(--dom-ai-2) 100%);
+  --dom-cust-grad: linear-gradient(135deg, var(--dom-cust) 0%, var(--dom-cust-2) 100%);
+  --dom-risk-grad: linear-gradient(135deg, var(--dom-risk) 0%, var(--dom-risk-2) 100%);
+  --dom-cap-grad:  linear-gradient(135deg, var(--dom-cap) 0%, var(--dom-cap-2) 100%);
+}
