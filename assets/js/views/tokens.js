@@ -117,7 +117,7 @@ const ViewTokens = (() => {
         el('div', { id: 'tkTable' })
       ]),
 
-      el('div.g-2', { style: { marginTop: 'var(--s-6)' } }, [
+      el('div.stack-6', { style: { marginTop: 'var(--s-6)' } }, [
         UI.card('Unit Cost Sensitivity Across Four Model Delivery Tiers', 'Comparative inference unit economics: Evaluates frontier vs. economy models with asynchronous micro-batching discounts.', [
           el('div', { id: 'tkPaths' })
         ]),
@@ -170,7 +170,7 @@ const ViewTokens = (() => {
         note: 'Lightweight CV validation with structured JSON decision output' },
       { label: 'Economy + batching, MEDIUM', value: rsPerClaim('central', true, true), color: 'var(--d6)',
         note: 'Asynchronous 10-min micro-batched processing on economy model tier (50% discount)' }
-    ], unit: '₹ per claim', height: 320 });
+    ], unit: '₹ per claim', height: 320, large: true });
     $('#tkPaths').appendChild(UI.disc('Economic batching & cost hierarchy', `<p>The most expensive path costs ${UI.money(highCr)} a year against ${UI.money(r.runCost)} of run cost and ${UI.money(r.net)} of net benefit. The cheapest batched path costs only ${fmt.cr(rsPerClaim('central', true, true) * r.claims / 1e7, 3)} Cr/year.</p>`));
 
     /* ---- breakeven ---- */
