@@ -266,13 +266,14 @@ const Charts = (() => {
      Job: magnitude with identity. Direct value labels; a share column
      rather than a pie, because comparing angles is guesswork.
      ===================================================================== */
-  function hbar(host, { items, unit = '₹ Cr', colorBy = 'series', height, valueFmt, compact = false }) {
+  function hbar(host, { items, unit = '₹ Cr', colorBy = 'series', height, valueFmt, compact = false, large = false }) {
     const vf = valueFmt || (v => (unit.includes('₹') ? (unit.includes('claim') ? '₹' + fmt.cr(v, 2) : '₹' + fmt.cr(v, 2) + ' Cr') : fmt.cr(v) + ' ' + unit));
     const W = compact ? 520 : 780;
     const m = compact ? { t: 10, r: 90, b: 10, l: 200 } : { t: 14, r: 140, b: 14, l: 270 };
-    const rowH = height ? Math.floor((height - m.t - m.b) / items.length) : (compact ? 34 : 46);
+    if (large) m.l += 40; // More room for larger labels
+    const rowH = height ? Math.floor((height - m.t - m.b) / items.length) : (compact ? 34 : (large ? 60 : 46));
     const H = height || (m.t + m.b + items.length * rowH);
-    const barH = Math.max(16, Math.min(28, Math.floor(rowH * 0.54)));
+    const barH = Math.max(16, Math.min(large ? 36 : 28, Math.floor(rowH * 0.54)));
     const iw = W - m.l - m.r;
     const max = niceMax(Math.max(...items.map(i => i.value)));
     const s = svg(host, W, H);
@@ -289,8 +290,9 @@ const Charts = (() => {
       }));
 
       // Label on the left
-      s.appendChild(el('text', { class: 'lbl-axis', x: m.l - 14, y: y + barH / 2 + 4.5,
-        'text-anchor': 'end', 'font-size': compact ? 11.5 : 12.5, 'font-weight': 600, fill: 'var(--ink)',
+      const fzAxis = large ? 14 : (compact ? 11.5 : 12.5);
+      s.appendChild(el('text', { class: 'lbl-axis', x: m.l - 14, y: y + barH / 2 + (fzAxis * 0.35),
+        'text-anchor': 'end', 'font-size': fzAxis, 'font-weight': 600, fill: 'var(--ink)',
         text: it.label }));
 
       // Filled active bar
@@ -300,8 +302,9 @@ const Charts = (() => {
       }));
 
       // Value label on the right of the bar
-      s.appendChild(el('text', { class: 'lbl-value', x: m.l + w + 12, y: y + barH / 2 + 4.5,
-        'font-size': compact ? 12 : 13, 'font-weight': 800, fill: 'var(--ink-strong)',
+      const fzVal = large ? 15 : (compact ? 12 : 13);
+      s.appendChild(el('text', { class: 'lbl-value', x: m.l + w + 12, y: y + barH / 2 + (fzVal * 0.35),
+        'font-size': fzVal, 'font-weight': 800, fill: 'var(--ink-strong)',
         text: vf(it.value) + (it.share !== undefined ? ` · ${fmt.pct(it.share, 0)}` : '') }));
 
       const hit = el('rect.hit', { x: 0, y: m.t + i * rowH, width: W, height: rowH });

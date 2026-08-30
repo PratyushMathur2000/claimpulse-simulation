@@ -219,7 +219,7 @@ const ViewTat = (() => {
         el('div.g-2', {}, [
           el('div', {}, [
             el('div', { style: { marginBottom: 'var(--s-3)' } }, [
-              el('div', { style: { fontWeight: 650, fontSize: 'var(--fs-base)', color: 'var(--ink-strong)' },
+              el('div', { style: { fontWeight: 700, fontSize: 'var(--fs-lg)', color: 'var(--ink-strong)' },
                 text: 'Physical Surveys: Before vs. After' }),
               el('div.small.muted', { text: 'Annual survey volume across the addressable book' })
             ]),
@@ -227,7 +227,7 @@ const ViewTat = (() => {
           ]),
           el('div', {}, [
             el('div', { style: { marginBottom: 'var(--s-3)' } }, [
-              el('div', { style: { fontWeight: 650, fontSize: 'var(--fs-base)', color: 'var(--ink-strong)' },
+              el('div', { style: { fontWeight: 700, fontSize: 'var(--fs-lg)', color: 'var(--ink-strong)' },
                 text: 'Garage Approval Wait: Before vs. After' }),
               el('div.small.muted', { text: 'Days a bay sits idle awaiting repair authorisation' })
             ]),
@@ -244,18 +244,18 @@ const ViewTat = (() => {
         ],
         unit: 'surveys / year',
         valueFmt: v => fmt.compact(v),
-        height: 120
+        large: true
       });
       Charts.hbar($('#tatGarageBar'), {
         items: [
-          { label: 'Today · Awaiting surveyor allocation', value: I.J06_garageToday, color: 'var(--dom-risk)',
+          { label: 'Today · Awaiting surveyor', value: I.J06_garageToday, color: 'var(--dom-risk)',
             note: 'Bay idle for up to 4 days while surveyor is dispatched and travels.' },
-          { label: 'On ClaimPulse · Instant band at FNOL', value: I.J07_garageAfter, color: 'var(--dom-cap)',
+          { label: 'On ClaimPulse · Instant FNOL band', value: I.J07_garageAfter, color: 'var(--dom-cap)',
             note: 'Indicative repair cost band arrives at first notification.' }
         ],
         unit: 'days idle per job',
         valueFmt: v => v + ' d',
-        height: 120
+        large: true
       });
     }
 
