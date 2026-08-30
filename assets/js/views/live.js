@@ -211,8 +211,8 @@ const ViewLive = (() => {
 
     mount($('#lvAcc'), [UI.dtable({
       cols: [
-        { key: 'k', label: 'Since you pressed play' },
-        { key: 'r', label: 'Ref', render: x => x.r ? el('span.mono', { text: x.r }) : el('span') },
+        { key: 'k', label: 'Since you pressed play',
+          tip: x => x.r ? ({ title: x.k, rows: [['Workbook ref', x.r], ['Value', x.v]] }) : null },
         { key: 'v', label: '', n: true, render: x => el('span', {
           style: { fontWeight: 680, color: x.c || 'var(--ink)' }, text: x.v }) }
       ],

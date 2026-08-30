@@ -175,11 +175,13 @@ const ViewAssumptions = (() => {
     });
     $('#regCount').textContent = `${rows.length} of ${REG.length} inputs shown. Every one of them is live — change it in the workbook and the whole model moves.`;
     mount($('#regTable'), [UI.table(
-      [{ label: 'Ref' }, { label: 'Input' }, { label: 'Value', n: true },
-       { label: 'Tier' }, { label: 'Basis, and which way it is biased' }],
+      [{ label: 'Input' }, { label: 'Value', n: true },
+       { label: 'Tier' }, { label: 'Basis, and validation source' }],
       rows.map(([ref, label, val, unit, tier, note]) => [
-        { node: el('span.ref', { text: ref }) },
-        { node: el('span', { style: { fontWeight: 580 }, text: label }) },
+        {
+          node: el('span', { style: { fontWeight: 580 } }, [label]),
+          tip: { title: label, rows: [['Workbook ref', ref], ['Tier', tier], ['', note]] }
+        },
         { node: el('span.mono', { text: fmtVal(val, unit) }) },
         { node: UI.badge(tier, tier === 'TIER 1' ? 't1' : tier === 'TIER 2' ? 't2'
           : tier === 'TIER 4' ? 't4' : tier === 'TARGET' ? 'warn' : tier === DEC ? 'info' : 'neutral') },

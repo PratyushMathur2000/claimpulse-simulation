@@ -30,24 +30,23 @@ const UI = (() => {
      which is exactly what this used to be. */
   function tile({ k, ref, v, unit, d, hero, accent, warm, delta, deltaGood, showD }) {
     const t = el('div.tile' + (hero ? '.hero' : '') + (accent ? '.accent' : '') + (warm ? '.warm' : ''), {}, [
-      el('div.k', {}, [k, ref ? el('span.ref', { text: ref }) : null]),
+      el('div.k', {}, [k]),
       el('div.v', {}, [String(v), unit ? el('span.unit', { text: unit }) : null]),
       delta ? el('span.delta.' + (deltaGood === false ? 'down' : deltaGood === true ? 'up' : 'flat'),
         { text: delta }) : null,
       (d && showD) ? el('div.d', { text: d }) : null
     ]);
-    if (d && !showD) {
+    if ((d && !showD) || ref || delta) {
       t.setAttribute('data-tip', '1');
       const rows = [];
       if (delta) rows.push(['Change', delta]);
       if (ref) rows.push(['Workbook ref', ref]);
-      t.addEventListener('mousemove', e => CP.tip.show(e.clientX, e.clientY, k,
-        rows.concat([['', d]])));
+      if (d) rows.push(['', d]);
+      t.addEventListener('mousemove', e => CP.tip.show(e.clientX, e.clientY, k, rows));
       t.addEventListener('mouseleave', CP.tip.hide);
-      /* Touch devices get no hover, so a tap reveals it inline once. */
       t.addEventListener('click', () => {
         if (t.querySelector('.d')) return;
-        t.appendChild(el('div.d.pop', { text: d }));
+        if (d) t.appendChild(el('div.d.pop', { text: d }));
       });
     }
     return t;
@@ -96,9 +95,17 @@ const UI = (() => {
       el('thead', {}, [el('tr', {}, cols.map(c =>
         el('th', { class: c.n ? 'n' : '', text: c.label })))]),
       el('tbody', {}, rows.map(r => el('tr', { class: r.total ? 'total' : '' },
-        (r.cells || r).map((cell, i) => el('td', {
-          class: (cols[i] && cols[i].n ? 'n ' : '') + (cell && cell.cls ? cell.cls : '')
-        }, [cell && cell.node ? cell.node : String(cell && cell.text !== undefined ? cell.text : cell)]))
+        (r.cells || r).map((cell, i) => {
+          const td = el('td', {
+            class: (cols[i] && cols[i].n ? 'n ' : '') + (cell && cell.cls ? cell.cls : '')
+          }, [cell && cell.node ? cell.node : String(cell && cell.text !== undefined ? cell.text : cell)]);
+          if (cell && cell.tip) {
+            td.style.cursor = 'default';
+            td.addEventListener('mousemove', e => CP.tip.show(e.clientX, e.clientY, cell.tip.title || '', cell.tip.rows || []));
+            td.addEventListener('mouseleave', CP.tip.hide);
+          }
+          return td;
+        })
       )))
     ])]);
   }
@@ -130,11 +137,17 @@ const UI = (() => {
 
   /* Key-value definition rows */
   function facts(rows) {
-    return el('div.stack-4', {}, rows.map(([k, v, r]) => el('div.spread', {
-      style: { alignItems: 'baseline', gap: 'var(--s-5)' } }, [
-      el('span.small.muted', {}, [k, r ? ref(r) : null]),
-      el('span.small', { style: { fontWeight: 640, textAlign: 'right' } }, [String(v)])
-    ])));
+    return el('div.stack-4', {}, rows.map(([k, v, r]) => {
+      const labelEl = el('span.small.muted', { style: { cursor: r ? 'default' : 'inherit' } }, [k]);
+      if (r) {
+        labelEl.addEventListener('mousemove', e => CP.tip.show(e.clientX, e.clientY, k, [['Workbook ref', r]]));
+        labelEl.addEventListener('mouseleave', CP.tip.hide);
+      }
+      return el('div.spread', { style: { alignItems: 'baseline', gap: 'var(--s-5)' } }, [
+        labelEl,
+        el('span.small', { style: { fontWeight: 640, textAlign: 'right' } }, [String(v)])
+      ]);
+    }));
   }
 
   /* "What we are not claiming" — collapsed. Stating the limits is what
@@ -184,21 +197,22 @@ const UI = (() => {
   /* A number, its label, and — on hover only — what it means. */
   function metric({ k, v, unit, d, dom, size, ref, delta, deltaGood, id }) {
     const m = el('div.metric' + (size ? '.' + size : ''), { id: id || undefined }, [
-      el('div.m-k', {}, [k, ref ? el('span.ref', { text: ref }) : null]),
+      el('div.m-k', {}, [k]),
       el('div.m-v', {}, [String(v), unit ? el('span.u', { text: unit }) : null]),
       delta ? el('span.delta.' + (deltaGood === false ? 'down' : deltaGood === true ? 'up' : 'flat'), { text: delta }) : null
     ]);
     if (dom) m.setAttribute('data-dom', dom);
-    if (d) {
+    if (d || ref || delta) {
       const rows = [];
       if (delta) rows.push(['Change', delta]);
       if (ref) rows.push(['Workbook ref', ref]);
+      if (d) rows.push(['', d]);
       m.style.cursor = 'default';
-      m.addEventListener('mousemove', e => CP.tip.show(e.clientX, e.clientY, k, rows.concat([['', d]])));
+      m.addEventListener('mousemove', e => CP.tip.show(e.clientX, e.clientY, k, rows));
       m.addEventListener('mouseleave', CP.tip.hide);
       m.addEventListener('click', () => {
         if (m.querySelector('.m-d')) return;
-        m.appendChild(el('div.m-d', { text: d }));
+        if (d) m.appendChild(el('div.m-d', { text: d }));
       });
     }
     return m;
@@ -226,7 +240,7 @@ const UI = (() => {
     return c;
   }
 
-  /* The interactive table. cols: [{key,label,n,w,render}]. Rows are
+  /* The interactive table. cols: [{key,label,n,w,render,tip}]. Rows are
      objects; `render` gets the row and may return a node. */
   function dtable({ cols, rows, onRow, selected, empty = 'Nothing matches.' }) {
     const wrap = el('div.dtable-wrap');
@@ -238,9 +252,20 @@ const UI = (() => {
       el('thead', {}, [el('tr', {}, cols.map(c =>
         el('th', { class: c.n ? 'n' : '', style: c.w ? { width: c.w } : undefined, text: c.label })))]),
       el('tbody', {}, rows.map(r => {
-        const tr = el('tr', { class: (onRow ? 'clickable ' : '') + (selected && selected(r) ? 'on' : '') },
-          cols.map(c => el('td', { class: c.n ? 'n' : '' },
-            [c.render ? c.render(r) : el('span', { text: String(r[c.key] === undefined ? '' : r[c.key]) })])));
+        const tr = el('tr', { class: (onRow ? 'clickable ' : '') + (selected && selected(r) ? 'on' : '') });
+        cols.forEach(c => {
+          const td = el('td', { class: c.n ? 'n' : '' },
+            [c.render ? c.render(r) : el('span', { text: String(r[c.key] === undefined ? '' : r[c.key]) })]);
+          if (c.tip) {
+            const tipData = typeof c.tip === 'function' ? c.tip(r) : c.tip;
+            if (tipData) {
+              td.style.cursor = 'default';
+              td.addEventListener('mousemove', e => CP.tip.show(e.clientX, e.clientY, tipData.title || '', tipData.rows || []));
+              td.addEventListener('mouseleave', CP.tip.hide);
+            }
+          }
+          tr.appendChild(td);
+        });
         if (onRow) tr.addEventListener('click', () => onRow(r));
         return tr;
       }))

@@ -188,11 +188,13 @@ const ViewTat = (() => {
     /* ---------------- TAT build-up ---------------- */
     mount($('#tatSteps'), [UI.dtable({
       cols: [
-        { key: 'step', label: 'Step', render: x => el('span', {}, [
-          el('span', { style: { fontWeight: 620 }, text: x.step }),
-          el('div.sub', { text: x.how })
-        ]) },
-        { key: 'ref', label: 'Ref', render: x => el('span.mono', { text: x.ref }) },
+        { key: 'step', label: 'Step',
+          tip: x => ({ title: x.step, rows: [['Workbook ref', x.ref], ['', x.how]] }),
+          render: x => el('span', {}, [
+            el('span', { style: { fontWeight: 620 } }, [x.step]),
+            el('div.sub', { text: x.how })
+          ])
+        },
         { key: 'days', label: 'Days', n: true, render: x => el('span', {
           style: { fontWeight: x.total ? 700 : 600, color: x.total ? 'var(--dom-cap)' : 'var(--ink)' },
           text: x.days }) }

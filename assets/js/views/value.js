@@ -205,11 +205,10 @@ const ViewValue = (() => {
     mount($('#vlStake'), [
       UI.dtable({
         cols: [
-          { key: 'w', label: 'Books the benefit' },
+          { key: 'w', label: 'Books the benefit', tip: x => ({ title: x.w, rows: [['Workbook ref', x.r], ['Contribution', fmt.cr(x.v) + ' ₹ Cr']] }) },
           { key: 'v', label: '₹ Cr', n: true, render: x => el('span', {
             style: { fontWeight: 680, color: x.v < 0 ? 'var(--neg)' : 'var(--ink)' },
-            text: fmt.cr(x.v) }) },
-          { key: 'r', label: 'Ref', render: x => el('span.mono', { text: x.r }) }
+            text: fmt.cr(x.v) }) }
         ],
         rows: [
           { w: 'BGeneral underwriting', v: r.stake.underwriting, r: 'W-57' },
