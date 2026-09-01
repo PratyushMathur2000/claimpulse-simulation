@@ -137,6 +137,10 @@
 .shell[data-rail="collapsed"] .theme-toggle { flex-direction: column; }
 .shell[data-rail="collapsed"] .rail-foot { align-items: center; }
 
+/* Hide text in download buttons and center them when collapsed */
+.shell[data-rail="collapsed"] .dl-btn > span:not(.fmt-badge) { display: none; }
+.shell[data-rail="collapsed"] .dl-btn { justify-content: center; padding-left: 0; padding-right: 0; }
+
 /* A collapsed rail-link shows its label as a floating chip on hover */
 .rail-link { position: relative; }
 .shell[data-rail="collapsed"] .rail-link::after {
