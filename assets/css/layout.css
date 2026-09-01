@@ -141,6 +141,12 @@
 .shell[data-rail="collapsed"] .dl-btn > span:not(.fmt-badge) { display: none; }
 .shell[data-rail="collapsed"] .dl-btn { justify-content: center; padding-left: 0; padding-right: 0; }
 
+@media (max-width: 900px) {
+  .rail-downloads { flex-direction: row !important; justify-content: center; gap: var(--s-3) !important; }
+  .rail-downloads .dl-btn { justify-content: center; padding-left: 0; padding-right: 0; flex: 1; }
+  .rail-downloads .dl-btn > span:not(.fmt-badge) { display: none; }
+}
+
 /* A collapsed rail-link shows its label as a floating chip on hover */
 .rail-link { position: relative; }
 .shell[data-rail="collapsed"] .rail-link::after {
