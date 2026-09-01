@@ -72,7 +72,7 @@ const App = (() => {
             el('span.fmt-badge', { text: 'PDF' }),
             el('span', { text: 'Executive Report' })
           ]),
-          el('a.dl-btn.ppt', { href: 'downloads/ClaimPulse_SemiFinal_Deck.pptx', download: 'ClaimPulse_SemiFinal_Deck.pptx', title: 'Download Pitch Deck PPTX' }, [
+          el('a.dl-btn.ppt', { href: 'downloads/SaiMahimaK_Finsighters_NMIMS_PS6_BFDL.pptx', download: 'SaiMahimaK_Finsighters_NMIMS_PS6_BFDL.pptx', title: 'Download Pitch Deck PPTX' }, [
             el('span.fmt-badge', { text: 'PPTX' }),
             el('span', { text: 'Semi-Final Deck' })
           ])
