@@ -74,7 +74,7 @@ const App = (() => {
           ]),
           el('a.dl-btn.ppt', { href: 'downloads/SaiMahimaK_Finsighters_NMIMS_PS6_BFDL.pptx', download: 'SaiMahimaK_Finsighters_NMIMS_PS6_BFDL.pptx', title: 'Download Pitch Deck PPTX' }, [
             el('span.fmt-badge', { text: 'PPTX' }),
-            el('span', { text: 'Semi-Final Deck' })
+            el('span', { text: 'Pitch Deck' })
           ])
         ]),
         el('div.theme-toggle', { id: 'themeToggle', role: 'group', 'aria-label': 'Colour theme' }, [
