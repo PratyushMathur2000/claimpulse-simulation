@@ -122,7 +122,7 @@ const ViewCustomer = (() => {
           ])
         ])
       ]),
-      el('div.card', { style: { marginTop: 'var(--s-6)', textAlign: 'center', maxWidth: '340px', marginLeft: 'auto', marginRight: 'auto' } }, [
+      el('div.card', { style: { marginTop: 'var(--s-6)', textAlign: 'center', width: '100%' } }, [
         el('div.eyebrow', { text: 'Customer Mobile App' }),
         el('h3', { text: 'Install the Android App', style: { margin: 'var(--s-1) 0 var(--s-2)' } }),
         el('div.small.muted', { text: 'Scan this code to download the live capture APK (7.3MB)' }),
