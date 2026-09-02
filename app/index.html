@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>ClaimPulse</title>
+<meta name="description" content="ClaimPulse — your Motor Own Damage claim, from the roadside.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0F5FB4">
+
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ClaimPulse">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- The dashboard's own stylesheets, unmodified, so the app looks
+     identical to the handset shown on the Customer app screen. -->
+<link rel="stylesheet" href="../assets/css/fonts.css">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/future.css">
+
+<style>
+  html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  body { display: flex; align-items: center; justify-content: center; }
+
+  #device {
+    width: 100%; height: 100dvh;
+    display: flex; flex-direction: column;
+    background: var(--surface); overflow: hidden;
+  }
+  #device .phone-screen { flex: 1 1 auto; min-height: 0; border-radius: 0; }
+  #device .phone-status { padding-top: max(var(--s-5), env(safe-area-inset-top)); }
+  #device .phone-foot   { padding-bottom: max(var(--s-6), env(safe-area-inset-bottom)); }
+  #device .phone-body   { -webkit-overflow-scrolling: touch; }
+
+  /* Edge to edge on a phone. On a laptop it sits in a handset, because a
+     full-bleed claim form at 1920px reads as a broken website. */
+  @media (min-width: 600px) {
+    body { padding: var(--s-6); }
+    #device {
+      width: 380px; height: min(820px, calc(100dvh - 48px));
+      border-radius: 34px; border: 10px solid var(--border-strong);
+      box-shadow: var(--shadow-3);
+    }
+    #device .phone-status { padding-top: var(--s-5); }
+  }
+</style>
+</head>
+<body>
+
+<div id="device">
+  <div class="phone-screen">
+    <div class="phone-status"><span id="clock">&nbsp;</span><span>ClaimPulse</span></div>
+    <div class="phone-body" id="body"></div>
+    <div class="phone-foot" id="foot"></div>
+  </div>
+</div>
+
+<script src="../assets/js/core.js"></script>
+<script src="../assets/js/model.js"></script>
+<script src="../assets/js/engine.js"></script>
+<script src="../assets/js/claims.js"></script>
+<script src="claimant.js"></script>
+<script>
+(() => {
+  CP.theme.init();
+
+  const clock = document.getElementById('clock');
+  const tick = () => { clock.textContent = new Date()
+    .toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: false }); };
+  tick(); setInterval(tick, 20000);
+
+  Claimant.start();
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+</script>
+</body>
+</html>

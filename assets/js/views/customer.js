@@ -124,12 +124,12 @@ const ViewCustomer = (() => {
       ]),
       el('div.card', { style: { marginTop: 'var(--s-6)', textAlign: 'center', width: '100%' } }, [
         el('div.eyebrow', { text: 'Customer Mobile App' }),
-        el('h3', { text: 'Install the Android App', style: { margin: 'var(--s-1) 0 var(--s-2)' } }),
-        el('div.small.muted', { text: 'Scan this code to download the live capture APK (7.3MB)' }),
+        el('h3', { text: 'Install the Customer App', style: { margin: 'var(--s-1) 0 var(--s-2)' } }),
+        el('div.small.muted', { text: 'Scan to open the claimant app on your phone · add to home screen to install' }),
         el('hr', { style: { margin: 'var(--s-3) 0', border: 'none', borderTop: '1px solid var(--border)' } }),
-        el('img', { src: 'assets/apk-qr.png', alt: 'QR Code to download APK', style: { width: '160px', height: '160px', borderRadius: 'var(--r-sm)', margin: 'var(--s-1) 0' } }),
+        el('img', { src: 'assets/apk-qr.png', alt: 'QR code to open the ClaimPulse customer app', style: { width: '160px', height: '160px', borderRadius: 'var(--r-sm)', margin: 'var(--s-1) 0' } }),
         el('hr', { style: { margin: 'var(--s-3) 0', border: 'none', borderTop: '1px solid var(--border)' } }),
-        el('a.btn.ghost', { href: 'downloads/ClaimPulse-demo.apk', download: true, text: 'Download APK Direct', style: { display: 'inline-block' } })
+        el('a.btn.ghost', { href: 'app/', target: '_blank', rel: 'noopener', text: 'Open the Customer App', style: { display: 'inline-block' } })
       ])
     ]);
 
