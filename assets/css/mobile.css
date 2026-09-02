@@ -1,0 +1,218 @@
+/* =====================================================================
+   ClaimPulse · Phone
+   ---------------------------------------------------------------------
+   The desktop rendering is settled, so nothing here is allowed to reach
+   it. Every rule in this file lives inside a max-width query and this
+   sheet loads last, which makes the guarantee checkable with one grep:
+   no bare selector may appear at the top level of this file.
+
+   Breakpoints match the ones already in use — 900px is where the rail
+   becomes a drawer, 700px is where a chart stops fitting in its card,
+   620px is the phone proper.
+   ===================================================================== */
+
+
+/* =====================================================================
+   1 · CHARTS
+   ---------------------------------------------------------------------
+   charts.js decides, per chart, whether it still fits the card. A chart
+   that does not gets held near its drawn size and tagged .chart-scroll,
+   and this is where that tag becomes a scrollable strip.
+
+   Previously a blanket `svg.chart { min-width: 640px }` did this job,
+   which blew a 220-unit ring up to 640px and left seven charts clipped
+   inside cards that had no overflow rule of their own.
+   ===================================================================== */
+@media (max-width: 700px) {
+  .chart-scroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    /* The bar is the affordance. Without it the cut edge reads as a bug
+       rather than as an invitation, which is what the old build did. */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+    padding-bottom: var(--s-3);
+  }
+  /* .dtable-wrap is the view's own scroller for the charts that were
+     always too wide to fit — it gets the same visible bar. */
+  .dtable-wrap {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  .chart-scroll::-webkit-scrollbar,
+  .dtable-wrap::-webkit-scrollbar { height: 4px; }
+  .dtable-wrap::-webkit-scrollbar-track { background: var(--surface-sunken); border-radius: 999px; }
+  .dtable-wrap::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; }
+  .chart-scroll::-webkit-scrollbar-track {
+    background: var(--surface-sunken); border-radius: 999px;
+  }
+  .chart-scroll::-webkit-scrollbar-thumb {
+    background: var(--border-strong); border-radius: 999px;
+  }
+  /* A chart that fits stays fluid and centred rather than stretching. */
+  svg.chart { max-width: 100%; }
+}
+
+
+/* =====================================================================
+   2 · TABLES
+   ---------------------------------------------------------------------
+   Four columns inside 330px turns the label column into four wrapped
+   lines and a 145px row. A table is a table: give it its natural width,
+   scroll it, and pin the column that says what each row is.
+   ===================================================================== */
+@media (max-width: 620px) {
+  .tbl-wrap {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  .tbl-wrap::-webkit-scrollbar { height: 4px; }
+  .tbl-wrap::-webkit-scrollbar-track { background: var(--surface-sunken); border-radius: 999px; }
+  .tbl-wrap::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; }
+
+  .tbl { min-width: 520px; }
+  .tbl th, .tbl td { white-space: nowrap; }
+
+  /* The pinned column needs an opaque ground of its own — a sticky cell
+     sits over the scrolling ones, and `inherit` would leave it clear. */
+  .tbl th:first-child,
+  .tbl td:first-child {
+    position: sticky; left: 0; z-index: 2;
+    background: var(--surface);
+    width: 168px; min-width: 168px; max-width: 168px;
+    white-space: normal;
+    box-shadow: 6px 0 8px -6px rgba(6, 12, 22, .18), 1px 0 0 var(--border);
+  }
+  .tbl tr.total td:first-child { background: var(--surface-2); }
+
+  /* .dtable is the helper most views actually use, and `width: 100%`
+     makes it squeeze rather than scroll. Same treatment: natural width,
+     scroll, pin the identifying column. */
+  table.dtable { min-width: 560px; }
+  table.dtable tbody td { white-space: nowrap; }
+
+  table.dtable thead th:first-child,
+  table.dtable tbody td:first-child {
+    position: sticky; left: 0;
+    background: var(--surface);
+    /* Left to size itself the label column takes two thirds of the
+       screen and there is nothing left to scroll to, so it is fixed and
+       allowed to wrap. max-width alone is only a hint to the table
+       layout algorithm — all three are needed to actually hold. */
+    width: 168px; min-width: 168px; max-width: 168px;
+    white-space: normal;
+    box-shadow: 6px 0 8px -6px rgba(6, 12, 22, .18), 1px 0 0 var(--border);
+  }
+  /* The corner cell is sticky on both axes, so it has to sit above the
+     header row it is part of as well as above the column below it. The
+     header's translucent wash cannot stay — the rows would scroll
+     through it. */
+  table.dtable thead th:first-child {
+    z-index: 3;
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+  table.dtable tbody td:first-child { z-index: 1; }
+  table.dtable tbody tr.on td:first-child {
+    background: color-mix(in srgb, var(--accent) 11%, var(--surface));
+  }
+}
+
+
+/* =====================================================================
+   3 · DENSITY
+   ---------------------------------------------------------------------
+   One metric per row costs three screens of scrolling to deliver five
+   numbers that a laptop shows in a glance. Two up is still legible at
+   330px and reads as a set rather than a list.
+   ===================================================================== */
+@media (max-width: 640px) {
+  .cells.c-2, .cells.c-3, .cells.c-4, .cells.c-5 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cells > * { border-right: 1px solid var(--hairline) !important; }
+  .cells > *:nth-child(2n) { border-right: 0 !important; }
+  /* The last row has no row below it to separate from. */
+  .cells > *:nth-last-child(-n+2) { border-bottom: 0; }
+
+  /* Two up means half the width, so the key can no longer reserve two
+     lines for every metric and the value must be free to shrink. */
+  .metric .m-k { min-height: 0; }
+  .metric .m-v { font-size: var(--fs-xl); }
+  .metric.xl .m-v { font-size: var(--fs-2xl); }
+}
+
+@media (max-width: 620px) {
+  .g-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+
+/* =====================================================================
+   4 · TOUCH AND TYPE
+   ---------------------------------------------------------------------
+   A 30px segmented control and a 9.5px chip are both fine under a mouse
+   at arm's length and neither is fine under a thumb. 44px is the floor
+   both platforms publish; 11.5px is where this type stops shrinking.
+   ===================================================================== */
+@media (max-width: 620px) {
+  .btn, .gbtn, .dl-btn, .seg button, .tabstrip button, .phone-cta {
+    min-height: 44px;
+  }
+  .seg button, .tabstrip button { padding-top: 0; padding-bottom: 0; }
+  .seg, .tabstrip { align-items: stretch; }
+
+  .badge,
+  .dchip,
+  .disc > summary .chip,
+  .badge-pill,
+  .flywheel-step-card .step-tag,
+  .flow-node .f-k,
+  .stage .s-n,
+  .erow .e-n,
+  .jstep .jd,
+  table.dtable thead th {
+    font-size: 11.5px;
+  }
+}
+
+
+/* =====================================================================
+   5 · THE ASSISTANT LAUNCHER
+   ---------------------------------------------------------------------
+   The labelled pill covers the bottom-right corner of every screen and
+   nothing reserves room for it, so it lands on top of content twelve
+   times out of twelve. On a phone it becomes what it already is — an
+   icon — and the page ends above it.
+   ===================================================================== */
+@media (max-width: 620px) {
+  .cp-chat-trigger {
+    width: 52px; height: 52px;
+    padding: 0;
+    justify-content: center;
+    gap: 0;
+  }
+  .cp-chat-trigger > span { display: none; }
+  .cp-chat-trigger .pulse-dot {
+    position: absolute; top: 4px; right: 4px;
+  }
+
+  .main { padding-bottom: calc(var(--s-8) + 64px); }
+}
+
+
+/* =====================================================================
+   6 · THE TRI-LANE BAR
+   ---------------------------------------------------------------------
+   Its segments are sized by lane share, so at 330px the amber and red
+   ones are 72px and 36px wide and truncate their own labels to "Assi…"
+   and "…". The bar is a proportion; on a phone it goes back to being
+   only that, and the line directly above it — which already carries all
+   three counts and shares in left-to-right lane order — does the naming.
+   ===================================================================== */
+@media (max-width: 620px) {
+  .lane-seg > span { display: none; }
+  .lane-track { min-height: 22px; }
+}

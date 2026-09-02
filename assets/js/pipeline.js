@@ -68,7 +68,8 @@ const Pipeline = (() => {
       q: 'What should this repair cost?',
       body: 'Returns an indicative band at first notification instead of after a physical inspection. That single change is why a garage waits one day for approval instead of four.',
       bullets: ['Parts catalogue and live feeds', 'Settled-claim history', 'Band returned at FNOL, not after a visit'],
-      genai: false, build: 'BUILD / INTEGRATE'
+      genai: false, build: 'BUILD / INTEGRATE',
+      note: '0% weight in Trust Score — sets the payable band'
     },
     e5: {
       label: '05 · Policy RAG', sub: 'GenAI, selective', tone: 'var(--d7)',

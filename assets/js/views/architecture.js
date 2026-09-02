@@ -298,7 +298,8 @@ const ViewArchitecture = (() => {
       el('div.spread.wrap', { style: { gap: 'var(--s-3)', paddingTop: 'var(--s-4)', borderTop: '1px solid var(--border)' } }, [
         el('div.row.wrap', { style: { gap: 'var(--s-2)' } }, [
           UI.dchip(n.genai ? 'Targeted GenAI' : '₹0 GenAI Tokens (Deterministic/ML)', n.genai ? 'ai' : 'cap'),
-          n.weight ? UI.dchip(`${n.weight()}% weight in Trust Score`, 'fin') : null
+          n.weight ? UI.dchip(`${n.weight()}% weight in Trust Score`, 'fin')
+                   : n.note ? UI.dchip(n.note, 'fin') : null
         ]),
         el('span.badge.neutral', { text: n.build })
       ])
@@ -509,7 +510,8 @@ const ViewArchitecture = (() => {
       el('div.stack-5', {}, [
         el('div.row.wrap', {}, [
           UI.dchip(n.genai ? 'genai' : 'no genai', n.genai ? 'ai' : 'cap'),
-          n.weight ? UI.dchip(n.weight() + '% of trust', 'fin') : null
+          n.weight ? UI.dchip(n.weight() + '% of trust', 'fin')
+                   : n.note ? UI.dchip(n.note, 'fin') : null
         ]),
         el('div.small.muted', { text: n.build }),
         n.purpose ? el('div.small.muted', { text: n.purpose }) : null,

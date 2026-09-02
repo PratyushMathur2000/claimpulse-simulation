@@ -59,6 +59,35 @@ const Charts = (() => {
     return out;
   }
 
+  /* A viewBox chart scales to whatever box it is given, and its labels
+     scale with it. On a laptop a 900-unit chart lands in a ~1000px card
+     and a 10-unit label reads as 10px. On a phone the same card is 330px
+     wide, so that label renders at under 4px — present, unreadable.
+
+     Below the layout breakpoint we therefore hold a chart near the size
+     it was drawn at and let its card scroll, rather than shrinking it
+     into a smear. A chart that already fits is left alone to fill the
+     card. Above the breakpoint this is a no-op, so desktop is untouched. */
+  const NARROW_Q = '(max-width: 700px)';
+  const NARROW_FIT = 0.88;   // of drawn size — legible, and the cut hints at the scroll
+
+  function fitNarrow(host, s, w) {
+    if (!window.matchMedia(NARROW_Q).matches) return;
+    /* A few charts are wide enough that their view already wraps them in
+       a scroller of its own — the Sankey is one. Adding a second scroller
+       inside the first gives the reader two axes to fight over, so leave
+       those alone and let the wrapper do its job. */
+    for (let p = host.parentElement; p && p !== document.body; p = p.parentElement) {
+      const ox = getComputedStyle(p).overflowX;
+      if (ox === 'auto' || ox === 'scroll') return;
+    }
+    const avail = host.clientWidth || (document.documentElement.clientWidth - 76);
+    const want = Math.round(w * NARROW_FIT);
+    if (want <= avail) return;
+    s.style.minWidth = want + 'px';
+    host.classList.add('chart-scroll');
+  }
+
   function svg(host, w, h) {
     clear(host);
     const s = el('svg.chart', {
@@ -66,6 +95,7 @@ const Charts = (() => {
       preserveAspectRatio: 'xMidYMid meet', role: 'img'
     });
     host.appendChild(s);
+    fitNarrow(host, s, w);
     return s;
   }
 
@@ -535,7 +565,9 @@ const Charts = (() => {
     return s;
   }
 
-  return { waterfall, cashflow, hbar, vbar, stack, tornado, bullet, legend, seriesVar, barPath, niceMax };
+  const isNarrow = () => window.matchMedia(NARROW_Q).matches;
+
+  return { waterfall, cashflow, hbar, vbar, stack, tornado, bullet, legend, seriesVar, barPath, niceMax, fitNarrow, isNarrow };
 })();
 
 /* =====================================================================
@@ -550,6 +582,7 @@ Charts.meter = function (host, { score, floors, height = 74 }) {
   const s = el('svg.chart', { viewBox: `0 0 ${W} ${H}`, width: '100%',
     preserveAspectRatio: 'xMidYMid meet' });
   host.appendChild(s);
+  Charts.fitNarrow(host, s, W);
   const m = { l: 6, r: 6, t: 30 }, iw = W - m.l - m.r, bh = 14;
   const x = v => m.l + (v / 100) * iw;
 
@@ -596,6 +629,7 @@ Charts.contrib = function (host, parts) {
   clear(host);
   const s = el('svg.chart', { viewBox: `0 0 ${W} ${H}`, width: '100%' });
   host.appendChild(s);
+  Charts.fitNarrow(host, s, W);
   const total = 100;
   let x = 0;
   const COLORS = { gate: 'var(--warm)', doc: 'var(--d1)', cv: 'var(--d3)',
@@ -653,6 +687,7 @@ Charts.contrib = function (host, parts) {
     const s = el('svg.chart', { viewBox: `0 0 ${w} ${h}`, width: '100%',
       preserveAspectRatio: 'xMidYMid meet', role: 'img' });
     host.appendChild(s);
+    Charts.fitNarrow(host, s, w);
     return s;
   }
 
@@ -760,9 +795,13 @@ Charts.contrib = function (host, parts) {
     const xL = 260, xR = W - 340;
     const gapL = 8, gapR = 8;
 
-    // Column titles
+    // Column titles. Right-anchoring the left one to its column reads best
+    // at full size, but once the chart is scaled down for a phone it pushes
+    // the first letter past the edge — so there it starts from the margin.
+    const narrow = Charts.isNarrow();
     s.appendChild(el('text', {
-      class: 'lbl-axis', x: xL, y: 16, 'text-anchor': 'end',
+      class: 'lbl-axis', x: narrow ? 0 : xL, y: 16,
+      'text-anchor': narrow ? 'start' : 'end',
       'font-size': 10.5, 'font-weight': 700, 'letter-spacing': 'var(--tracking-caps)',
       fill: 'var(--ink-muted)', text: 'REPETITIVE WORK AUTOMATED (SOURCES)'
     }));

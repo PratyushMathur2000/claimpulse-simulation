@@ -262,10 +262,5 @@
 @media (max-width: 760px) { .bajaj-wrap .cap { display: none; } }
 @media (max-width: 560px) { .bajaj { width: 88px; height: 24px; } }
 
-/* Mobile Chart Scroll Optimization */
-@media (max-width: 760px) {
-  svg.chart { min-width: 640px; }
-  .panel > div, .card > div { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-  .panel > div::-webkit-scrollbar, .card > div::-webkit-scrollbar { display: none; }
-  .panel > .spread.wrap, .card > .spread.wrap { overflow-x: visible; }
-}
+/* Mobile chart handling now lives in mobile.css, per chart: a blanket
+   min-width blew small charts up and left deeper-nested ones clipped. */
