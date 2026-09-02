@@ -125,11 +125,11 @@ const ViewCustomer = (() => {
       el('div.card', { style: { marginTop: 'var(--s-6)', textAlign: 'center', width: '100%' } }, [
         el('div.eyebrow', { text: 'Customer Mobile App' }),
         el('h3', { text: 'Install the Customer App', style: { margin: 'var(--s-1) 0 var(--s-2)' } }),
-        el('div.small.muted', { text: 'Scan to open the claimant app on your phone · add to home screen to install' }),
+        el('div.small.muted', { text: 'Scan to download the Android app (7.6 MB) — this is the screen Priya sees' }),
         el('hr', { style: { margin: 'var(--s-3) 0', border: 'none', borderTop: '1px solid var(--border)' } }),
-        el('img', { src: 'assets/apk-qr.png', alt: 'QR code to open the ClaimPulse customer app', style: { width: '160px', height: '160px', borderRadius: 'var(--r-sm)', margin: 'var(--s-1) 0' } }),
+        el('img', { src: 'assets/app-apk-qr.png', alt: 'QR code to download the ClaimPulse customer app for Android', style: { width: '160px', height: '160px', borderRadius: 'var(--r-sm)', margin: 'var(--s-1) 0' } }),
         el('hr', { style: { margin: 'var(--s-3) 0', border: 'none', borderTop: '1px solid var(--border)' } }),
-        el('a.btn.ghost', { href: 'app/', target: '_blank', rel: 'noopener', text: 'Open the Customer App', style: { display: 'inline-block' } })
+        el('a.btn.ghost', { href: 'app/', target: '_blank', rel: 'noopener', text: 'Or open it in the browser', style: { display: 'inline-block' } })
       ])
     ]);
 
