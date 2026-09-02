@@ -121,6 +121,15 @@ const ViewCustomer = (() => {
               { chip: 'W-23' })
           ])
         ])
+      ]),
+      el('div.card', { style: { marginTop: 'var(--s-6)', textAlign: 'center', maxWidth: '340px', marginLeft: 'auto', marginRight: 'auto' } }, [
+        el('div.eyebrow', { text: 'Customer Mobile App' }),
+        el('h3', { text: 'Install the Android App', style: { margin: 'var(--s-1) 0 var(--s-2)' } }),
+        el('div.small.muted', { text: 'Scan this code to download the live capture APK (7.3MB)' }),
+        el('hr', { style: { margin: 'var(--s-3) 0', border: 'none', borderTop: '1px solid var(--border)' } }),
+        el('img', { src: 'assets/apk-qr.png', alt: 'QR Code to download APK', style: { width: '160px', height: '160px', borderRadius: 'var(--r-sm)', margin: 'var(--s-1) 0' } }),
+        el('hr', { style: { margin: 'var(--s-3) 0', border: 'none', borderTop: '1px solid var(--border)' } }),
+        el('a.btn.ghost', { href: 'downloads/ClaimPulse-demo.apk', download: true, text: 'Download APK Direct', style: { display: 'inline-block' } })
       ])
     ]);
 
